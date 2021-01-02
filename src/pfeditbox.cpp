@@ -34,6 +34,8 @@ pfEditBox::pfEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(pare
     wxStaticText* maxSpeedTxt = new wxStaticText(this, wxID_ANY, "Train Max Speed");
     wxSpinCtrl* maxSpeedPicker = new wxSpinCtrl(this, wxID_ANY, "10", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 7);
 
+    topSizerPfEdit->AddSpacer(10);
+    topSizerPfEdit->AddSpacer(10);
     topSizerPfEdit->Add(nameTxt, 0, wxALL | (wxALL & ~wxLEFT), 10);
     topSizerPfEdit->Add(trainName, 0, wxALL | (wxALL & ~wxLEFT), 10);
 

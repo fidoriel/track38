@@ -49,7 +49,7 @@ trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
     saveSizer->Layout();
 
     rightSizer->Add(trainKindPicker, 0, wxALL | wxGROW, 5);
-    rightSizer->Add(m_trainEditBox, 1, wxALL | wxGROW, 5);
+    rightSizer->Add(m_trainEditBox, 0, wxALL | wxGROW, 5);
     rightSizer->Add(saveSizer, 0, wxALL | wxALIGN_CENTER, 5);
 
     topSizer->Add(leftSizer, 0, wxGROW | (wxALL & ~wxLEFT), 5);
@@ -70,8 +70,7 @@ void trainEditPanel::RefreshPanel()
 {
     if (trainKindPicker)
     {
-        rightSizer->Detach(m_trainEditBox);
-        rightSizer->Detach(saveSizer);
+        rightSizer->Remove(1);
         delete m_trainEditBox;
 
         int sel = trainKindPicker->GetSelection();
@@ -87,13 +86,10 @@ void trainEditPanel::RefreshPanel()
             break;
         }
 
-        rightSizer->Add(m_trainEditBox, wxSizerFlags(1).Expand());
-        rightSizer->Add(saveSizer, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
-        topSizer->Fit(this);
-        topSizer->SetSizeHints(this);
+        rightSizer->Insert(1, m_trainEditBox, 0, wxALL | wxGROW, 5);
+
         panelParent->SetSizerAndFit(topSizer);
-        Layout();
-        Refresh();
-        Update();
+        panelParent->Layout();
+        panelParent->SendSizeEventToParent();
     }
 }
