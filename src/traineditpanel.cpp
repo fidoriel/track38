@@ -87,14 +87,13 @@ void trainEditPanel::RefreshPanel()
             break;
         }
 
-        trainKindPicker->SetSelection(sel);
-
-        rightSizer->Add(m_trainEditBox, 0, wxALL | wxGROW, 5);
-        rightSizer->Add(saveSizer, 0, wxALL | wxALIGN_CENTER, 5);
+        rightSizer->Add(m_trainEditBox, wxSizerFlags(1).Expand());
+        rightSizer->Add(saveSizer, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
         topSizer->Fit(this);
-        panelParent->SetSizer(topSizer);
-        panelParent->Layout();
+        topSizer->SetSizeHints(this);
+        panelParent->SetSizerAndFit(topSizer);
         Layout();
-        SetSize(GetSize());
+        Refresh();
+        Update();
     }
 }

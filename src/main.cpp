@@ -103,13 +103,10 @@ track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, name/*, wxPoint(30, 30), 
     //----------------
     //Main Application
     //----------------
-    
-    //Erstelt mainPanel aus AppFrame
-    wxPanel* mainPanel = new wxPanel(this, wxID_ANY);
 
     //Erstellt Tabsystem aus mainPanel
     wxNotebook* m_notebook;
-    m_notebook = new wxNotebook(mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULLSCREEN_ALL);
+    m_notebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULLSCREEN_ALL);
 
     //fügt seiten zu Tabsystem hinzu
     controlEditPanel* m_controlEditPanel = new controlEditPanel(m_notebook);
@@ -121,15 +118,11 @@ track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, name/*, wxPoint(30, 30), 
     trainEditPanel* m_trainEditPanel = new trainEditPanel(m_notebook);
     m_notebook->AddPage(m_trainEditPanel, L"Edit Trains");
 
-    // Set up the sizer for the notebook
-    wxBoxSizer* notebookSizer = new wxBoxSizer(wxHORIZONTAL);
-    notebookSizer->Add(m_notebook, 1, wxEXPAND);
-    mainPanel->SetSizer(notebookSizer);
-
     //Höchster sizer für AppUI
-    wxBoxSizer* topSizer = new wxBoxSizer(wxHORIZONTAL);
-    topSizer->SetMinSize(800, 500);
-    topSizer->Add(mainPanel, 1, wxEXPAND);
+    wxBoxSizer* topSizer = new wxBoxSizer(wxVERTICAL);
+    topSizer->SetMinSize(900, 650);
+    topSizer->Add(m_notebook, -1, wxGROW | wxEXPAND);
+    topSizer->SetSizeHints(m_notebook);
     SetSizerAndFit(topSizer);
     Layout();
 

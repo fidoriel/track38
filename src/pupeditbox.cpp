@@ -2,7 +2,7 @@
 
 pupEditBox::pupEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(parent, id, title)
 {
-    wxFlexGridSizer* topSizerPfEdit = new wxFlexGridSizer(2, 10, 10);
+    wxFlexGridSizer* topSizerPfEdit = new wxFlexGridSizer(2, 0, 0);
 
 
     wxStaticText* nameTxt = new wxStaticText(this, wxID_ANY, "Train Name:");
@@ -29,22 +29,22 @@ pupEditBox::pupEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(pa
     wxChoice* subChannelPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, subChannel);
 
     wxStaticText* maxSpeedTxt = new wxStaticText(this, wxID_ANY, "Train Max Speed");
-    wxSpinCtrl* maxSpeedPicker = new wxSpinCtrl(this, wxID_ANY, "5", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 7);
+    wxSpinCtrl* maxSpeedPicker = new wxSpinCtrl(this, wxID_ANY, "10", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 7);
 
-    topSizerPfEdit->Add(nameTxt, 0, wxALL | (wxALL & ~wxLEFT), 5);
-    topSizerPfEdit->Add(trainName, 0, wxALL | (wxALL & ~wxLEFT), 5);
+    topSizerPfEdit->Add(nameTxt, 0, wxALL | (wxALL & ~wxLEFT), 10);
+    topSizerPfEdit->Add(trainName, 0, wxALL | (wxALL & ~wxLEFT), 10);
 
-    topSizerPfEdit->Add(portTxt, 0, wxALL | (wxALL & ~wxLEFT), 5);
-    topSizerPfEdit->Add(portPicker, 0, wxALL | (wxALL & ~wxLEFT), 5);
+    topSizerPfEdit->Add(portTxt, 0, wxALL | (wxALL & ~wxLEFT), 10);
+    topSizerPfEdit->Add(portPicker, 0, wxALL | (wxALL & ~wxLEFT), 10);
 
-    topSizerPfEdit->Add(channelTxt, 0, wxALL | (wxALL & ~wxLEFT), 5);
-    topSizerPfEdit->Add(channelPicker, 0, wxALL | (wxALL & ~wxLEFT), 5);
+    topSizerPfEdit->Add(channelTxt, 0, wxALL | (wxALL & ~wxLEFT), 10);
+    topSizerPfEdit->Add(channelPicker, 0, wxALL | (wxALL & ~wxLEFT), 10);
 
-    topSizerPfEdit->Add(subChannelTxt, 0, wxALL | (wxALL & ~wxLEFT), 5);
-    topSizerPfEdit->Add(subChannelPicker, 0, wxALL | (wxALL & ~wxLEFT), 5);
+    topSizerPfEdit->Add(subChannelTxt, 0, wxALL | (wxALL & ~wxLEFT), 10);
+    topSizerPfEdit->Add(subChannelPicker, 0, wxALL | (wxALL & ~wxLEFT), 10);
 
-    topSizerPfEdit->Add(maxSpeedTxt, 0, wxALL | (wxALL & ~wxLEFT), 5);
-    topSizerPfEdit->Add(maxSpeedPicker, 0, wxALL | (wxALL & ~wxLEFT), 5);
+    topSizerPfEdit->Add(maxSpeedTxt, 0, wxALL | (wxALL & ~wxLEFT), 10);
+    topSizerPfEdit->Add(maxSpeedPicker, 0, wxALL | (wxALL & ~wxLEFT), 10);
     
     // Top Sizer Settings
     parent->SetSizer(topSizerPfEdit);
