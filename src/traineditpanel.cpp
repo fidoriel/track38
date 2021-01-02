@@ -1,17 +1,22 @@
 #include "traineditpanel.h"
 
+wxBEGIN_EVENT_TABLE(trainEditPanel, wxPanel)
+    EVT_RADIOBOX(ID_CHANGECONTROL, trainEditPanel::OnChangeControler)
+wxEND_EVENT_TABLE()
+
 trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
 {
+    panelParent = parent;
 
-    wxBoxSizer* topSizer= new wxBoxSizer(wxHORIZONTAL);
+    topSizer = new wxBoxSizer(wxHORIZONTAL);
 
     //
     // Left Picker/Listbox
     //
 
-    wxStaticBox* leftBox = new wxStaticBox(this, wxID_ANY, "&Pick Train to edit");
-    wxStaticBoxSizer* leftSizer = new wxStaticBoxSizer(leftBox, wxVERTICAL);
-    wxListBox* m_trainPicker = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_HSCROLL);
+    leftBox = new wxStaticBox(this, wxID_ANY, "&Pick Train to edit");
+    leftSizer = new wxStaticBoxSizer(leftBox, wxVERTICAL);
+    m_trainPicker = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_HSCROLL);
 
     leftSizer->Add(m_trainPicker, 1, wxGROW | wxALL, 5);
     leftSizer->SetMinSize(200, 0);
@@ -20,33 +25,31 @@ trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
     // Right Edit and Buttons
     //
 
-    wxStaticBox* rightBox = new wxStaticBox(this, wxID_ANY, "&Train Properties");
-    wxSizer* rightSizer = new wxStaticBoxSizer(rightBox, wxVERTICAL);
+    rightBox = new wxStaticBox(this, wxID_ANY, "&Train Properties");
+    rightSizer = new wxStaticBoxSizer(rightBox, wxVERTICAL);
 
     //Control kind picker
     wxArrayString options;
     options.Add("Lego PowerFunctions");
     options.Add("Lego PoweredUp");
-    wxRadioBox* trainKindPicker = new wxRadioBox(this, wxID_ANY, "Train Controller", wxDefaultPosition, wxDefaultSize, options, 2, wxRA_HORIZONTAL);
+    trainKindPicker = new wxRadioBox(this, ID_CHANGECONTROL, "Train Controller", wxDefaultPosition, wxDefaultSize, options, 2, wxRA_HORIZONTAL);
 
-    //PF edit Panel
-    pfEditBox* m_pfEditBox = new pfEditBox(this, wxID_ANY, "&Edit PowerFunctin Settings");
+    //PF edit Panel 
+    m_trainEditBox = new pfEditBox(this, wxID_ANY, "&Edit PowerFunctions Settings");
 
     // Save Panel
-    wxStaticBox* saveBox = new wxStaticBox(this, wxID_ANY, "&");
-    wxSizer* saveSizer = new wxStaticBoxSizer(saveBox, wxHORIZONTAL);
-    wxButton* m_AddBtn = new wxButton(this, ID_ADD, "Add", wxDefaultPosition, wxDefaultSize);
-    wxButton* m_UpdateBtn = new wxButton(this, ID_UPDATE, "Update", wxDefaultPosition, wxDefaultSize);
-    wxButton* m_RemoveBtn = new wxButton(this, ID_REMOVE, "Remove", wxDefaultPosition, wxDefaultSize);
+    saveBox = new wxStaticBox(this, wxID_ANY, "&");
+    saveSizer = new wxStaticBoxSizer(saveBox, wxHORIZONTAL);
+    m_AddBtn = new wxButton(this, ID_ADD, "Add", wxDefaultPosition, wxDefaultSize);
+    m_UpdateBtn = new wxButton(this, ID_UPDATE, "Update", wxDefaultPosition, wxDefaultSize);
+    m_RemoveBtn = new wxButton(this, ID_REMOVE, "Remove", wxDefaultPosition, wxDefaultSize);
     saveSizer->Add(m_AddBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
     saveSizer->Add(m_UpdateBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
     saveSizer->Add(m_RemoveBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
     saveSizer->Layout();
 
-
-
     rightSizer->Add(trainKindPicker, 0, wxALL | wxGROW, 5);
-    rightSizer->Add(m_pfEditBox, 1, wxALL | wxGROW, 5);
+    rightSizer->Add(m_trainEditBox, 1, wxALL | wxGROW, 5);
     rightSizer->Add(saveSizer, 0, wxALL | wxALIGN_CENTER, 5);
 
     topSizer->Add(leftSizer, 0, wxGROW | (wxALL & ~wxLEFT), 5);
@@ -55,4 +58,43 @@ trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
     parent->Layout();
 	topSizer->Fit(this);
     topSizer->SetSizeHints(this);
+}
+
+
+void trainEditPanel::OnChangeControler(wxCommandEvent& event)
+{
+    RefreshPanel();
+}
+
+void trainEditPanel::RefreshPanel()
+{
+    if (trainKindPicker)
+    {
+        rightSizer->Detach(m_trainEditBox);
+        rightSizer->Detach(saveSizer);
+        delete m_trainEditBox;
+
+        int sel = trainKindPicker->GetSelection();
+
+        switch (sel)
+        {
+        case 0:
+            m_trainEditBox = new pfEditBox(this, wxID_ANY, "&Edit PowerFunctions Settings");
+            break;
+        
+        case 1:
+            m_trainEditBox = new pupEditBox(this, wxID_ANY, "&Edit PoweredUP Settings");
+            break;
+        }
+
+        trainKindPicker->SetSelection(sel);
+
+        rightSizer->Add(m_trainEditBox, 0, wxALL | wxGROW, 5);
+        rightSizer->Add(saveSizer, 0, wxALL | wxALIGN_CENTER, 5);
+        topSizer->Fit(this);
+        panelParent->SetSizer(topSizer);
+        panelParent->Layout();
+        Layout();
+        SetSize(GetSize());
+    }
 }

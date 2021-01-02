@@ -3,6 +3,7 @@
 
 #include "traineditpanel.h"
 #include "mapeditpanel.h"
+#include "controleditpanel.h"
 
 //-------------------------
 // Class/Function declaration
@@ -108,11 +109,11 @@ track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, name/*, wxPoint(30, 30), 
 
     //Erstellt Tabsystem aus mainPanel
     wxNotebook* m_notebook;
-    m_notebook = new wxNotebook(mainPanel, wxID_ANY, wxDefaultPosition, wxSize(800, 500), wxFULLSCREEN_ALL);
+    m_notebook = new wxNotebook(mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULLSCREEN_ALL);
 
     //fügt seiten zu Tabsystem hinzu
-    wxTextCtrl* textCtrl1 = new wxTextCtrl(m_notebook, wxID_ANY, L"Tab 1 Contents");
-    m_notebook->AddPage(textCtrl1, L"Control");
+    controlEditPanel* m_controlEditPanel = new controlEditPanel(m_notebook);
+    m_notebook->AddPage(m_controlEditPanel, L"Control");
 
     mapEditPanel* m_mapEditPanel = new mapEditPanel(m_notebook);
     m_notebook->AddPage(m_mapEditPanel, L"Edit Map");
@@ -127,9 +128,10 @@ track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, name/*, wxPoint(30, 30), 
 
     //Höchster sizer für AppUI
     wxBoxSizer* topSizer = new wxBoxSizer(wxHORIZONTAL);
-    topSizer->SetMinSize(250, 100);
+    topSizer->SetMinSize(800, 500);
     topSizer->Add(mainPanel, 1, wxEXPAND);
     SetSizerAndFit(topSizer);
+    Layout();
 
     //-----------
     //Status bar
