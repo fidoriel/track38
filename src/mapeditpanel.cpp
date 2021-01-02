@@ -1,18 +1,8 @@
-#include "wx/wx.h"
-#include "wx/sizer.h"
-#include "wx/notebook.h"
-#include "wx/grid.h"
-#include <wx/statbox.h>
-
-class mapEditPanel : public wxPanel
-{ 
-    public:
-        mapEditPanel(wxNotebook* parent);
-};
+#include "mapeditpanel.h"
 
 mapEditPanel::mapEditPanel(wxNotebook* parent) : wxPanel(parent)
 {
-    wxFlexGridSizer* editSizer = new wxFlexGridSizer(2, 2, 10, 10);
+    wxFlexGridSizer* mapEditSizer = new wxFlexGridSizer(2, 2, 10, 10);
 
     //-------------------------
     // Creates a new grid child of panel
@@ -59,10 +49,10 @@ mapEditPanel::mapEditPanel(wxNotebook* parent) : wxPanel(parent)
 
     // add the grid and buttons to the sizer
 
-    editSizer->Add(map, 1, wxALL | wxEXPAND, 10 );
+    mapEditSizer->Add(map, 1, wxALL | wxEXPAND, 10 );
 
-    parent->SetSizer(editSizer);
+    parent->SetSizer(mapEditSizer);
     parent->Layout();
-	editSizer->Fit(this);
-    editSizer->SetSizeHints(this);
+	mapEditSizer->Fit(this);
+    mapEditSizer->SetSizeHints(this);
 }

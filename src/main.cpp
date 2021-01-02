@@ -1,13 +1,8 @@
 #include "wx/wx.h"
-#include <wx/string.h>
-#include <wx/gbsizer.h>
-#include "wx/notebook.h"
-#include <wx/panel.h>
-
 #include <string>
 
-#include "mapeditpanel.cpp"
-#include "traineditpanel.cpp"
+#include "traineditpanel.h"
+#include "mapeditpanel.h"
 
 //-------------------------
 // Class/Function declaration

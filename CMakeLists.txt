@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 3.0)
 set(CMAKE_BIULD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 11)
 
-project(testproject)
+project(track38)
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_NAME}/")
 
 #set flags
