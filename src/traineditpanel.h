@@ -43,6 +43,7 @@ enum
     ID_ADD,
     ID_REMOVE,
     ID_UPDATE,
-    ID_CHANGECONTROL
+    ID_CHANGECONTROL,
+    ID_REFRESHPANEL
 };
 #endif
