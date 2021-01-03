@@ -14,6 +14,8 @@
 #Windows
 #change build directory Win32: cd build\msw
 #build instrucions for wxWidgets Platform Windows MinGW: mingw32-make SHELL=CMD.exe -j4 -f makefile.gcc BUILD=release UNICODE=1 SHARED=0 MONOLITHIC=0 DwxUSE_LIBPNG=builtin DwxUSE_ZLIB=builtin DCMAKE_POSITION_INDEPENDENT_CODE=ON
+#mingw-w64 workaround i686 and Version 6.3
+#mingw32-make SHELL=CMD.exe -j4 -f makefile.gcc BUILD=release UNICODE=1 SHARED=0 MONOLITHIC=0 DwxUSE_LIBPNG=builtin DwxUSE_ZLIB=builtin DCMAKE_POSITION_INDEPENDENT_CODE=ON LDFLAGS=-Wl,--allow-multiple-definition
 #the build command will fail the first and second time. the thrid will be succesful
 #mingw32 Compile: mingw32-make -j4
 

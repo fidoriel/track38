@@ -27,6 +27,7 @@ class pupEditBox : public wxStaticBox
 { 
     public:
         pupEditBox(wxPanel* parent, int id, wxString title);
+        void OnRefreshSerial(wxCommandEvent& event);
         void refreshSerial();
 
         wxFlexGridSizer* topSizerPupEdit;
@@ -44,6 +45,16 @@ class pupEditBox : public wxStaticBox
         wxCheckBox* hasTwoMotors;
         wxStaticText* maxSpeedTxt;
         wxSpinCtrl* maxSpeedPicker;
+        wxBoxSizer* refreshSizer;
+        wxButton* m_RefreshBtn;
+    
+    private:
+        DECLARE_EVENT_TABLE();
+    
+    enum
+    {
+        ID_REFRESHSERIAL
+    };
 };
 
 #endif

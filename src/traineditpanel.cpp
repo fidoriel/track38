@@ -2,7 +2,6 @@
 
 wxBEGIN_EVENT_TABLE(trainEditPanel, wxPanel)
     EVT_RADIOBOX(ID_CHANGECONTROL, trainEditPanel::OnChangeControler)
-    EVT_BUTTON(ID_REFRESHPANEL, trainEditPanel::OnChangeControler)
 wxEND_EVENT_TABLE()
 
 trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
@@ -44,12 +43,9 @@ trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
     m_AddBtn = new wxButton(this, ID_ADD, "Add", wxDefaultPosition, wxDefaultSize);
     m_UpdateBtn = new wxButton(this, ID_UPDATE, "Update", wxDefaultPosition, wxDefaultSize);
     m_RemoveBtn = new wxButton(this, ID_REMOVE, "Remove", wxDefaultPosition, wxDefaultSize);
-    m_RefreshBtn = new wxButton(this, ID_REFRESHPANEL, "Refresh", wxDefaultPosition, wxDefaultSize);
     saveSizer->Add(m_AddBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
     saveSizer->Add(m_UpdateBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
     saveSizer->Add(m_RemoveBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
-    saveSizer->AddSpacer(30);
-    saveSizer->Add(m_RefreshBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
     saveSizer->Layout();
 
     rightSizer->Add(trainKindPicker, 0, wxALL | wxGROW, 5);

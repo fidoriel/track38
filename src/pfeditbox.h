@@ -26,6 +26,7 @@ class pfEditBox : public wxStaticBox
 { 
     public:
         pfEditBox(wxPanel* parent, int id, wxString title);
+        void OnRefreshSerial(wxCommandEvent& event);
         void refreshSerial();
 
         wxFlexGridSizer* topSizerPfEdit;
@@ -44,12 +45,14 @@ class pfEditBox : public wxStaticBox
         wxChoice* subChannelPicker;
         wxStaticText* maxSpeedTxt;
         wxSpinCtrl* maxSpeedPicker;
+        wxBoxSizer* refreshSizer;
+        wxButton* m_RefreshBtn;
+    
+    private:
+        DECLARE_EVENT_TABLE();
     
     enum
     {
-        ID_ADD,
-        ID_REMOVE,
-        ID_NEW,
         ID_REFRESHSERIAL
     };
 };

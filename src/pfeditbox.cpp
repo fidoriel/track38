@@ -1,5 +1,9 @@
 #include "pfeditbox.h"
 
+wxBEGIN_EVENT_TABLE(pfEditBox, wxPanel)
+    EVT_BUTTON(ID_REFRESHSERIAL, pfEditBox::OnRefreshSerial)
+wxEND_EVENT_TABLE()
+
 pfEditBox::pfEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(parent, id, title)
 {   
     topSizerPfEdit = new wxFlexGridSizer(2, 0, 0);
@@ -8,9 +12,13 @@ pfEditBox::pfEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(pare
     nameTxt = new wxStaticText(this, wxID_ANY, "Train Name:");
     trainName = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(300, -1));
 
+    refreshSizer = new wxBoxSizer(wxHORIZONTAL);
     portTxt = new wxStaticText(this, wxID_ANY, "Arduino ComPort:");
     this->refreshSerial();
     portPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxSize(300, -1), serialArray);
+    m_RefreshBtn = new wxButton(this, ID_REFRESHSERIAL, "Refresh", wxDefaultPosition, wxDefaultSize);
+    refreshSizer->Add(portPicker, 0, wxALL, 10);
+    refreshSizer->Add(m_RefreshBtn, 0, wxALL, 10);
 
     gpioTxt = new wxStaticText(this, wxID_ANY, "GPIO:");
     gpioPicker = new wxSpinCtrl(this, wxID_ANY, "13", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS);
@@ -36,7 +44,7 @@ pfEditBox::pfEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(pare
     topSizerPfEdit->Add(trainName, 0, wxALL | (wxALL & ~wxLEFT), 10);
 
     topSizerPfEdit->Add(portTxt, 0, wxALL | (wxALL & ~wxLEFT), 10);
-    topSizerPfEdit->Add(portPicker, 0, wxALL | (wxALL & ~wxLEFT), 10);
+    topSizerPfEdit->Add(refreshSizer, 0, wxALL | (wxALL & ~wxLEFT), 0);
 
     topSizerPfEdit->Add(gpioTxt, 0, wxALL | (wxALL & ~wxLEFT), 10);
     topSizerPfEdit->Add(gpioPicker, 0, wxALL | (wxALL & ~wxLEFT), 10);
@@ -55,6 +63,16 @@ pfEditBox::pfEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(pare
     parent->Layout();
 	topSizerPfEdit->Fit(this);
     topSizerPfEdit->SetSizeHints(this);
+}
+
+void pfEditBox::OnRefreshSerial(wxCommandEvent& event)
+{
+    refreshSizer->Detach(0);
+    delete portPicker;
+    this->refreshSerial();
+    portPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxSize(300, -1), serialArray);
+    refreshSizer->Insert(0, portPicker, 0, wxALL, 10);
+    refreshSizer->Layout();
 }
 
 void pfEditBox::refreshSerial()

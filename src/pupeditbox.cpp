@@ -1,5 +1,9 @@
 #include "pupeditbox.h"
 
+wxBEGIN_EVENT_TABLE(pupEditBox, wxPanel)
+    EVT_BUTTON(ID_REFRESHSERIAL, pupEditBox::OnRefreshSerial)
+wxEND_EVENT_TABLE()
+
 pupEditBox::pupEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(parent, id, title)
 {
     topSizerPupEdit = new wxFlexGridSizer(2, 0, 0);
@@ -7,9 +11,13 @@ pupEditBox::pupEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(pa
     nameTxt = new wxStaticText(this, wxID_ANY, "Train Name:");
     trainName = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(300, -1));
 
+    refreshSizer = new wxBoxSizer(wxHORIZONTAL);
     portTxt = new wxStaticText(this, wxID_ANY, "Arduino ComPort:");
     this->refreshSerial();
     portPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxSize(300, -1), serialArray);
+    m_RefreshBtn = new wxButton(this, ID_REFRESHSERIAL, "Refresh", wxDefaultPosition, wxDefaultSize);
+    refreshSizer->Add(portPicker, 0, wxALL, 10);
+    refreshSizer->Add(m_RefreshBtn, 0, wxALL, 10);
 
     hubAdressTxt = new wxStaticText(this, wxID_ANY, "Hub Adress:");
     hubAdress = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(300, -1));
@@ -32,7 +40,7 @@ pupEditBox::pupEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(pa
     topSizerPupEdit->Add(trainName, 0, wxALL | (wxALL & ~wxLEFT), 10);
 
     topSizerPupEdit->Add(portTxt, 0, wxALL | (wxALL & ~wxLEFT), 10);
-    topSizerPupEdit->Add(portPicker, 0, wxALL | (wxALL & ~wxLEFT), 10);
+    topSizerPupEdit->Add(refreshSizer, 0, wxALL | (wxALL & ~wxLEFT), 0);
 
     topSizerPupEdit->Add(hubAdressTxt, 0, wxALL | (wxALL & ~wxLEFT), 10);
     topSizerPupEdit->Add(hubAdress, 0, wxALL | (wxALL & ~wxLEFT), 10);
@@ -51,7 +59,16 @@ pupEditBox::pupEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(pa
     parent->Layout();
 	topSizerPupEdit->Fit(this);
     topSizerPupEdit->SetSizeHints(this);
-    SendSizeEvent();
+}
+
+void pupEditBox::OnRefreshSerial(wxCommandEvent& event)
+{
+    refreshSizer->Detach(0);
+    delete portPicker;
+    this->refreshSerial();
+    portPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxSize(300, -1), serialArray);
+    refreshSizer->Insert(0, portPicker, 0, wxALL, 10);
+    refreshSizer->Layout();
 }
 
 void pupEditBox::refreshSerial()

@@ -31,7 +31,6 @@ class trainEditPanel : public wxPanel
         wxButton* m_AddBtn;
         wxButton* m_UpdateBtn;
         wxButton* m_RemoveBtn;
-        wxButton* m_RefreshBtn;
         wxNotebook* panelParent;
 
     private:
