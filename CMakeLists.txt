@@ -40,7 +40,7 @@ if(WIN32)
     message("Target: Windows32")
     #MONOLITHIC compiled value
     #directory where wxwidget is located root folder
-    set(wxWidgets_BASE_DIR_WIN "C:/Users/lucak/wxWidgets-3.1.4-MONO0")
+    set(wxWidgets_BASE_DIR_WIN "C:/Users/lucak/wxWidgets-3.1.4")
     include_directories(
         includes
         "${wxWidgets_BASE_DIR_WIN}/include/"
