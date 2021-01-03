@@ -172,5 +172,4 @@ track38Frame::~track38Frame()
     track38ConfigBase->Write("/Application/frameY", y);
     track38ConfigBase->Write("/Application/frameW", w);
     track38ConfigBase->Write("/Application/frameH", h);
-    track38ConfigBase->Write("/Train/Regio/GPIO", 13);
 }
