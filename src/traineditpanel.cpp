@@ -1,7 +1,8 @@
 #include "traineditpanel.h"
 
 wxBEGIN_EVENT_TABLE(trainEditPanel, wxPanel)
-    EVT_RADIOBOX(ID_CHANGECONTROL, trainEditPanel::OnChangeControler)
+    EVT_RADIOBOX(ID_ChangeControl, trainEditPanel::OnChangeControler)
+    EVT_BUTTON(ID_AddTrain, trainEditPanel::OnAddTrain)
 wxEND_EVENT_TABLE()
 
 trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
@@ -32,7 +33,7 @@ trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
     wxArrayString options;
     options.Add("Lego PowerFunctions");
     options.Add("Lego PoweredUp");
-    trainKindPicker = new wxRadioBox(this, ID_CHANGECONTROL, "Train Controller", wxDefaultPosition, wxDefaultSize, options, 2, wxRA_HORIZONTAL);
+    trainKindPicker = new wxRadioBox(this, ID_ChangeControl, "Train Controller", wxDefaultPosition, wxDefaultSize, options, 2, wxRA_HORIZONTAL);
 
     //PF edit Panel 
     m_trainEditBox = new pfEditBox(this, wxID_ANY, "&Edit PowerFunctions Settings");
@@ -40,7 +41,7 @@ trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
     // Save Panel
     saveBox = new wxStaticBox(this, wxID_ANY, "&");
     saveSizer = new wxStaticBoxSizer(saveBox, wxHORIZONTAL);
-    m_AddBtn = new wxButton(this, ID_ADD, "Add", wxDefaultPosition, wxDefaultSize);
+    m_AddBtn = new wxButton(this, ID_AddTrain, "Add", wxDefaultPosition, wxDefaultSize);
     m_UpdateBtn = new wxButton(this, ID_UPDATE, "Update", wxDefaultPosition, wxDefaultSize);
     m_RemoveBtn = new wxButton(this, ID_REMOVE, "Remove", wxDefaultPosition, wxDefaultSize);
     saveSizer->Add(m_AddBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
@@ -72,9 +73,8 @@ void trainEditPanel::RefreshPanel()
     {
         rightSizer->Remove(1);
         delete m_trainEditBox;
-
+        
         int sel = trainKindPicker->GetSelection();
-
         switch (sel)
         {
         case 0:
@@ -91,5 +91,42 @@ void trainEditPanel::RefreshPanel()
         panelParent->SetSizerAndFit(topSizer);
         panelParent->Layout();
         panelParent->SendSizeEventToParent();
+    }
+}
+
+
+void trainEditPanel::OnAddTrain(wxCommandEvent& event)
+{
+    wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
+
+    wxWindowList panelChild = m_trainEditBox->GetChildren();
+
+    //track38ConfigTrain->SetPath("/Train");
+
+    wxSpinCtrl* tmp2 = (wxSpinCtrl*) FindWindow("pfSpeed");
+    tmp2->SetValue(2);
+
+    track38ConfigTrain->SetPath("/tmp/");
+    track38ConfigTrain->Write("Test1", tmp2->GetValue());
+    //track38ConfigTrain->Write("frameW", 2);
+    //track38ConfigTrain->Write("frameH", 3);
+
+    if (trainKindPicker)
+    {
+
+        int sel = trainKindPicker->GetSelection();
+
+        switch (sel)
+        {
+        // PF
+        case 0:
+            
+            break;
+        
+        //UP
+        case 1:
+            
+            break;
+        }
     }
 }

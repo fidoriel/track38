@@ -7,6 +7,8 @@
 #include "wx/listbook.h"
 #include "wx/radiobox.h"
 #include "wx/statbox.h"
+#include "wx/fileconf.h"
+#include "wx/config.h"
 
 #include "pfeditbox.h"
 #include "pupeditbox.h"
@@ -16,6 +18,7 @@ class trainEditPanel : public wxPanel
     public:
         trainEditPanel(wxNotebook* parent);
         void OnChangeControler(wxCommandEvent& event);
+        void OnAddTrain(wxCommandEvent& event);
         void RefreshPanel();
 
         wxBoxSizer* topSizer;
@@ -39,10 +42,9 @@ class trainEditPanel : public wxPanel
 
 enum
 {
-    ID_ADD,
     ID_REMOVE,
     ID_UPDATE,
-    ID_CHANGECONTROL,
-    ID_REFRESHPANEL
+    ID_ChangeControl,
+    ID_AddTrain
 };
 #endif

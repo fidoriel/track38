@@ -159,7 +159,7 @@ track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, name/*, wxPoint(30, 30), 
 track38Frame::~track38Frame()
 {
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
-    if ( track38ConfigBase == NULL )
+    if (track38ConfigBase == NULL)
     {
         return;
     }

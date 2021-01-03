@@ -9,6 +9,8 @@
 #include "wx/panel.h"
 #include "wx/statbox.h"
 #include "wx/spinctrl.h"
+#include "wx/fileconf.h"
+#include "wx/config.h"
 
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
     #include <dirent.h>
