@@ -1,5 +1,7 @@
 #include "wx/wx.h"
 #include <string>
+#include "wx/fileconf.h"
+#include "wx/config.h"
 
 #include "traineditpanel.h"
 #include "mapeditpanel.h"
@@ -20,11 +22,16 @@ class track38Frame : public wxFrame
 {
 public:
     track38Frame();
+    ~track38Frame();
+
+    wxString name = "track38";
 
     // Event handlers
-    wxString name = "track38";
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+
+    int minw = 900;
+    int minh = 650;
 
 private:
     // This class handles events
@@ -51,6 +58,8 @@ wxIMPLEMENT_APP(track38App);
 
 bool track38App::OnInit()
 {
+    SetVendorName("fidoriel");
+    SetAppName("track38");
     track38Frame* m_frame = new track38Frame();
     m_frame->Show();
     return true;
@@ -72,7 +81,7 @@ void track38Frame::OnAbout(wxCommandEvent& event)
 void track38Frame::OnQuit(wxCommandEvent& event)
 {
     // Destroy the frame
-    Close();
+    Close(true);
 }
 
 track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, name/*, wxPoint(30, 30), wxSize(200, 200)*/)
@@ -85,7 +94,7 @@ track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, name/*, wxPoint(30, 30), 
     wxMenu *helpMenu = new wxMenu;
 
     helpMenu->Append(wxID_ABOUT, "&About...\tF1", "Show about dialog");
-    fileMenu->Append(wxID_EXIT, "E&xit\tAlt-X", "Quit this program");
+    fileMenu->Append(wxID_EXIT, "&Exit\tAlt-X", "Quit this program");
     fileMenu->Append(wxID_OPEN, "&Open\tCtrl-O", "Open a .t42 file");
 
     //--------
@@ -121,8 +130,7 @@ track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, name/*, wxPoint(30, 30), 
     trainEditPanel* m_trainEditPanel = new trainEditPanel(m_notebook);
     m_notebook->AddPage(m_trainEditPanel, L"Edit Trains");
 
-
-    topSizer->SetMinSize(900, 650);
+    topSizer->SetMinSize(minw, minh);
     topSizer->Add(m_notebook, -1, wxGROW | wxEXPAND);
     topSizer->SetSizeHints(this);
     this->SetSizerAndFit(topSizer);
@@ -132,4 +140,37 @@ track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, name/*, wxPoint(30, 30), 
     //Status bar
     //-----------
     CreateStatusBar(2);
+
+    wxConfigBase *track38ConfigBase = wxConfigBase::Get();
+
+    track38ConfigBase->SetPath("/Application");
+
+    // restore frame position and size
+    int x = track38ConfigBase->Read("frameX", 50),
+        y = track38ConfigBase->Read("frameY", 50),
+        w = track38ConfigBase->Read("frameW", minw),
+        h = track38ConfigBase->Read("frameH", minh);
+    Move(x, y);
+    SetClientSize(w, h);
+
+    track38ConfigBase->SetPath("/");
+}
+
+track38Frame::~track38Frame()
+{
+    wxConfigBase *track38ConfigBase = wxConfigBase::Get();
+    if ( track38ConfigBase == NULL )
+    {
+        return;
+    }
+
+    // save the frame position
+    int x, y, w, h;
+    GetClientSize(&w, &h);
+    GetPosition(&x, &y);
+    track38ConfigBase->Write("/Application/frameX", x);
+    track38ConfigBase->Write("/Application/frameY", y);
+    track38ConfigBase->Write("/Application/frameW", w);
+    track38ConfigBase->Write("/Application/frameH", h);
+    track38ConfigBase->Write("/Train/Regio/GPIO", 13);
 }
