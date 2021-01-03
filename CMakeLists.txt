@@ -128,6 +128,8 @@ endif()
 
 file(GLOB_RECURSE SRC_FILES
     src/*.h
+    src/*.hpp
+    src/*.c
     src/*.cpp
     )
 

@@ -2,37 +2,33 @@
 
 pfEditBox::pfEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(parent, id, title)
 {   
-    wxFlexGridSizer* topSizerPfEdit = new wxFlexGridSizer(2, 0, 0);
+    topSizerPfEdit = new wxFlexGridSizer(2, 0, 0);
 
 
-    wxStaticText* nameTxt = new wxStaticText(this, wxID_ANY, "Train Name:");
-    wxTextCtrl* trainName = new wxTextCtrl(this, wxID_ANY);
+    nameTxt = new wxStaticText(this, wxID_ANY, "Train Name:");
+    trainName = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(300, -1));
 
-    wxStaticText* portTxt = new wxStaticText(this, wxID_ANY, "Arduino ComPort:");
-    wxArrayString ports;
-    ports.Add("/dev/abc");
-    ports.Add("/dev/def");
-    wxChoice* portPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, ports);
+    portTxt = new wxStaticText(this, wxID_ANY, "Arduino ComPort:");
+    this->refreshSerial();
+    portPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxSize(300, -1), serialArray);
 
-    wxStaticText* gpioTxt = new wxStaticText(this, wxID_ANY, "GPIO:");
-    wxSpinCtrl* gpioPicker = new wxSpinCtrl(this, wxID_ANY, "13", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS);
+    gpioTxt = new wxStaticText(this, wxID_ANY, "GPIO:");
+    gpioPicker = new wxSpinCtrl(this, wxID_ANY, "13", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS);
 
-    wxStaticText* channelTxt = new wxStaticText(this, wxID_ANY, "PowerFunctions Channel:");
-    wxArrayString channel;
+    channelTxt = new wxStaticText(this, wxID_ANY, "PowerFunctions Channel:");
     channel.Add("1");
     channel.Add("2");
     channel.Add("3");
     channel.Add("4");
-    wxChoice* channelPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, channel);
+    channelPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, channel);
 
-    wxStaticText* subChannelTxt = new wxStaticText(this, wxID_ANY, "PowerFunctions SubCannel:");
-    wxArrayString subChannel;
+    subChannelTxt = new wxStaticText(this, wxID_ANY, "PowerFunctions SubCannel:");
     subChannel.Add("Red");
     subChannel.Add("Blue");
-    wxChoice* subChannelPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, subChannel);
+    subChannelPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, subChannel);
 
-    wxStaticText* maxSpeedTxt = new wxStaticText(this, wxID_ANY, "Train Max Speed");
-    wxSpinCtrl* maxSpeedPicker = new wxSpinCtrl(this, wxID_ANY, "10", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 7);
+    maxSpeedTxt = new wxStaticText(this, wxID_ANY, "Train Max Speed");
+    maxSpeedPicker = new wxSpinCtrl(this, wxID_ANY, "10", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 7);
 
     topSizerPfEdit->AddSpacer(10);
     topSizerPfEdit->AddSpacer(10);
@@ -59,4 +55,52 @@ pfEditBox::pfEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(pare
     parent->Layout();
 	topSizerPfEdit->Fit(this);
     topSizerPfEdit->SetSizeHints(this);
+}
+
+void pfEditBox::refreshSerial()
+{
+    #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
+        this->serialArray.Empty();
+        int comportsElements;
+        char directory_name[] = "/dev/";
+        DIR *ptr;
+        struct dirent *directory;
+        ptr = opendir(directory_name);
+        while((directory = readdir(ptr)) != NULL)
+        {
+            if ((strstr(directory->d_name, "tty.") != NULL) || (strstr(directory->d_name, "cu.") != NULL))
+            {
+                char tmp[100] = "/dev/";
+                for (int i = 0; i < 95; i++)
+                {
+                    tmp[5+i] = directory->d_name[i];
+                }
+                this->serialArray.Add(tmp);
+            }
+        }
+    #endif
+
+    #if defined(WIN32)
+        this->serialArray.Empty();
+        char lpTargetPath[5000];
+
+        for (int i = 0; i < 255; i++) // checking ports from COM0 to COM255
+        {
+            std::string str = "COM" + std::to_string(i); // converting to COM0, COM1, COM2
+            DWORD test = QueryDosDevice(str.c_str(), lpTargetPath, 5000);
+
+            // Test the return value and error if any
+            if (test != 0) //QueryDosDevice returns zero if it didn't find an object
+            {
+                //std::cout << str << ": " << lpTargetPath << std::endl;
+
+                std::string tmp = str + " | " + lpTargetPath;
+                this->serialArray.Add(tmp);
+            }
+
+            if (::GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+            {
+            }
+        }
+    #endif
 }
