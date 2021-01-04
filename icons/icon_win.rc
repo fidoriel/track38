@@ -1,4 +1,4 @@
-aaaaaaaa ICON "AppIcon.ico"
+track38 ICON "AppIcon.ico"
 
 // this icon is used with wxFrame::SetIcon()
 icon ICON "AppIcon.ico"
