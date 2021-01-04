@@ -298,6 +298,7 @@ void trainEditPanel::OnAddTrain(wxCommandEvent& event)
 void trainEditPanel::OnUpdateTrain(wxCommandEvent& event)
 {
     RemoveTrain();
+    m_trainPicker->Delete(m_trainPicker->GetSelection());
     SaveTrain();
 }
 

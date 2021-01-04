@@ -15,6 +15,7 @@ upEditBox::upEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(pare
     portTxt = new wxStaticText(this, wxID_ANY, "Arduino ComPort:");
     this->refreshSerial();
     portPicker = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxSize(300, -1), serialArray, 0L, wxDefaultValidator, "upPort");
+
     m_RefreshBtn = new wxButton(this, ID_REFRESHSERIAL, "Refresh", wxDefaultPosition, wxDefaultSize);
     refreshSizer->Add(portPicker, 0, wxALL, 10);
     refreshSizer->Add(m_RefreshBtn, 0, wxALL, 10);
