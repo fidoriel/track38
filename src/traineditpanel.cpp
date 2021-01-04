@@ -120,7 +120,7 @@ void trainEditPanel::RefreshPanel()
 void trainEditPanel::SaveTrain()
 {
     wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
-    track38ConfigTrain->SetPath("/Train");
+    track38ConfigTrain->SetPath("/Train/");
 
     if (trainKindPicker)
     {
@@ -145,7 +145,7 @@ void trainEditPanel::SaveTrain()
 
                 track38ConfigTrain->SetPath(tName->GetValue());
                 track38ConfigTrain->Write("control", "pf");
-                track38ConfigTrain->Write("gpio", tGpio->GetValue());
+                track38ConfigTrain->Write("gpio", wxString::Format(wxT("%i"), tGpio->GetValue()));
                 track38ConfigTrain->Write("subChannel", tSubChannel->GetStringSelection());
                 break;
             }
@@ -170,7 +170,7 @@ void trainEditPanel::SaveTrain()
         m_trainPicker->AppendString(tName->GetValue());
         m_trainPicker->SetStringSelection(tName->GetValue());
 
-        track38ConfigTrain->Write("maxSpeed", tSpeed->GetValue());
+        track38ConfigTrain->Write("maxSpeed", wxString::Format(wxT("%i"), tSpeed->GetValue()));
         track38ConfigTrain->Write("channel", tChannel->GetStringSelection());
         track38ConfigTrain->Write("port", tPort->GetStringSelection());
         track38ConfigTrain->Flush();
@@ -279,6 +279,7 @@ void trainEditPanel::OnAddTrain(wxCommandEvent& event)
         switch (dialog.ShowModal())
         {
             case wxID_YES:
+                RemoveTrain();
                 SaveTrain();
                 break;
 
