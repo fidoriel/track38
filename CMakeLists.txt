@@ -145,7 +145,7 @@ endif()
 
 if(WIN32)
     #-mwindows suppresses CMD
-    set(CMAKE_CXX_FLAGS "-mwindows -luxtheme -loleacc -lversion -lshlwapi -lcomctl32 -static-libstdc++ -static-libgcc")
+    set(CMAKE_CXX_FLAGS "-mwindows -luxtheme -loleacc -lversion -lshlwapi -lcomctl32 -static-libstdc++ -static-libgcc -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic")
     add_executable(${PROJECT_NAME} WIN32 ${SRC_FILES})
     target_link_libraries(${PROJECT_NAME} ${WX_LIBS} ${CMAKE_CXX_FLAGS})
 elseif(APPLE)
