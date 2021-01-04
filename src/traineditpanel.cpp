@@ -3,6 +3,7 @@
 wxBEGIN_EVENT_TABLE(trainEditPanel, wxPanel)
     EVT_RADIOBOX(ID_ChangeControl, trainEditPanel::OnChangeControler)
     EVT_BUTTON(ID_AddTrain, trainEditPanel::OnAddTrain)
+    EVT_LISTBOX(ID_SelectTrain, trainEditPanel::OnTrainSelect)
 wxEND_EVENT_TABLE()
 
 trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
@@ -17,7 +18,7 @@ trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
 
     leftBox = new wxStaticBox(this, wxID_ANY, "&Pick Train to edit");
     leftSizer = new wxStaticBoxSizer(leftBox, wxVERTICAL);
-    m_trainPicker = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_HSCROLL);
+    m_trainPicker = new wxListBox(this, ID_SelectTrain, wxDefaultPosition, wxDefaultSize, 0, NULL);
 
     leftSizer->Add(m_trainPicker, 1, wxGROW | wxALL, 5);
     leftSizer->SetMinSize(200, 0);
@@ -59,6 +60,23 @@ trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
     parent->Layout();
 	topSizer->Fit(this);
     topSizer->SetSizeHints(this);
+
+    wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
+
+    track38ConfigTrain->SetPath("/TrainTest/");
+    int count = track38ConfigTrain->GetNumberOfGroups(false);
+
+    long idx;
+    wxString out;
+    bool exists = track38ConfigTrain->GetFirstGroup(out, idx);
+    if ( exists == true ) m_trainPicker->AppendString(out);;
+    
+    while (exists)
+    {
+        exists = track38ConfigTrain->GetNextGroup(out, idx);
+        if ( exists == true ) m_trainPicker->AppendString(out);;
+    }
+      
 }
 
 
@@ -98,9 +116,6 @@ void trainEditPanel::RefreshPanel()
 void trainEditPanel::OnAddTrain(wxCommandEvent& event)
 {
     wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
-
-    wxWindowList panelChild = m_trainEditBox->GetChildren();
-
     track38ConfigTrain->SetPath("/TrainTest");
 
     if (trainKindPicker)
@@ -124,10 +139,10 @@ void trainEditPanel::OnAddTrain(wxCommandEvent& event)
                 track38ConfigTrain->SetPath(pfName->GetValue());
                 track38ConfigTrain->Write("control", "pf");
                 track38ConfigTrain->Write("port", pfPort->GetStringSelection());
+                track38ConfigTrain->Write("gpio", pfGpio->GetValue());
                 track38ConfigTrain->Write("channel", pfChannel->GetStringSelection());
                 track38ConfigTrain->Write("subChannel", pfSubChannel->GetStringSelection());
                 track38ConfigTrain->Write("maxSpeed", pfSpeed->GetValue());
-
                 break;
             }
             //UP
@@ -146,12 +161,106 @@ void trainEditPanel::OnAddTrain(wxCommandEvent& event)
                 track38ConfigTrain->SetPath(upName->GetValue());
                 track38ConfigTrain->Write("control", "up");
                 track38ConfigTrain->Write("port", upPort->GetStringSelection());
-                track38ConfigTrain->Write("hubAdress", upHubAdress->GetStringSelection());
+                track38ConfigTrain->Write("hubAdress", upHubAdress->GetValue());
                 track38ConfigTrain->Write("channel", upChannel->GetStringSelection());
                 track38ConfigTrain->Write("twoMotorsUsed", upAreTwoMotorsUsed->GetValue());
                 track38ConfigTrain->Write("maxSpeed", upSpeed->GetValue());
                 break;
             }
+            track38ConfigTrain->Flush();
         }
     }
+}
+
+void trainEditPanel::OnTrainSelect(wxCommandEvent& event)
+{
+    wxString trainSel = m_trainPicker->GetString(m_trainPicker->GetSelection());
+
+    wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
+    track38ConfigTrain->SetPath("/TrainTest/");
+    track38ConfigTrain->SetPath(trainSel);
+    wxString control = track38ConfigTrain->Read("control", "pf");
+
+    wxTextCtrl* tName;
+    wxChoice* tPort;
+    wxSpinCtrl* tSpeed;
+
+    if (control.IsSameAs("pf"))
+    {
+        trainKindPicker->SetSelection(0);
+        RefreshPanel();
+
+        tName = (wxTextCtrl*) FindWindow("pfName");
+        tPort = (wxChoice*) FindWindow("pfPort");
+        wxSpinCtrl* tGpio = (wxSpinCtrl*) FindWindow("pfGpio");
+        wxChoice* tChannel = (wxChoice*) FindWindow("pfChannel");
+        wxChoice* tSubChannel = (wxChoice*) FindWindow("pfSubChannel");
+        tSpeed = (wxSpinCtrl*) FindWindow("pfSpeed");
+
+        tGpio->SetValue(track38ConfigTrain->Read("gpio", "13"));
+
+        for (size_t idx = 0; idx < tChannel->GetCount(); idx++)
+        {
+            if (track38ConfigTrain->Read("channel", "1").IsSameAs(tChannel->GetString(idx)))
+            {
+                tChannel->SetSelection(idx);
+            }
+            
+        }
+
+        for (size_t idx = 0; idx < tSubChannel->GetCount(); idx++)
+        {
+            if (track38ConfigTrain->Read("subChannel", "1").IsSameAs(tSubChannel->GetString(idx)))
+            {
+                tSubChannel->SetSelection(idx);
+            }
+            
+        }
+    }
+
+    else if (control.IsSameAs("up"))
+    {
+        trainKindPicker->SetSelection(1);
+        RefreshPanel();
+
+        tName = (wxTextCtrl*) FindWindow("upName");
+        tPort = (wxChoice*) FindWindow("upPort");
+        wxTextCtrl* tHubAdress = (wxTextCtrl*) FindWindow("upHubAdress");
+        wxChoice* tChannel = (wxChoice*) FindWindow("upChannel");
+        wxCheckBox* tAreTwoMotorsUsed = (wxCheckBox*) FindWindow("upAreTwoMotorsUsed");
+        tSpeed = (wxSpinCtrl*) FindWindow("upSpeed");
+
+        tHubAdress->ChangeValue(track38ConfigTrain->Read("hubAdress", ""));
+
+        for (size_t idx = 0; idx < tChannel->GetCount(); idx++)
+        {
+            if (track38ConfigTrain->Read("channel", "1").IsSameAs(tChannel->GetString(idx)))
+            {
+                tChannel->SetSelection(idx);
+            }
+            
+        }
+        
+        tAreTwoMotorsUsed->SetValue(track38ConfigTrain->Read("twoMotorsUsed", false));
+    }
+
+    tName->ChangeValue(trainSel);
+
+    if (tPort->FindString(track38ConfigTrain->Read("port", "")) == wxNOT_FOUND)
+    {
+        wxMessageBox("The saved Port was not found. Please plug in the device.", "Port Error");
+    }
+    else
+    {
+        for (size_t idx = 0; idx < tPort->GetCount(); idx++)
+        {
+            if (track38ConfigTrain->Read("port", "").IsSameAs(tPort->GetString(idx)))
+            {
+                tPort->SetSelection(idx);
+            }
+            
+        }
+    }
+
+    tSpeed->SetValue(track38ConfigTrain->Read("maxSpeed", "7"));
 }
