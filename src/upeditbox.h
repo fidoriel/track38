@@ -1,5 +1,5 @@
-#ifndef pupeditbox_h
-#define pupeditbox_h
+#ifndef upeditbox_h
+#define upeditbox_h
 
 #include "wx/wx.h"
 #include "wx/sizer.h"
@@ -23,14 +23,14 @@
     #include <Windows.h>
 #endif
 
-class pupEditBox : public wxStaticBox
+class upEditBox : public wxStaticBox
 { 
     public:
-        pupEditBox(wxPanel* parent, int id, wxString title);
+        upEditBox(wxPanel* parent, int id, wxString title);
         void OnRefreshSerial(wxCommandEvent& event);
         void refreshSerial();
 
-        wxFlexGridSizer* topSizerPupEdit;
+        wxFlexGridSizer* topSizerUpEdit;
         wxStaticText* nameTxt;
         wxTextCtrl* trainName;
         wxArrayString serialArray;

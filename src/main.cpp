@@ -74,7 +74,7 @@ void track38Frame::OnAbout(wxCommandEvent& event)
     wxString msg;
     msg.Printf("Hello and welcome to %s", wxVERSION_STRING);
     wxString title;
-    title.Printf("About %s", name);
+    title.Printf("About %s", this->name);
     wxMessageBox(msg, title, wxOK | wxICON_INFORMATION, this);
 }
 
@@ -84,7 +84,7 @@ void track38Frame::OnQuit(wxCommandEvent& event)
     Close(true);
 }
 
-track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, name/*, wxPoint(30, 30), wxSize(200, 200)*/)
+track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, this->name/*, wxPoint(30, 30), wxSize(200, 200)*/)
 {
     //----------------
     //Create the menu

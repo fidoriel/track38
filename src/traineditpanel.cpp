@@ -82,7 +82,7 @@ void trainEditPanel::RefreshPanel()
             break;
         
         case 1:
-            m_trainEditBox = new pupEditBox(this, wxID_ANY, "&Edit PoweredUP Settings");
+            m_trainEditBox = new upEditBox(this, wxID_ANY, "&Edit PoweredUP Settings");
             break;
         }
 
@@ -101,32 +101,57 @@ void trainEditPanel::OnAddTrain(wxCommandEvent& event)
 
     wxWindowList panelChild = m_trainEditBox->GetChildren();
 
-    //track38ConfigTrain->SetPath("/Train");
-
-    wxSpinCtrl* tmp2 = (wxSpinCtrl*) FindWindow("pfSpeed");
-    tmp2->SetValue(2);
-
-    track38ConfigTrain->SetPath("/tmp/");
-    track38ConfigTrain->Write("Test1", tmp2->GetValue());
-    //track38ConfigTrain->Write("frameW", 2);
-    //track38ConfigTrain->Write("frameH", 3);
+    track38ConfigTrain->SetPath("/TrainTest");
 
     if (trainKindPicker)
     {
-
         int sel = trainKindPicker->GetSelection();
-
         switch (sel)
         {
-        // PF
-        case 0:
-            
-            break;
-        
-        //UP
-        case 1:
-            
-            break;
+            // PF
+            case 0: 
+            {
+                wxTextCtrl* pfName = (wxTextCtrl*) FindWindow("pfName");
+                wxChoice* pfPort = (wxChoice*) FindWindow("pfPort");
+                wxSpinCtrl* pfGpio = (wxSpinCtrl*) FindWindow("pfGpio");
+                wxChoice* pfChannel = (wxChoice*) FindWindow("pfChannel");
+                wxChoice* pfSubChannel = (wxChoice*) FindWindow("pfSubChannel");
+                wxSpinCtrl* pfSpeed = (wxSpinCtrl*) FindWindow("pfSpeed");
+
+                m_trainPicker->AppendString(pfName->GetValue());
+                m_trainPicker->SetStringSelection(pfName->GetValue());
+
+                track38ConfigTrain->SetPath(pfName->GetValue());
+                track38ConfigTrain->Write("control", "pf");
+                track38ConfigTrain->Write("port", pfPort->GetStringSelection());
+                track38ConfigTrain->Write("channel", pfChannel->GetStringSelection());
+                track38ConfigTrain->Write("subChannel", pfSubChannel->GetStringSelection());
+                track38ConfigTrain->Write("maxSpeed", pfSpeed->GetValue());
+
+                break;
+            }
+            //UP
+            case 1:
+            {
+                wxTextCtrl* upName = (wxTextCtrl*) FindWindow("upName");
+                wxChoice* upPort = (wxChoice*) FindWindow("upPort");
+                wxTextCtrl* upHubAdress = (wxTextCtrl*) FindWindow("upHubAdress");
+                wxChoice* upChannel = (wxChoice*) FindWindow("upChannel");
+                wxCheckBox* upAreTwoMotorsUsed = (wxCheckBox*) FindWindow("upAreTwoMotorsUsed");
+                wxSpinCtrl* upSpeed = (wxSpinCtrl*) FindWindow("upSpeed");
+
+                m_trainPicker->AppendString(upName->GetValue());
+                m_trainPicker->SetStringSelection(upName->GetValue());
+
+                track38ConfigTrain->SetPath(upName->GetValue());
+                track38ConfigTrain->Write("control", "up");
+                track38ConfigTrain->Write("port", upPort->GetStringSelection());
+                track38ConfigTrain->Write("hubAdress", upHubAdress->GetStringSelection());
+                track38ConfigTrain->Write("channel", upChannel->GetStringSelection());
+                track38ConfigTrain->Write("twoMotorsUsed", upAreTwoMotorsUsed->GetValue());
+                track38ConfigTrain->Write("maxSpeed", upSpeed->GetValue());
+                break;
+            }
         }
     }
 }

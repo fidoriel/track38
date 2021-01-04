@@ -11,7 +11,7 @@
 #include "wx/config.h"
 
 #include "pfeditbox.h"
-#include "pupeditbox.h"
+#include "upeditbox.h"
 
 class trainEditPanel : public wxPanel
 { 
