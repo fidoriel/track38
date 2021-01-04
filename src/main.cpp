@@ -3,6 +3,8 @@
 #include "wx/fileconf.h"
 #include "wx/config.h"
 
+#include "../icons/AppIcon.xpm"
+
 #include "traineditpanel.h"
 #include "mapeditpanel.h"
 #include "controleditpanel.h"
@@ -86,6 +88,9 @@ void track38Frame::OnQuit(wxCommandEvent& event)
 
 track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, "track38"/*, wxPoint(30, 30), wxSize(200, 200)*/)
 {
+
+    SetIcon(wxICON(AppIcon));
+
     //----------------
     //Create the menu
     //----------------
