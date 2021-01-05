@@ -7,7 +7,7 @@
 
 #include "traineditpanel.h"
 #include "mapeditpanel.h"
-#include "controleditpanel.h"
+#include "controlpanel.h"
 
 //-------------------------
 // Class/Function declaration
@@ -126,13 +126,12 @@ track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, "track38"/*, wxPoint(30, 
     m_notebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULLSCREEN_ALL);
 
     //fügt seiten zu Tabsystem hinzu
-    controlEditPanel* m_controlEditPanel = new controlEditPanel(m_notebook);
-    m_notebook->AddPage(m_controlEditPanel, L"Control");
-
-    mapEditPanel* m_mapEditPanel = new mapEditPanel(m_notebook);
-    m_notebook->AddPage(m_mapEditPanel, L"Edit Map");
-
+    controlPanel* m_controlPanel = new controlPanel(m_notebook);
     trainEditPanel* m_trainEditPanel = new trainEditPanel(m_notebook);
+    mapEditPanel* m_mapEditPanel = new mapEditPanel(m_notebook);
+    
+    m_notebook->AddPage(m_controlPanel, L"Control");
+    m_notebook->AddPage(m_mapEditPanel, L"Edit Map");
     m_notebook->AddPage(m_trainEditPanel, L"Edit Trains");
 
     topSizer->SetMinSize(minw, minh);
