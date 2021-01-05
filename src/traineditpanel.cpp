@@ -301,7 +301,7 @@ void trainEditPanel::OnAddTrain(wxCommandEvent& event)
 void trainEditPanel::OnUpdateTrain(wxCommandEvent& event)
 {
     RemoveTrain();
-    m_trainPicker->Delete(m_trainPicker->GetSelection());
+    //m_trainPicker->Delete(m_trainPicker->GetSelection());
     SaveTrain();
 }
 
@@ -312,6 +312,7 @@ void trainEditPanel::OnRemoveTrain(wxCommandEvent& event)
     {
         case wxID_YES:
             RemoveTrain();
+            OnSelectTrain(event);
             break;
 
         case wxID_NO:
@@ -341,9 +342,10 @@ void trainEditPanel::RemoveTrain()
     track38ConfigTrain->DeleteGroup(tName->GetValue());
     track38ConfigTrain->Flush();
 
-    for (size_t idx = 0; idx < m_trainPicker->GetCount(); idx++)
+    /*for (size_t idx = 0; idx < m_trainPicker->GetCount(); idx++)
     {
         if (tName->GetValue().IsSameAs(m_trainPicker->GetString(idx)))
             m_trainPicker->Delete(idx);         
-    }
+    }*/
+    m_trainPicker->Delete(m_trainPicker->GetSelection());
 }
