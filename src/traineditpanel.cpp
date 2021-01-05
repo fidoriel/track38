@@ -87,6 +87,9 @@ trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
 void trainEditPanel::OnChangeControler(wxCommandEvent& event)
 {
     RefreshPanel();
+    panelParent->SetSizerAndFit(topSizer);
+    panelParent->Layout();
+    panelParent->SendSizeEventToParent();
 }
 
 void trainEditPanel::RefreshPanel()
@@ -109,10 +112,6 @@ void trainEditPanel::RefreshPanel()
         }
 
         rightSizer->Insert(1, m_trainEditBox, 0, wxALL | wxGROW, 5);
-
-        panelParent->SetSizerAndFit(topSizer);
-        panelParent->Layout();
-        panelParent->SendSizeEventToParent();
     }
 }
 
@@ -254,6 +253,10 @@ void trainEditPanel::OnSelectTrain(wxCommandEvent& event)
     }
 
     tSpeed->SetValue(track38ConfigTrain->Read("maxSpeed", "7"));
+
+    panelParent->SetSizerAndFit(topSizer);
+    panelParent->Layout();
+    panelParent->SendSizeEventToParent();
 }
 
 void trainEditPanel::OnAddTrain(wxCommandEvent& event)
