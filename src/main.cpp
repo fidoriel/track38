@@ -3,6 +3,8 @@
 #include "wx/fileconf.h"
 #include "wx/config.h"
 
+#include "../icons/AppIcon.xpm"
+
 #include "traineditpanel.h"
 #include "mapeditpanel.h"
 #include "controleditpanel.h"
@@ -58,8 +60,8 @@ wxIMPLEMENT_APP(track38App);
 
 bool track38App::OnInit()
 {
-    SetVendorName("fidoriel");
-    SetAppName("track38");
+    //SetVendorName("fidoriel");
+    //SetAppName("track38");
     track38Frame* m_frame = new track38Frame();
     m_frame->Show();
     return true;
@@ -74,7 +76,7 @@ void track38Frame::OnAbout(wxCommandEvent& event)
     wxString msg;
     msg.Printf("Hello and welcome to %s", wxVERSION_STRING);
     wxString title;
-    title.Printf("About %s", this->name);
+    title.Printf("About %s", name);
     wxMessageBox(msg, title, wxOK | wxICON_INFORMATION, this);
 }
 
@@ -84,8 +86,11 @@ void track38Frame::OnQuit(wxCommandEvent& event)
     Close(true);
 }
 
-track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, this->name/*, wxPoint(30, 30), wxSize(200, 200)*/)
+track38Frame::track38Frame() : wxFrame(NULL, wxID_ANY, "track38"/*, wxPoint(30, 30), wxSize(200, 200)*/)
 {
+
+    SetIcon(wxICON(AppIcon));
+
     //----------------
     //Create the menu
     //----------------

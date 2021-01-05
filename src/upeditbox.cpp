@@ -54,6 +54,9 @@ upEditBox::upEditBox(wxPanel* parent, int id, wxString title) : wxStaticBox(pare
 
     topSizerUpEdit->Add(maxSpeedTxt, 0, wxALL | (wxALL & ~wxLEFT), 10);
     topSizerUpEdit->Add(maxSpeedPicker, 0, wxALL | (wxALL & ~wxLEFT), 10);
+
+    topSizerUpEdit->AddSpacer(10);
+    topSizerUpEdit->AddSpacer(10);
     
     // Top Sizer Settings
     parent->SetSizer(topSizerUpEdit);
@@ -83,7 +86,7 @@ void upEditBox::refreshSerial()
         ptr = opendir(directory_name);
         while((directory = readdir(ptr)) != NULL)
         {
-            if ((strstr(directory->d_name, "tty.") != NULL) || (strstr(directory->d_name, "cu.") != NULL))
+            if ((strstr(directory->d_name, "tty") != NULL) || (strstr(directory->d_name, "cu") != NULL))
             {
                 char tmp[100] = "/dev/";
                 for (int i = 0; i < 95; i++)
