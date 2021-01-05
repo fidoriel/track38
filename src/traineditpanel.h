@@ -16,12 +16,12 @@
 class trainEditPanel : public wxPanel
 { 
     public:
-        trainEditPanel(wxNotebook* parent);
-        void OnChangeControler(wxCommandEvent& event);
-        void OnAddTrain(wxCommandEvent& event);
-        void OnUpdateTrain(wxCommandEvent& event);
-        void OnSelectTrain(wxCommandEvent& event);
-        void OnRemoveTrain(wxCommandEvent& event);
+        trainEditPanel( wxNotebook* parent );
+        void OnChangeControler( wxCommandEvent& event );
+        void OnAddTrain( wxCommandEvent& event );
+        void OnUpdateTrain( wxCommandEvent& event );
+        void OnSelectTrain( wxCommandEvent& event );
+        void OnRemoveTrain( wxCommandEvent& event );
         void SaveTrain();
         void RefreshPanel();
         void RemoveTrain();

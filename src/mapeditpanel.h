@@ -8,7 +8,7 @@
 class mapEditPanel : public wxPanel
 { 
     public:
-        mapEditPanel(wxNotebook* parent);
+        mapEditPanel( wxNotebook* parent );
 };
 
 #endif

@@ -1,117 +1,117 @@
 #include "traineditpanel.h"
 
-wxBEGIN_EVENT_TABLE(trainEditPanel, wxPanel)
-    EVT_RADIOBOX(ID_ChangeControl, trainEditPanel::OnChangeControler)
-    EVT_BUTTON(ID_AddTrain, trainEditPanel::OnAddTrain)
-    EVT_BUTTON(ID_UpdateTrain, trainEditPanel::OnUpdateTrain)
-    EVT_BUTTON(ID_RemoveTrain, trainEditPanel::OnRemoveTrain)
-    EVT_LISTBOX(ID_SelectTrain, trainEditPanel::OnSelectTrain)
+wxBEGIN_EVENT_TABLE( trainEditPanel, wxPanel )
+    EVT_RADIOBOX( ID_ChangeControl, trainEditPanel::OnChangeControler )
+    EVT_BUTTON( ID_AddTrain, trainEditPanel::OnAddTrain )
+    EVT_BUTTON( ID_UpdateTrain, trainEditPanel::OnUpdateTrain )
+    EVT_BUTTON( ID_RemoveTrain, trainEditPanel::OnRemoveTrain )
+    EVT_LISTBOX( ID_SelectTrain, trainEditPanel::OnSelectTrain )
 wxEND_EVENT_TABLE()
 
-trainEditPanel::trainEditPanel(wxNotebook* parent) : wxPanel(parent)
+trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
 {
     panelParent = parent;
 
-    topSizer = new wxBoxSizer(wxHORIZONTAL);
+    topSizer = new wxBoxSizer( wxHORIZONTAL );
 
     //
     // Left Picker/Listbox
     //
 
-    leftBox = new wxStaticBox(this, wxID_ANY, "&Pick Train to edit");
-    leftSizer = new wxStaticBoxSizer(leftBox, wxVERTICAL);
-    m_trainPicker = new wxListBox(this, ID_SelectTrain, wxDefaultPosition, wxDefaultSize, 0, NULL);
+    leftBox = new wxStaticBox( this, wxID_ANY, "&Pick Train to edit" );
+    leftSizer = new wxStaticBoxSizer( leftBox, wxVERTICAL );
+    m_trainPicker = new wxListBox( this, ID_SelectTrain, wxDefaultPosition, wxDefaultSize, 0, NULL );
 
-    leftSizer->Add(m_trainPicker, 1, wxGROW | wxALL, 5);
-    leftSizer->SetMinSize(200, 0);
+    leftSizer->Add( m_trainPicker, 1, wxGROW | wxALL, 5 );
+    leftSizer->SetMinSize( 200, 0 );
 
     //
     // Right Edit and Buttons
     //
 
-    rightBox = new wxStaticBox(this, wxID_ANY, "&Train Properties");
-    rightSizer = new wxStaticBoxSizer(rightBox, wxVERTICAL);
+    rightBox = new wxStaticBox( this, wxID_ANY, "&Train Properties" );
+    rightSizer = new wxStaticBoxSizer( rightBox, wxVERTICAL );
 
     //Control kind picker
     wxArrayString options;
-    options.Add("Lego PowerFunctions");
-    options.Add("Lego PoweredUp");
-    trainKindPicker = new wxRadioBox(this, ID_ChangeControl, "Train Controller", wxDefaultPosition, wxDefaultSize, options, 2, wxRA_HORIZONTAL);
+    options.Add( "Lego PowerFunctions" );
+    options.Add( "Lego PoweredUp" );
+    trainKindPicker = new wxRadioBox( this, ID_ChangeControl, "Train Controller", wxDefaultPosition, wxDefaultSize, options, 2, wxRA_HORIZONTAL );
 
     //PF edit Panel 
-    m_trainEditBox = new pfEditBox(this, wxID_ANY, "&Edit PowerFunctions Settings");
+    m_trainEditBox = new pfEditBox( this, wxID_ANY, "&Edit PowerFunctions Settings" );
 
     // Save Panel
-    saveBox = new wxStaticBox(this, wxID_ANY, "&");
-    saveSizer = new wxStaticBoxSizer(saveBox, wxHORIZONTAL);
-    m_AddBtn = new wxButton(this, ID_AddTrain, "Add", wxDefaultPosition, wxDefaultSize);
-    m_UpdateBtn = new wxButton(this, ID_UpdateTrain, "Update", wxDefaultPosition, wxDefaultSize);
-    m_RemoveBtn = new wxButton(this, ID_RemoveTrain, "Remove", wxDefaultPosition, wxDefaultSize);
-    saveSizer->Add(m_AddBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
-    saveSizer->Add(m_UpdateBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
-    saveSizer->Add(m_RemoveBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
+    saveBox = new wxStaticBox( this, wxID_ANY, "&" );
+    saveSizer = new wxStaticBoxSizer( saveBox, wxHORIZONTAL );
+    m_AddBtn = new wxButton( this, ID_AddTrain, "Add", wxDefaultPosition, wxDefaultSize );
+    m_UpdateBtn = new wxButton( this, ID_UpdateTrain, "Update", wxDefaultPosition, wxDefaultSize );
+    m_RemoveBtn = new wxButton( this, ID_RemoveTrain, "Remove", wxDefaultPosition, wxDefaultSize );
+    saveSizer->Add( m_AddBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
+    saveSizer->Add( m_UpdateBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
+    saveSizer->Add( m_RemoveBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Layout();
 
-    rightSizer->Add(trainKindPicker, 0, wxALL | wxGROW, 5);
-    rightSizer->Add(m_trainEditBox, 0, wxALL | wxGROW, 5);
-    rightSizer->Add(saveSizer, 0, wxALL | wxALIGN_CENTER, 5);
+    rightSizer->Add( trainKindPicker, 0, wxALL | wxGROW, 5 );
+    rightSizer->Add( m_trainEditBox, 0, wxALL | wxGROW, 5 );
+    rightSizer->Add( saveSizer, 0, wxALL | wxALIGN_CENTER, 5 );
 
-    topSizer->Add(leftSizer, 1, wxGROW | wxALL, 5);
-    topSizer->Add(rightSizer, 4, wxGROW | wxALL, 5);
-    parent->SetSizer(topSizer);
+    topSizer->Add( leftSizer, 1, wxGROW | wxALL, 5 );
+    topSizer->Add( rightSizer, 4, wxGROW | wxALL, 5 );
+    parent->SetSizer( topSizer );
     parent->Layout();
-	topSizer->Fit(this);
-    topSizer->SetSizeHints(this);
+	topSizer->Fit( this );
+    topSizer->SetSizeHints( this );
 
     wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
 
-    track38ConfigTrain->SetPath("/Train/");
-    int count = track38ConfigTrain->GetNumberOfGroups(false);
+    track38ConfigTrain->SetPath( "/Train/" );
+    int count = track38ConfigTrain->GetNumberOfGroups( false );
 
     long idx;
     wxString out;
-    bool exists = track38ConfigTrain->GetFirstGroup(out, idx);
-    if ( exists == true )
-        m_trainPicker->AppendString(out);
+    bool exists = track38ConfigTrain->GetFirstGroup( out, idx );
+    if (  exists == true  )
+        m_trainPicker->AppendString( out );
     
-    while (exists)
+    while ( exists )
     {
-        exists = track38ConfigTrain->GetNextGroup(out, idx);
-        if ( exists == true )
-            m_trainPicker->AppendString(out);
+        exists = track38ConfigTrain->GetNextGroup( out, idx );
+        if (  exists == true  )
+            m_trainPicker->AppendString( out );
     }
       
 }
 
 
-void trainEditPanel::OnChangeControler(wxCommandEvent& event)
+void trainEditPanel::OnChangeControler( wxCommandEvent& event )
 {
     RefreshPanel();
-    panelParent->SetSizerAndFit(topSizer);
+    panelParent->SetSizerAndFit( topSizer );
     panelParent->Layout();
     panelParent->SendSizeEventToParent();
 }
 
 void trainEditPanel::RefreshPanel()
 {
-    if (trainKindPicker)
+    if ( trainKindPicker )
     {
-        rightSizer->Remove(1);
+        rightSizer->Remove( 1 );
         delete m_trainEditBox;
         
         int sel = trainKindPicker->GetSelection();
-        switch (sel)
+        switch ( sel )
         {
         case 0:
-            m_trainEditBox = new pfEditBox(this, wxID_ANY, "&Edit PowerFunctions Settings");
+            m_trainEditBox = new pfEditBox( this, wxID_ANY, "&Edit PowerFunctions Settings" );
             break;
         
         case 1:
-            m_trainEditBox = new upEditBox(this, wxID_ANY, "&Edit PoweredUP Settings");
+            m_trainEditBox = new upEditBox( this, wxID_ANY, "&Edit PoweredUP Settings" );
             break;
         }
 
-        rightSizer->Insert(1, m_trainEditBox, 0, wxALL | wxGROW, 5);
+        rightSizer->Insert( 1, m_trainEditBox, 0, wxALL | wxGROW, 5 );
     }
 }
 
@@ -119,9 +119,9 @@ void trainEditPanel::RefreshPanel()
 void trainEditPanel::SaveTrain()
 {
     wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
-    track38ConfigTrain->SetPath("/Train/");
+    track38ConfigTrain->SetPath( "/Train/" );
 
-    if (trainKindPicker)
+    if ( trainKindPicker )
     {
         int sel = trainKindPicker->GetSelection();
 
@@ -130,156 +130,156 @@ void trainEditPanel::SaveTrain()
         wxSpinCtrl* tSpeed;
         wxChoice* tChannel;
 
-        switch (sel)
+        switch ( sel )
         {
             // PF
             case 0: 
             {
-                tName = (wxTextCtrl*) FindWindow("pfName");
-                tPort = (wxChoice*) FindWindow("pfPort");
-                wxSpinCtrl* tGpio = (wxSpinCtrl*) FindWindow("pfGpio");
-                tChannel = (wxChoice*) FindWindow("pfChannel");
-                wxChoice* tSubChannel = (wxChoice*) FindWindow("pfSubChannel");
-                tSpeed = (wxSpinCtrl*) FindWindow("pfSpeed");
+                tName = ( wxTextCtrl* ) FindWindow( "pfName" );
+                tPort = ( wxChoice* ) FindWindow( "pfPort" );
+                wxSpinCtrl* tGpio = ( wxSpinCtrl* ) FindWindow( "pfGpio" );
+                tChannel = ( wxChoice* ) FindWindow( "pfChannel" );
+                wxChoice* tSubChannel = ( wxChoice* ) FindWindow( "pfSubChannel" );
+                tSpeed = ( wxSpinCtrl* ) FindWindow( "pfSpeed" );
 
-                track38ConfigTrain->SetPath(tName->GetValue());
-                track38ConfigTrain->Write("control", "pf");
-                track38ConfigTrain->Write("gpio", wxString::Format(wxT("%i"), tGpio->GetValue()));
-                track38ConfigTrain->Write("subChannel", tSubChannel->GetStringSelection());
+                track38ConfigTrain->SetPath( tName->GetValue() );
+                track38ConfigTrain->Write( "control", "pf" );
+                track38ConfigTrain->Write( "gpio", wxString::Format( wxT( "%i" ), tGpio->GetValue() ) );
+                track38ConfigTrain->Write( "subChannel", tSubChannel->GetStringSelection() );
                 break;
             }
             //UP
             case 1:
             {
-                tName = (wxTextCtrl*) FindWindow("upName");
-                tPort = (wxChoice*) FindWindow("upPort");
-                wxTextCtrl* tHubAdress = (wxTextCtrl*) FindWindow("upHubAdress");
-                tChannel = (wxChoice*) FindWindow("upChannel");
-                wxCheckBox* tAreTwoMotorsUsed = (wxCheckBox*) FindWindow("upAreTwoMotorsUsed");
-                tSpeed = (wxSpinCtrl*) FindWindow("upSpeed");
+                tName = ( wxTextCtrl* ) FindWindow( "upName" );
+                tPort = ( wxChoice* ) FindWindow( "upPort" );
+                wxTextCtrl* tHubAdress = ( wxTextCtrl* ) FindWindow( "upHubAdress" );
+                tChannel = ( wxChoice* ) FindWindow( "upChannel" );
+                wxCheckBox* tAreTwoMotorsUsed = ( wxCheckBox* ) FindWindow( "upAreTwoMotorsUsed" );
+                tSpeed = ( wxSpinCtrl* ) FindWindow( "upSpeed" );
 
-                track38ConfigTrain->SetPath(tName->GetValue());
-                track38ConfigTrain->Write("control", "up");
-                track38ConfigTrain->Write("hubAdress", tHubAdress->GetValue());
-                track38ConfigTrain->Write("twoMotorsUsed", tAreTwoMotorsUsed->GetValue());
+                track38ConfigTrain->SetPath( tName->GetValue() );
+                track38ConfigTrain->Write( "control", "up" );
+                track38ConfigTrain->Write( "hubAdress", tHubAdress->GetValue() );
+                track38ConfigTrain->Write( "twoMotorsUsed", tAreTwoMotorsUsed->GetValue() );
                 break;
             }
         }
 
-        m_trainPicker->AppendString(tName->GetValue());
-        m_trainPicker->SetStringSelection(tName->GetValue());
+        m_trainPicker->AppendString( tName->GetValue() );
+        m_trainPicker->SetStringSelection( tName->GetValue() );
 
-        track38ConfigTrain->Write("maxSpeed", wxString::Format(wxT("%i"), tSpeed->GetValue()));
-        track38ConfigTrain->Write("channel", tChannel->GetStringSelection());
-        track38ConfigTrain->Write("port", tPort->GetStringSelection());
+        track38ConfigTrain->Write( "maxSpeed", wxString::Format( wxT( "%i" ), tSpeed->GetValue() ) );
+        track38ConfigTrain->Write( "channel", tChannel->GetStringSelection() );
+        track38ConfigTrain->Write( "port", tPort->GetStringSelection() );
         track38ConfigTrain->Flush();
     }
 }
 
-void trainEditPanel::OnSelectTrain(wxCommandEvent& event)
+void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
 {
-    wxString trainSel = m_trainPicker->GetString(m_trainPicker->GetSelection());
+    wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
 
     wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
-    track38ConfigTrain->SetPath("/Train/");
-    track38ConfigTrain->SetPath(trainSel);
-    wxString control = track38ConfigTrain->Read("control", "pf");
+    track38ConfigTrain->SetPath( "/Train/" );
+    track38ConfigTrain->SetPath( trainSel );
+    wxString control = track38ConfigTrain->Read( "control", "pf" );
 
     wxTextCtrl* tName;
     wxChoice* tPort;
     wxSpinCtrl* tSpeed;
 
-    if (control.IsSameAs("pf"))
+    if ( control.IsSameAs( "pf" ) )
     {
-        trainKindPicker->SetSelection(0);
+        trainKindPicker->SetSelection( 0 );
         RefreshPanel();
 
-        tName = (wxTextCtrl*) FindWindow("pfName");
-        tPort = (wxChoice*) FindWindow("pfPort");
-        wxSpinCtrl* tGpio = (wxSpinCtrl*) FindWindow("pfGpio");
-        wxChoice* tChannel = (wxChoice*) FindWindow("pfChannel");
-        wxChoice* tSubChannel = (wxChoice*) FindWindow("pfSubChannel");
-        tSpeed = (wxSpinCtrl*) FindWindow("pfSpeed");
+        tName = ( wxTextCtrl* ) FindWindow( "pfName" );
+        tPort = ( wxChoice* ) FindWindow( "pfPort" );
+        wxSpinCtrl* tGpio = ( wxSpinCtrl* ) FindWindow( "pfGpio" );
+        wxChoice* tChannel = ( wxChoice* ) FindWindow( "pfChannel" );
+        wxChoice* tSubChannel = ( wxChoice* ) FindWindow( "pfSubChannel" );
+        tSpeed = ( wxSpinCtrl* ) FindWindow( "pfSpeed" );
 
-        tGpio->SetValue(track38ConfigTrain->Read("gpio", "13"));
+        tGpio->SetValue( track38ConfigTrain->Read( "gpio", "13" ) );
 
-        for (size_t idx = 0; idx < tChannel->GetCount(); idx++)
+        for ( size_t idx = 0; idx < tChannel->GetCount(); idx++ )
         {
-            if (track38ConfigTrain->Read("channel", "1").IsSameAs(tChannel->GetString(idx)))
-                tChannel->SetSelection(idx);
+            if ( track38ConfigTrain->Read( "channel", "1" ).IsSameAs( tChannel->GetString( idx ) ) )
+                tChannel->SetSelection( idx );
         }
 
-        for (size_t idx = 0; idx < tSubChannel->GetCount(); idx++)
+        for ( size_t idx = 0; idx < tSubChannel->GetCount(); idx++ )
         {
-            if (track38ConfigTrain->Read("subChannel", "1").IsSameAs(tSubChannel->GetString(idx)))
-                tSubChannel->SetSelection(idx);            
+            if ( track38ConfigTrain->Read( "subChannel", "1" ).IsSameAs( tSubChannel->GetString( idx ) ) )
+                tSubChannel->SetSelection( idx );            
         }
     }
 
-    else if (control.IsSameAs("up"))
+    else if ( control.IsSameAs( "up" ) )
     {
-        trainKindPicker->SetSelection(1);
+        trainKindPicker->SetSelection( 1 );
         RefreshPanel();
 
-        tName = (wxTextCtrl*) FindWindow("upName");
-        tPort = (wxChoice*) FindWindow("upPort");
-        wxTextCtrl* tHubAdress = (wxTextCtrl*) FindWindow("upHubAdress");
-        wxChoice* tChannel = (wxChoice*) FindWindow("upChannel");
-        wxCheckBox* tAreTwoMotorsUsed = (wxCheckBox*) FindWindow("upAreTwoMotorsUsed");
-        tSpeed = (wxSpinCtrl*) FindWindow("upSpeed");
+        tName = ( wxTextCtrl* ) FindWindow( "upName" );
+        tPort = ( wxChoice* ) FindWindow( "upPort" );
+        wxTextCtrl* tHubAdress = ( wxTextCtrl* ) FindWindow( "upHubAdress" );
+        wxChoice* tChannel = ( wxChoice* ) FindWindow( "upChannel" );
+        wxCheckBox* tAreTwoMotorsUsed = ( wxCheckBox* ) FindWindow( "upAreTwoMotorsUsed" );
+        tSpeed = ( wxSpinCtrl* ) FindWindow( "upSpeed" );
 
-        tHubAdress->ChangeValue(track38ConfigTrain->Read("hubAdress", ""));
+        tHubAdress->ChangeValue( track38ConfigTrain->Read( "hubAdress", "" ) );
 
-        for (size_t idx = 0; idx < tChannel->GetCount(); idx++)
+        for ( size_t idx = 0; idx < tChannel->GetCount(); idx++ )
         {
-            if (track38ConfigTrain->Read("channel", "1").IsSameAs(tChannel->GetString(idx)))
-                tChannel->SetSelection(idx);         
+            if ( track38ConfigTrain->Read( "channel", "1" ).IsSameAs( tChannel->GetString( idx ) ) )
+                tChannel->SetSelection( idx );         
         }
-        tAreTwoMotorsUsed->SetValue(track38ConfigTrain->Read("twoMotorsUsed", false));
+        tAreTwoMotorsUsed->SetValue( track38ConfigTrain->Read( "twoMotorsUsed", false ) );
     }
 
-    tName->ChangeValue(trainSel);
+    tName->ChangeValue( trainSel );
 
-    if (tPort->FindString(track38ConfigTrain->Read("port", "")) == wxNOT_FOUND)
-        wxMessageBox("The saved Port was not found. Please plug in the device.", "Port Error");
+    if ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND )
+        wxMessageBox( "The saved Port was not found. Please plug in the device.", "Port Error" );
 
     else
     {
-        for (size_t idx = 0; idx < tPort->GetCount(); idx++)
+        for ( size_t idx = 0; idx < tPort->GetCount(); idx++ )
         {
-            if (track38ConfigTrain->Read("port", "").IsSameAs(tPort->GetString(idx)))
-                tPort->SetSelection(idx);   
+            if ( track38ConfigTrain->Read( "port", "" ).IsSameAs( tPort->GetString( idx ) ) )
+                tPort->SetSelection( idx );   
         }
     }
 
-    tSpeed->SetValue(track38ConfigTrain->Read("maxSpeed", "7"));
+    tSpeed->SetValue( track38ConfigTrain->Read( "maxSpeed", "7" ) );
 
-    panelParent->SetSizerAndFit(topSizer);
+    panelParent->SetSizerAndFit( topSizer );
     panelParent->Layout();
     panelParent->SendSizeEventToParent();
 }
 
-void trainEditPanel::OnAddTrain(wxCommandEvent& event)
+void trainEditPanel::OnAddTrain( wxCommandEvent& event )
 {
 
     int sel = trainKindPicker->GetSelection();
     wxTextCtrl* tName;
-    switch (sel)
+    switch ( sel )
     {
         // PF
         case 0: 
-            tName = (wxTextCtrl*) FindWindow("pfName");
+            tName = ( wxTextCtrl* ) FindWindow( "pfName" );
             break;
         // UP
         case 1:
-            tName = (wxTextCtrl*) FindWindow("upName");
+            tName = ( wxTextCtrl* ) FindWindow( "upName" );
             break;          
     }
 
-    if (m_trainPicker->FindString(tName->GetValue()) != wxNOT_FOUND)
+    if ( m_trainPicker->FindString( tName->GetValue() ) != wxNOT_FOUND )
     {
-        wxMessageDialog dialog(this, "The Train does already Exists. Do you want to Overwrite?", "Overwrite?", wxYES_NO | wxICON_INFORMATION);
-        switch (dialog.ShowModal())
+        wxMessageDialog dialog( this, "The Train does already Exists. Do you want to Overwrite?", "Overwrite?", wxYES_NO | wxICON_INFORMATION );
+        switch ( dialog.ShowModal() )
         {
             case wxID_YES:
                 RemoveTrain();
@@ -298,21 +298,21 @@ void trainEditPanel::OnAddTrain(wxCommandEvent& event)
     
 }
 
-void trainEditPanel::OnUpdateTrain(wxCommandEvent& event)
+void trainEditPanel::OnUpdateTrain( wxCommandEvent& event )
 {
     RemoveTrain();
-    //m_trainPicker->Delete(m_trainPicker->GetSelection());
+    //m_trainPicker->Delete( m_trainPicker->GetSelection() );
     SaveTrain();
 }
 
-void trainEditPanel::OnRemoveTrain(wxCommandEvent& event)
+void trainEditPanel::OnRemoveTrain( wxCommandEvent& event )
 {
-    wxMessageDialog dialog(this, "Do you want to remove the Train?", "Remove?", wxYES_NO | wxICON_INFORMATION);
-    switch (dialog.ShowModal())
+    wxMessageDialog dialog( this, "Do you want to remove the Train?", "Remove?", wxYES_NO | wxICON_INFORMATION );
+    switch ( dialog.ShowModal() )
     {
         case wxID_YES:
             RemoveTrain();
-            OnSelectTrain(event);
+            OnSelectTrain( event );
             break;
 
         case wxID_NO:
@@ -325,27 +325,27 @@ void trainEditPanel::RemoveTrain()
 {
     int sel = trainKindPicker->GetSelection();
     wxTextCtrl* tName;
-    switch (sel)
+    switch ( sel )
     {
         // PF
         case 0: 
-            tName = (wxTextCtrl*) FindWindow("pfName");
+            tName = ( wxTextCtrl* ) FindWindow( "pfName" );
             break;
         // UP
         case 1:
-            tName = (wxTextCtrl*) FindWindow("upName");
+            tName = ( wxTextCtrl* ) FindWindow( "upName" );
             break;          
     }
 
     wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
-    track38ConfigTrain->SetPath("/Train/");
-    track38ConfigTrain->DeleteGroup(tName->GetValue());
+    track38ConfigTrain->SetPath( "/Train/" );
+    track38ConfigTrain->DeleteGroup( tName->GetValue() );
     track38ConfigTrain->Flush();
 
-    /*for (size_t idx = 0; idx < m_trainPicker->GetCount(); idx++)
+    /*for ( size_t idx = 0; idx < m_trainPicker->GetCount(); idx++ )
     {
-        if (tName->GetValue().IsSameAs(m_trainPicker->GetString(idx)))
-            m_trainPicker->Delete(idx);         
+        if ( tName->GetValue().IsSameAs( m_trainPicker->GetString( idx ) ) )
+            m_trainPicker->Delete( idx );         
     }*/
-    m_trainPicker->Delete(m_trainPicker->GetSelection());
+    m_trainPicker->Delete( m_trainPicker->GetSelection() );
 }

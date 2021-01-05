@@ -13,7 +13,7 @@
 class trainControlBox : public wxStaticBox
 { 
     public:
-        trainControlBox(wxPanel* parent, int id, wxString title);
+        trainControlBox( wxPanel* parent, int id, wxString title );
         train* trains;
         wxButton* button;
     

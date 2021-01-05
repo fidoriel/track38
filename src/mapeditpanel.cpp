@@ -1,5 +1,5 @@
 #include "mapeditpanel.h"
 
-mapEditPanel::mapEditPanel(wxNotebook* parent) : wxPanel(parent)
+mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
 {
 }

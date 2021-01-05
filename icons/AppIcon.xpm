@@ -1,5 +1,5 @@
 /* XPM */
-static const char *const AppIcon_xpm[] = {
+static const char *const AppIcon_xpm[  ] = {
 /* columns rows colors chars-per-pixel */
 "218 218 142 2 ",
 "   c None",
@@ -84,13 +84,13 @@ static const char *const AppIcon_xpm[] = {
 "~  c #E1E1E1",
 "^  c #E3E3E3",
 "/  c #E7E7E7",
-"(  c #E3E3E3",
-")  c #E8E8E8",
+"(   c #E3E3E3",
+" )  c #E8E8E8",
 "_  c #E9E9E9",
 "`  c #EBEBEB",
 "'  c #ECECEC",
-"]  c gray93",
-"[  c #EEEEEE",
+" ]  c gray93",
+"[   c #EEEEEE",
 "{  c #EFEFEF",
 "}  c #ECECEC",
 "|  c #FFE0E0",

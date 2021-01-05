@@ -9,7 +9,7 @@
 class controlPanel : public wxPanel
 { 
     public:
-        controlPanel(wxNotebook* parent);
+        controlPanel( wxNotebook* parent );
 
         trainControlBox* m_trainControlBox;
         
