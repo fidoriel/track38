@@ -190,7 +190,7 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
 
         COMMAND rm -f AppDir/${PROJECT_NAME}.desktop
         COMMAND touch AppDir/${PROJECT_NAME}.desktop
-        COMMAND echo '[ Desktop Entry ]' >> AppDir/${PROJECT_NAME}.desktop
+        COMMAND echo '[Desktop Entry]' >> AppDir/${PROJECT_NAME}.desktop
         COMMAND echo 'Name=${PROJECT_NAME}' >> AppDir/${PROJECT_NAME}.desktop
         COMMAND echo 'Exec=${PROJECT_NAME}' >> AppDir/${PROJECT_NAME}.desktop
         COMMAND echo 'Icon=AppIcon' >> AppDir/${PROJECT_NAME}.desktop
