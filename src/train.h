@@ -2,21 +2,49 @@
 #define train_h
 
 #include <string>
+#include <list>
+#include "wx/string.h"
+#include "wx/config.h"
+#include "wx/panel.h"
+#include "wx/slider.h"
+#include "wx/button.h"
+#include "wx/statbox.h"
+
+using namespace std;
 
 class train
 { 
     public:
-        train();
+        train(wxString wxName);
+        void setControl(wxString wxControl);
+        void setPort(wxString wxControl);
+        void setMaxSpeed(wxString wxSpeed);
+        void setHubAdress(wxString wxControl);
+        void setUpChannel(wxString wxCh);
+        void setTwoMotors(bool is);
+        void setPfChannel(wxString wxCh);
+        void setPfSubChannel(wxString wxSub);
+        void setPfGPIO(wxString wxGPIO);
+        wxString getName();
+
+        ~train();
+
+        void createControls(wxStaticBox* parent);
+
         bool isPf();
         bool isUp();
 
-        std::string* name;
-        std::string* control;
-        std::string* port;
+        wxStaticText* trainName;
+        wxSlider* speedSlider;
+        wxButton* stopBtn;
+
+        wxString name;
+        string control;
+        string port;
         int maxTrainSpeed;
 
         //UP
-        std::string* upHubAdress;
+        string upHubAdress;
         char upChannel;
         bool upTwoMotorsUsed;
 

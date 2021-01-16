@@ -10,9 +10,12 @@ class controlPanel : public wxPanel
 { 
     public:
         controlPanel( wxNotebook* parent );
+        ~controlPanel();
 
         trainControlBox* m_trainControlBox;
-        
+        wxFlexGridSizer* topSizer;
+
+        wxNotebook* parent;
 };
 
 #endif

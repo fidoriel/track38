@@ -31,9 +31,28 @@ public:
     // Event handlers
     void OnQuit( wxCommandEvent& event );
     void OnAbout( wxCommandEvent& event );
+    void OnNbChange( wxBookCtrlEvent& event );
+
+    wxMenu* fileMenu;
+    wxMenu* helpMenu;
+
+    wxNotebook* m_notebook;
+
+    wxMenuBar* menuBar;
+    wxBoxSizer* topSizer;
+    controlPanel* m_controlPanel;
+    trainEditPanel* m_trainEditPanel;
+    mapEditPanel* m_mapEditPanel;
+
+    trainControlBox* m_trainControlBox;
 
     int minw = 900;
     int minh = 650;
+
+    enum
+    {
+        ID_Nb
+    };
 
 private:
     // This class handles events
@@ -47,6 +66,7 @@ private:
 BEGIN_EVENT_TABLE( track38Frame, wxFrame )
     EVT_MENU( wxID_ABOUT, track38Frame::OnAbout )
     EVT_MENU( wxID_EXIT,  track38Frame::OnQuit )
+    EVT_NOTEBOOK_PAGE_CHANGING( ID_Nb, track38Frame::OnNbChange )
 END_EVENT_TABLE()
 
 // Implements track38& GetApp()
@@ -95,8 +115,8 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
     //Create the menu
     //----------------
 
-    wxMenu *fileMenu = new wxMenu;
-    wxMenu *helpMenu = new wxMenu;
+    fileMenu = new wxMenu;
+    helpMenu = new wxMenu;
 
     helpMenu->Append( wxID_ABOUT, "&About...\tF1", "Show about dialog" );
     fileMenu->Append( wxID_EXIT, "&Exit\tAlt-X", "Quit this program" );
@@ -107,28 +127,26 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
     //--------
 
     // Now append the freshly created menu to the menu bar...
-    wxMenuBar *menuBar = new wxMenuBar();
+    menuBar = new wxMenuBar();
     menuBar->Append( fileMenu, "&File" );
     menuBar->Append( helpMenu, "&Help" );
     //attach this menu bar to the frame
     SetMenuBar( menuBar );
-
 
     //----------------
     //Main Application
     //----------------
 
     //Höchster sizer für AppUI
-    wxBoxSizer* topSizer = new wxBoxSizer( wxVERTICAL );
+    topSizer = new wxBoxSizer( wxVERTICAL );
 
     //Erstellt Tabsystem aus mainPanel
-    wxNotebook* m_notebook;
-    m_notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULLSCREEN_ALL );
+    m_notebook = new wxNotebook( this, ID_Nb, wxDefaultPosition, wxDefaultSize, wxFULLSCREEN_ALL );
 
     //fügt seiten zu Tabsystem hinzu
-    controlPanel* m_controlPanel = new controlPanel( m_notebook );
-    trainEditPanel* m_trainEditPanel = new trainEditPanel( m_notebook );
-    mapEditPanel* m_mapEditPanel = new mapEditPanel( m_notebook );
+    m_controlPanel = new controlPanel( m_notebook );
+    m_trainEditPanel = new trainEditPanel( m_notebook );
+    m_mapEditPanel = new mapEditPanel( m_notebook );
     
     m_notebook->AddPage( m_controlPanel, L"Control" );
     m_notebook->AddPage( m_mapEditPanel, L"Edit Map" );
@@ -160,13 +178,27 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
     track38ConfigBase->SetPath( "/" );
 }
 
+void track38Frame::OnNbChange( wxBookCtrlEvent& event )
+{
+    if (event.GetSelection() == 0)
+    {
+        //delete m_controlPanel;
+        trainControlBox* m_trainControlBox = ( trainControlBox* ) FindWindow( "trainControlBox" );
+        m_trainControlBox->RefreshPanel();
+    }
+
+    else
+    {
+        event.Skip();
+    }
+    
+}
+
 track38Frame::~track38Frame()
 {
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
     if ( track38ConfigBase == NULL )
-    {
         return;
-    }
 
     // save the frame position
     int x, y, w, h;

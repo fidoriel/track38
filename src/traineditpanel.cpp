@@ -211,7 +211,7 @@ void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
 
         for ( size_t idx = 0; idx < tSubChannel->GetCount(); idx++ )
         {
-            if ( track38ConfigTrain->Read( "subChannel", "1" ).IsSameAs( tSubChannel->GetString( idx ) ) )
+            if ( track38ConfigTrain->Read( "subChannel", "R" ).IsSameAs( tSubChannel->GetString( idx ) ) )
                 tSubChannel->SetSelection( idx );            
         }
     }
@@ -312,6 +312,7 @@ void trainEditPanel::OnRemoveTrain( wxCommandEvent& event )
     {
         case wxID_YES:
             RemoveTrain();
+            m_trainPicker->SetSelection(0);
             OnSelectTrain( event );
             break;
 
@@ -340,6 +341,7 @@ void trainEditPanel::RemoveTrain()
     wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
     track38ConfigTrain->SetPath( "/Train/" );
     track38ConfigTrain->DeleteGroup( tName->GetValue() );
+    track38ConfigTrain->DeleteGroup( m_trainPicker->GetString( m_trainPicker->GetSelection() ) );
     track38ConfigTrain->Flush();
 
     /*for ( size_t idx = 0; idx < m_trainPicker->GetCount(); idx++ )

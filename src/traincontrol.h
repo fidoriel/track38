@@ -13,9 +13,17 @@
 class trainControlBox : public wxStaticBox
 { 
     public:
-        trainControlBox( wxPanel* parent, int id, wxString title );
-        train* trains;
-        wxButton* button;
+        trainControlBox( wxPanel* parent, int id, wxString title, wxString boxName );
+        void createControlBox();
+        void loadTrains();
+        void RefreshPanel();
+        ~trainControlBox();
+
+        list<train*> trains;
+
+        wxFlexGridSizer* topSizer;
+        wxButton* stopAllBtn;
+        wxPanel* parent;
     
     enum
     {
