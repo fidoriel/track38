@@ -13,11 +13,11 @@ trainControlBox::trainControlBox( wxPanel* parent, int id, wxString title, wxStr
 }
 
 void trainControlBox::RefreshPanel()
-{      
+{
 
     while ( !topSizer->IsEmpty() )
     {
-        topSizer->Remove(0);
+        topSizer->Remove( 0 );
     }
     
     delete stopAllBtn;
@@ -31,11 +31,9 @@ void trainControlBox::RefreshPanel()
         trains.pop_front();
     }
 
-    if ( trains.empty() )
-    {
-        this->loadTrains();
-        this->createControlBox();
-    }
+
+    this->loadTrains();
+    this->createControlBox();
 }
 
 void trainControlBox::createControlBox()

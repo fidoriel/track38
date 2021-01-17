@@ -32,6 +32,7 @@ public:
     void OnQuit( wxCommandEvent& event );
     void OnAbout( wxCommandEvent& event );
     void OnNbChangeing( wxBookCtrlEvent& event );
+    void OnNbChanged( wxBookCtrlEvent& event );
 
     wxMenu* fileMenu;
     wxMenu* helpMenu;
@@ -67,6 +68,7 @@ BEGIN_EVENT_TABLE( track38Frame, wxFrame )
     EVT_MENU( wxID_ABOUT, track38Frame::OnAbout )
     EVT_MENU( wxID_EXIT,  track38Frame::OnQuit )
     EVT_NOTEBOOK_PAGE_CHANGING( ID_NbChanged, track38Frame::OnNbChangeing )
+    EVT_NOTEBOOK_PAGE_CHANGED( ID_NbChanged, track38Frame::OnNbChanged )
 END_EVENT_TABLE()
 
 // Implements track38& GetApp()
@@ -196,7 +198,11 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
                 break;
         }
     }
+}
 
+
+void track38Frame::OnNbChanged( wxBookCtrlEvent& event )
+{
     if ( event.GetSelection() == 0 )
     {
         trainControlBox* m_trainControlBox = ( trainControlBox* ) FindWindow( "trainControlBox" );
