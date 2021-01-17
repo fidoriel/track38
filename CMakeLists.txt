@@ -133,7 +133,11 @@ file( GLOB_RECURSE SRC_FILES
     src/*.hpp
     src/*.c
     src/*.cpp
-     )
+    src/*/*.h
+    src/*/*.hpp
+    src/*/*.c
+    src/*/*.cpp
+    )
 
 if( WIN32 )
     # Include a RC file for windows

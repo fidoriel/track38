@@ -90,7 +90,12 @@ void pfEditBox::refreshSerial()
         ptr = opendir( directory_name );
         while( ( directory = readdir( ptr ) ) != NULL )
         {
+            #if defined( __APPLE__ )
+            if ( /*( strstr( directory->d_name, "tty" ) != NULL ) ||*/ ( strstr( directory->d_name, "cu" ) != NULL ) )
+            #endif
+            #if defined( __linux__ ) || defined( __FreeBSD__ )
             if ( ( strstr( directory->d_name, "tty" ) != NULL ) || ( strstr( directory->d_name, "cu" ) != NULL ) )
+            #endif
             {
                 char tmp[ 100 ] = "/dev/";
                 for ( int i = 0; i < 95; i++ )

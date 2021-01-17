@@ -21,7 +21,8 @@ void train::Stop()
 {
     if (this->isPf())
     {
-        this->speedSlider->SetValue(0);
+        this->speedSlider->SetValue( 0 );
+        this->ChangeSpeed( 0 );
     }
     
     else if (this->isPf())
@@ -135,8 +136,32 @@ void train::ChangeSpeed(int newSpeed)
 
         serialSignal += '>';
 
+        copy( serialSignal.begin(), serialSignal.end(), sendSignal );
+
         //wxMessageBox( wxString::Format( wxT( "%i" ), newSpeed ) );
-        wxMessageBox( serialSignal );
+
+        #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
+
+        int con = connect_port( portPoint );
+
+        char str_send[ 2 ][ 128 ];
+        unsigned char str_recv[ 128 ];
+
+        strcpy( str_send[ 1 ], sendSignal );
+
+        //wxMessageBox( str_send[ 1 ] );
+
+        write_port( con, str_send[ 1 ] );
+        usleep( 1000000 );
+        int bytes = read_port( con, str_recv, 128 );
+		if( bytes > 0 )
+        {
+			str_recv[ bytes ] = 0;
+
+			//printf("Received %i bytes from Arduino: '%s'\n", bytes, (char *)str_recv);
+            //wxMessageBox( "OK" );
+		}
+        #endif
     }
 }
 
@@ -147,7 +172,17 @@ void train::setControl(wxString wxControl)
 
 void train::setPort(wxString wxPort)
 {
-    this->port = string(wxPort.mb_str());
+    string stdString = string(wxPort.mb_str());
+    copy(stdString.begin(), stdString.end(), port);
+    //wxMessageBox(port);
+    portPoint = port;
+
+    #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
+
+    int con = connect_port(portPoint);
+    //wxMessageBox( wxString::Format( wxT( "%i" ), con ) );
+
+    #endif
 }
 
 void train::setMaxSpeed(wxString wxSpeed)

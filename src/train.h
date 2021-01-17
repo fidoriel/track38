@@ -12,6 +12,10 @@
 #include "wx/sizer.h"
 #include <wx/msgdlg.h>
 
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
+#include "serial/serial_unix.h"
+#endif
+
 using namespace std;
 
 class train
@@ -48,7 +52,8 @@ class train
 
         wxString name;
         string control;
-        string port;
+        char port[128];
+        char* portPoint;
         int maxTrainSpeed;
 
         //UP
@@ -60,6 +65,7 @@ class train
         int pfChannel;
         char pfSubChannel;
         int pfGpio;
+        char sendSignal[32];
 
         enum
         {
