@@ -17,6 +17,10 @@ class trainControlBox : public wxStaticBox
         void createControlBox();
         void loadTrains();
         void RefreshPanel();
+
+        void OnStopAll( wxCommandEvent& event );
+        void StopAll();
+
         ~trainControlBox();
 
         list<train*> trains;
@@ -27,7 +31,7 @@ class trainControlBox : public wxStaticBox
     
     enum
     {
-        ID
+        ID_StopAll
     };
 };
 

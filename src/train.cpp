@@ -5,11 +5,139 @@ train::train(wxString wxName)
     this->name = wxName;
 }
 
-void train::createControls(wxStaticBox* parent)
+void train::createControls( wxStaticBox* parent )
 {
     this->trainName = new wxStaticText( parent, wxID_ANY, this->name );
-    this->speedSlider = new wxSlider( parent, wxID_ANY, 0, this->maxTrainSpeed*(-1), this->maxTrainSpeed, wxDefaultPosition, wxSize( 200, -1 ), wxSL_AUTOTICKS );
-    this-> stopBtn = new wxButton( parent, wxID_ANY, "Stop", wxDefaultPosition, wxDefaultSize );
+    this->speedSlider = new wxSlider( parent, ID_ChangeSpeed, 0, this->maxTrainSpeed*(-1), this->maxTrainSpeed, wxDefaultPosition, wxSize( 200, -1 ), wxSL_AUTOTICKS );
+    this->stopBtn = new wxButton( parent, ID_StopTrain, "Stop", wxDefaultPosition, wxDefaultSize );
+}
+
+void train::OnStop( wxCommandEvent& event ) 
+{
+    this->Stop();
+}
+
+void train::Stop()
+{
+    if (this->isPf())
+    {
+        this->speedSlider->SetValue(0);
+    }
+    
+    else if (this->isPf())
+    {
+        this->speedSlider->SetValue(0);
+    }
+}
+
+void train::OnChangeSpeed( wxScrollEvent& event ) 
+{
+    this->ChangeSpeed( speedSlider->GetValue() );
+}
+
+void train::ChangeSpeed(int newSpeed)
+{
+    if ( this->isPf() )
+    {
+        string serialSignal = "<T";
+
+        if ( pfGpio < 10 )
+        {
+            serialSignal += '0';
+        }
+
+        serialSignal += to_string( pfGpio );
+
+        if ( ( pfChannel == 1) && ( pfSubChannel == 'R' ) )
+            serialSignal += '1';
+        else if ( ( pfChannel == 1) && ( pfSubChannel == 'B' ) )
+            serialSignal += '2';
+        else if ( ( pfChannel == 2 ) && ( pfSubChannel == 'R' ) )
+            serialSignal += '3';
+        else if ( ( pfChannel == 2 ) && ( pfSubChannel == 'B' ) )
+            serialSignal += '4';
+        else if ( ( pfChannel == 3 ) && ( pfSubChannel == 'R' ) )
+            serialSignal += '5';
+        else if ( ( pfChannel == 3 ) && ( pfSubChannel == 'B' ) )
+            serialSignal += '6';
+        else if ( ( pfChannel == 4 ) && ( pfSubChannel == 'R' ) )
+            serialSignal += '7';
+        else if ( ( pfChannel == 4 ) && ( pfSubChannel == 'B' ) )
+            serialSignal += '8';
+
+        switch ( newSpeed )
+        {
+        case 0:
+            serialSignal += 'S';
+            break;
+        
+        //FWD
+        case 1:
+            serialSignal += 'A';
+            break;
+        
+        case 2:
+            serialSignal += 'B';
+            break;
+        
+        case 3:
+            serialSignal += 'C';
+            break;
+        
+        case 4:
+            serialSignal += 'C';
+            break;
+        
+        case 5:
+            serialSignal += 'E';
+            break;
+        
+        case 6:
+            serialSignal += 'F';
+            break;
+
+        case 7:
+            serialSignal += 'G';
+            break;
+        
+        //BWD
+        case ( -1 ):
+            serialSignal += 'Z';
+            break;
+        
+        case ( -2 ):
+            serialSignal += 'Y';
+            break;
+        
+        case ( -3 ):
+            serialSignal += 'X';
+            break;
+        
+        case ( -4 ):
+            serialSignal += 'W';
+            break;
+        
+        case ( -5 ):
+            serialSignal += 'V';
+            break;
+        
+        case ( -6 ):
+            serialSignal += 'U';
+            break;
+
+        case ( -7 ):
+            serialSignal += 'T';
+            break;
+        
+        default:
+            break;
+        }     
+
+        serialSignal += '>';
+
+        //wxMessageBox( wxString::Format( wxT( "%i" ), newSpeed ) );
+        wxMessageBox( serialSignal );
+    }
 }
 
 void train::setControl(wxString wxControl)
@@ -74,8 +202,4 @@ bool train::isUp()
     if ( this->control.compare( "up" ) == 0 )
        return true;
     return false;
-}
-
-train::~train()
-{
 }

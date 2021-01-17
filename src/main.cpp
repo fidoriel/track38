@@ -31,7 +31,7 @@ public:
     // Event handlers
     void OnQuit( wxCommandEvent& event );
     void OnAbout( wxCommandEvent& event );
-    void OnNbChange( wxBookCtrlEvent& event );
+    void OnNbChangeing( wxBookCtrlEvent& event );
 
     wxMenu* fileMenu;
     wxMenu* helpMenu;
@@ -51,7 +51,7 @@ public:
 
     enum
     {
-        ID_Nb
+        ID_NbChanged
     };
 
 private:
@@ -66,7 +66,7 @@ private:
 BEGIN_EVENT_TABLE( track38Frame, wxFrame )
     EVT_MENU( wxID_ABOUT, track38Frame::OnAbout )
     EVT_MENU( wxID_EXIT,  track38Frame::OnQuit )
-    EVT_NOTEBOOK_PAGE_CHANGING( ID_Nb, track38Frame::OnNbChange )
+    EVT_NOTEBOOK_PAGE_CHANGING( ID_NbChanged, track38Frame::OnNbChangeing )
 END_EVENT_TABLE()
 
 // Implements track38& GetApp()
@@ -94,7 +94,7 @@ void track38Frame::OnAbout( wxCommandEvent& event )
 
     //Message window
     wxString msg;
-    msg.Printf( "Hello and welcome to %s", wxVERSION_STRING );
+    msg.Printf( "track38 is a LEGO Train Layout Control Software developed by fidoriel. It is able to control LEGO PoweredUp, PowerFunctions and Track Switches via Arduino and esp8266.", wxVERSION_STRING );
     wxString title;
     title.Printf( "About %s", name );
     wxMessageBox( msg, title, wxOK | wxICON_INFORMATION, this );
@@ -141,7 +141,7 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
     topSizer = new wxBoxSizer( wxVERTICAL );
 
     //Erstellt Tabsystem aus mainPanel
-    m_notebook = new wxNotebook( this, ID_Nb, wxDefaultPosition, wxDefaultSize, wxFULLSCREEN_ALL );
+    m_notebook = new wxNotebook( this, ID_NbChanged, wxDefaultPosition, wxDefaultSize, wxFULLSCREEN_ALL );
 
     //fügt seiten zu Tabsystem hinzu
     m_controlPanel = new controlPanel( m_notebook );
@@ -178,20 +178,30 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
     track38ConfigBase->SetPath( "/" );
 }
 
-void track38Frame::OnNbChange( wxBookCtrlEvent& event )
+void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
 {
-    if (event.GetSelection() == 0)
+    if ( event.GetOldSelection() == 0 )
     {
-        //delete m_controlPanel;
+        wxMessageDialog dialog( this, "By switching to the Edit Panel all trains are going to be stopped", "Stop all Trains", wxYES_NO | wxICON_INFORMATION );
+        switch ( dialog.ShowModal() )
+        {
+            case wxID_YES:
+                m_controlPanel->m_trainControlBox->StopAll();
+                return;
+                break;
+
+            case wxID_NO:
+                event.Veto();
+                return;
+                break;
+        }
+    }
+
+    if ( event.GetSelection() == 0 )
+    {
         trainControlBox* m_trainControlBox = ( trainControlBox* ) FindWindow( "trainControlBox" );
         m_trainControlBox->RefreshPanel();
     }
-
-    else
-    {
-        event.Skip();
-    }
-    
 }
 
 track38Frame::~track38Frame()

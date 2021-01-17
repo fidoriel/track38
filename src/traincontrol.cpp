@@ -46,9 +46,14 @@ void trainControlBox::createControlBox()
         topSizer->Add( selTrain->trainName, 1, wxALL, 10 );
         topSizer->Add( selTrain->speedSlider, 1, wxALL , 10 );
         topSizer->Add( selTrain->stopBtn, 1, wxALL , 10 );
+
+        selTrain->stopBtn->Bind( wxEVT_BUTTON, &train::OnStop, selTrain, selTrain->ID_StopTrain );
+        selTrain->speedSlider->Bind( wxEVT_SCROLL_THUMBRELEASE, &train::OnChangeSpeed, selTrain, selTrain->ID_ChangeSpeed );
     }
 
-    stopAllBtn = new wxButton( this, wxID_ANY, "Stop All", wxDefaultPosition, wxDefaultSize );
+    stopAllBtn = new wxButton( this, ID_StopAll, "Stop All", wxDefaultPosition, wxDefaultSize );
+    stopAllBtn->Bind( wxEVT_BUTTON, &trainControlBox::OnStopAll, this, ID_StopAll);
+    
     topSizer->AddSpacer( 20 );
     topSizer->Add( stopAllBtn, 0, wxALL | wxALIGN_CENTER_HORIZONTAL , 10 );
 
@@ -111,6 +116,19 @@ void trainControlBox::loadTrains()
         //wxMessageBox( track38ConfigTrain->Read( "port", "" ) );
         //wxMessageBox( wxString::Format(wxT("%i"), selTrain->maxTrainSpeed ) );
     }
+}
+
+void trainControlBox::OnStopAll( wxCommandEvent& event )
+{
+    this->StopAll();
+}
+
+void trainControlBox::StopAll()
+{
+    for (train* & selTrain : this->trains)
+    {
+        selTrain->Stop();
+    }  
 }
 
 trainControlBox::~trainControlBox()
