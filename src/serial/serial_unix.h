@@ -4,16 +4,17 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef _WIN32
+#ifdef WIN32
 #include <Windows.h>
-#else
-#include <unistd.h>
 #endif
 
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <unistd.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

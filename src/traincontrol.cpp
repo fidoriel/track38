@@ -40,6 +40,9 @@ void trainControlBox::RefreshPanel()
 
 void trainControlBox::createControlBox()
 {
+    topSizer->AddSpacer(10);
+    topSizer->AddSpacer(10);
+    topSizer->AddSpacer(10);
     for (train* & selTrain : this->trains)
     {
         selTrain->createControls(this);

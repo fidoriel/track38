@@ -10,7 +10,8 @@
 #include "wx/button.h"
 #include "wx/statbox.h"
 #include "wx/sizer.h"
-#include <wx/msgdlg.h>
+#include "wx/msgdlg.h"
+#include <wx/stattext.h>
 
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
 #include "serial/serial_unix.h"
