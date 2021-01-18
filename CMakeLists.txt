@@ -97,7 +97,7 @@ if( WIN32 )
 elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
     message( "Target: Linux" )
     #directory where wxwidget is located root folder
-    set( wxWidgets_ROOT_DIR "/home/luca/wxWidgets-3.1.4" )
+    set( wxWidgets_ROOT_DIR "/home/pi/wxWidgets-3.1.4" )
     set( wxWidgets_CONFIG_EXECUTABLE "${wxWidgets_ROOT_DIR}/gtkbuild/wx-config" )
 
     if( RELEASE )
@@ -175,17 +175,20 @@ if( APPLE )
         COMMAND plutil -replace NSHighResolutionCapable -bool true ${PROJECT_NAME}.app/Contents/Info.plist
          )
 elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
-    if( ARMV7 )
+    EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+    message( STATUS "Architecture: ${ARCHITECTURE}" )
+
+    if( "${ARCHITECTURE}" STREQUAL "armv7l" OR "${ARCHITECTURE}" STREQUAL "armv7" )
         set( AppImageRelease "appimagetool-armhf.AppImage" )
-    elseif( ARMV8 )
+    elseif( "${ARCHITECTURE}" STREQUAL "aarch64" OR "${ARCHITECTURE}" STREQUAL "armv8" )
         set( AppImageRelease "appimagetool-aarch64.AppImage" )
-    elseif( I386 )
+    elseif( "${ARCHITECTURE}" STREQUAL "i386" )
         set( AppImageRelease "appimagetool-i686.AppImage" )
     else()
         set( AppImageRelease "appimagetool-x86_64.AppImage" )
     endif()
 
-    add_custom_command( 
+    add_custom_command(
         TARGET ${PROJECT_NAME}
         POST_BUILD
         COMMAND wget -N https://github.com/AppImage/AppImageKit/releases/download/continuous/${AppImageRelease}
@@ -205,5 +208,5 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
         COMMAND gcc AppRun.c -o AppDir/AppRun
 
         COMMAND ./${AppImageRelease} AppDir
-         )
+	)
 endif()
