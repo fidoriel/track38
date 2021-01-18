@@ -178,7 +178,7 @@ void train::setControl(wxString wxControl)
 void train::setPort(wxString wxPort)
 {
     string stdString = string(wxPort.mb_str());
-    copy(stdString.begin(), stdString.end(), port);
+    strcpy(port, stdString.c_str());
     //wxMessageBox(port);
     this->portPoint = port;
 }
