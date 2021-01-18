@@ -21,6 +21,7 @@ class trainEditPanel : public wxPanel
         void OnAddTrain( wxCommandEvent& event );
         void OnUpdateTrain( wxCommandEvent& event );
         void OnSelectTrain( wxCommandEvent& event );
+        void SelectTrain();
         void OnRemoveTrain( wxCommandEvent& event );
         void SaveTrain();
         void RefreshPanel();

@@ -24,6 +24,7 @@ class train
 { 
     public:
         train( wxString wxName );
+        ~train();
         void setControl( wxString wxControl );
         void setPort( wxString wxControl );
         void setMaxSpeed( wxString wxSpeed );
@@ -39,6 +40,8 @@ class train
         void OnChangeSpeed( wxScrollEvent& event );
         void ChangeSpeed(int newSpeed);
         void Stop();
+        void CloseCon();
+        int con;
 
         void createControls( wxStaticBox* parent );
 

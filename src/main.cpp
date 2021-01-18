@@ -33,6 +33,7 @@ public:
     void OnAbout( wxCommandEvent& event );
     void OnNbChangeing( wxBookCtrlEvent& event );
     void OnNbChanged( wxBookCtrlEvent& event );
+    void Settings();
 
     wxMenu* fileMenu;
     wxMenu* helpMenu;
@@ -110,6 +111,8 @@ void track38Frame::OnQuit( wxCommandEvent& event )
 
 track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30, 30 ), wxSize( 200, 200 )*/ )
 {
+
+    this->Settings();
 
     SetIcon( wxICON( AppIcon ) );
 
@@ -189,6 +192,7 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
         {
             case wxID_YES:
                 m_controlPanel->m_trainControlBox->StopAll();
+                m_controlPanel->m_trainControlBox->CloseAll();
                 return;
                 break;
 
@@ -210,8 +214,20 @@ void track38Frame::OnNbChanged( wxBookCtrlEvent& event )
     }
 }
 
+void track38Frame::Settings()
+{
+    wxConfigBase *track38ConfigBase = wxConfigBase::Get();
+    if ( track38ConfigBase == NULL )
+        return;
+
+    track38ConfigBase->Write( "/ControlSettings/pfRepeatCmd", 3 );   
+}
+
 track38Frame::~track38Frame()
 {
+    m_controlPanel->m_trainControlBox->StopAll();
+    m_controlPanel->m_trainControlBox->CloseAll();
+
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
     if ( track38ConfigBase == NULL )
         return;

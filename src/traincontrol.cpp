@@ -24,6 +24,7 @@ void trainControlBox::RefreshPanel()
 
     while ( !trains.empty() )
     {
+        trains.front()->CloseCon();
         delete trains.front()->speedSlider;
         delete trains.front()->trainName;
         delete trains.front()->stopBtn;
@@ -95,7 +96,34 @@ void trainControlBox::loadTrains()
 
         selTrain->setControl( track38ConfigTrain->Read( "control", "pf" ) );
         selTrain->setMaxSpeed( track38ConfigTrain->Read( "maxSpeed", "7" ) );
-        selTrain->setPort( track38ConfigTrain->Read( "port", "" ) );
+        wxString port = track38ConfigTrain->Read( "port", "" );
+        selTrain->setPort( port );
+
+        #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
+    
+        if ( cons.count( port ) )
+        {
+            wxMessageBox( "port used" );
+            selTrain->con = cons[ port ];
+        }
+        
+        else
+        {
+            int con = connect_port( selTrain->portPoint );
+
+            if ( con < 0 )
+            {
+                usleep( 2000000 );
+                con = connect_port( selTrain->portPoint );
+                if ( con < 0 )
+                    wxMessageBox( port );
+                // wxMessageBox( wxString::Format( wxT( "%i" ), con ) );
+            }
+            
+            selTrain->con = con;           
+        }
+
+        #endif
 
         if ( selTrain->isPf() )
         {
@@ -130,6 +158,16 @@ void trainControlBox::StopAll()
     {
         selTrain->Stop();
     }  
+}
+
+void trainControlBox::CloseAll()
+{
+    // Iterate over an unordered_map using range based for loop
+    for (std::pair< wxString, int> element : cons)
+    {
+        close_port( element.second );
+        usleep(100000);
+    }
 }
 
 trainControlBox::~trainControlBox()

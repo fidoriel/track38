@@ -25,6 +25,7 @@ extern "C" {
 int connect_port(char* device);
 int read_port(int device, unsigned char *buffer, int size);
 int write_port(int device, const char *string);
+void close_port( int device );
 
 #endif
 

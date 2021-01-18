@@ -7,6 +7,8 @@
 #include "wx/radiobox.h"
 #include "wx/panel.h"
 #include "wx/statbox.h"
+#include <unordered_map>
+#include <algorithm>
 
 #include "train.h"
 
@@ -19,11 +21,13 @@ class trainControlBox : public wxStaticBox
         void RefreshPanel();
 
         void OnStopAll( wxCommandEvent& event );
+        std::unordered_map< wxString, int > cons;
         void StopAll();
+        void CloseAll();
 
         ~trainControlBox();
 
-        list<train*> trains;
+        list< train* > trains;
 
         wxFlexGridSizer* topSizer;
         wxButton* stopAllBtn;

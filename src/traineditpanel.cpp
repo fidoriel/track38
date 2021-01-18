@@ -80,6 +80,12 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
         if (  exists == true  )
             m_trainPicker->AppendString( out );
     }
+
+    if ( m_trainPicker->GetCount() > 0 )
+    {
+        m_trainPicker->SetSelection( 0 );
+        this->SelectTrain();
+    }
       
 }
 
@@ -165,7 +171,6 @@ void trainEditPanel::SaveTrain()
                 break;
             }
         }
-
         m_trainPicker->AppendString( tName->GetValue() );
         m_trainPicker->SetStringSelection( tName->GetValue() );
 
@@ -178,6 +183,15 @@ void trainEditPanel::SaveTrain()
 
 void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
 {
+    this->SelectTrain();
+}
+
+
+void trainEditPanel::SelectTrain()
+{
+    if ( m_trainPicker->GetCount() == 0 )
+        return;
+    
     wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
 
     wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
@@ -312,8 +326,11 @@ void trainEditPanel::OnRemoveTrain( wxCommandEvent& event )
     {
         case wxID_YES:
             RemoveTrain();
-            m_trainPicker->SetSelection(0);
-            OnSelectTrain( event );
+            if ( m_trainPicker->GetCount() )
+            {
+                m_trainPicker->SetSelection( 0 );
+                OnSelectTrain( event );
+            }
             break;
 
         case wxID_NO:

@@ -4,7 +4,7 @@
  
 int connect_port(char* device)
 {
-    int connection = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
+    int connection = open(device, O_RDWR | O_NDELAY);
 
     if (connection == -1)
     {
@@ -12,7 +12,7 @@ int connect_port(char* device)
         return -1;
     }
 
-    flock((int)device, LOCK_EX | LOCK_NB);
+    //flock(connection, LOCK_EX | LOCK_NB);
 
     int result, status;
     struct termios options;
@@ -78,6 +78,22 @@ int write_port(int device, const char *string)
 		}
 	}
 	return 0;
+}
+
+void close_port( int device )
+{
+    int status;
+
+    ioctl( device, TIOCMGET, &status );
+
+    status &= ~TIOCM_DTR;
+    status &= ~TIOCM_RTS;
+
+    ioctl( device, TIOCMSET, &status );
+
+    close( device );
+
+    //flock(device, LOCK_UN);
 }
 
 #endif
