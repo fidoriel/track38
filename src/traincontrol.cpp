@@ -50,7 +50,7 @@ void trainControlBox::createControlBox()
         topSizer->Add( selTrain->stopBtn, 1, wxALL , 10 );
 
         selTrain->stopBtn->Bind( wxEVT_BUTTON, &train::OnStop, selTrain, selTrain->ID_StopTrain );
-        selTrain->speedSlider->Bind( wxEVT_SCROLL_THUMBRELEASE, &train::OnChangeSpeed, selTrain, selTrain->ID_ChangeSpeed );
+        selTrain->speedSlider->Bind( wxEVT_SLIDER, &train::OnChangeSpeed, selTrain, selTrain->ID_ChangeSpeed );
     }
 
     stopAllBtn = new wxButton( this, ID_StopAll, "Stop All", wxDefaultPosition, wxDefaultSize );

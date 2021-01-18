@@ -37,7 +37,7 @@ class train
 
         wxString getName();
         void OnStop( wxCommandEvent& event );
-        void OnChangeSpeed( wxScrollEvent& event );
+        void OnChangeSpeed( wxCommandEvent& event );
         void ChangeSpeed(int newSpeed);
         void Stop();
         void CloseCon();

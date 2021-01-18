@@ -31,7 +31,7 @@ void train::Stop()
     }
 }
 
-void train::OnChangeSpeed( wxScrollEvent& event ) 
+void train::OnChangeSpeed( wxCommandEvent& event ) 
 {
     this->ChangeSpeed( speedSlider->GetValue() );
 }
