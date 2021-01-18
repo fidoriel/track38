@@ -12,7 +12,7 @@ int connect_port(char* device)
         return -1;
     }
 
-    //flock(connection, LOCK_EX | LOCK_NB);
+    flock(connection, LOCK_EX | LOCK_NB);
 
     int result, status;
     struct termios options;
@@ -93,7 +93,7 @@ void close_port( int device )
 
     close( device );
 
-    //flock(device, LOCK_UN);
+    flock(device, LOCK_UN);
 }
 
 #endif
