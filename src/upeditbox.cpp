@@ -87,10 +87,10 @@ void upEditBox::refreshSerial()
         while( ( directory = readdir( ptr ) ) != NULL )
         {
             #if defined( __APPLE__ )
-            if ( /*( strstr( directory->d_name, "tty" ) != NULL ) ||*/ ( strstr( directory->d_name, "cu" ) != NULL ) )
+            if ( strstr( directory->d_name, "cu.usb" ) != NULL )
             #endif
             #if defined( __linux__ ) || defined( __FreeBSD__ )
-            if ( ( strstr( directory->d_name, "tty" ) != NULL ) || ( strstr( directory->d_name, "cu" ) != NULL ) )
+            if ( strstr( directory->d_name, "ttyUSB" ) != NULL )
             #endif
             {
                 char tmp[ 100 ] = "/dev/";

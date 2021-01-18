@@ -9,6 +9,18 @@ class mapEditPanel : public wxPanel
 { 
     public:
         mapEditPanel( wxNotebook* parent );
+
+
+        wxBoxSizer* topSizer;
+        wxBoxSizer* mapSizer;
+        wxGrid* map;
+        wxGrid* picker;
+
+        int mapX;
+        int mapY;
+
+    private:
+    DECLARE_EVENT_TABLE()
 };
 
 #endif
