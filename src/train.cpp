@@ -152,15 +152,15 @@ void train::ChangeSpeed(int newSpeed)
         //wxMessageBox( str_send[ 1 ] );
 
         write_port( con, str_send[ 1 ] );
-        usleep( 1000000 );
-        int bytes = read_port( con, str_recv, 128 );
-		if( bytes > 0 )
-        {
-			str_recv[ bytes ] = 0;
+        // usleep( 1000000 );
+        // int bytes = read_port( con, str_recv, 128 );
+		// if( bytes > 0 )
+        // {
+			// str_recv[ bytes ] = 0;
 
-			//printf("Received %i bytes from Arduino: '%s'\n", bytes, (char *)str_recv);
-            //wxMessageBox( "OK" );
-		}
+			// printf("Received %i bytes from Arduino: '%s'\n", bytes, (char *)str_recv);
+            // wxMessageBox( "OK" );
+		// }
         #endif
     }
 }
