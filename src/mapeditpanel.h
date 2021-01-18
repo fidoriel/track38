@@ -13,8 +13,18 @@ class mapEditPanel : public wxPanel
 
         wxBoxSizer* topSizer;
         wxBoxSizer* mapSizer;
+        wxBoxSizer* switchSizer;
+
         wxGrid* map;
         wxGrid* picker;
+
+        wxStaticBox* switchPickerBox;
+        wxStaticBoxSizer* switchPickerBoxSizer;
+        wxListBox* m_switchPicker;
+
+        wxStaticBox* editBox;
+        wxStaticBoxSizer* editBoxSizer;
+        wxListBox* m_editPicker;
 
         int mapX;
         int mapY;
