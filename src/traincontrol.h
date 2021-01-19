@@ -20,8 +20,9 @@ class trainControlBox : public wxStaticBox
         void loadTrains();
         void RefreshPanel();
 
-        void OnStopAll( wxCommandEvent& event );
         std::unordered_map< wxString, int > cons;
+
+        void OnStopAll( wxCommandEvent& event );
         void StopAll();
         void CloseAll();
 

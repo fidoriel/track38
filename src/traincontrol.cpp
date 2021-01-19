@@ -2,7 +2,6 @@
 
 trainControlBox::trainControlBox( wxPanel* parent, int id, wxString title, wxString boxName ) : wxStaticBox( parent, id, title, wxDefaultPosition, wxDefaultSize, 0L, boxName )
 {
-
     this->parent = parent;
 
     //Sizer
