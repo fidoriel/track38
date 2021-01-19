@@ -17,14 +17,11 @@ class trainControlBox : public wxStaticBox
     public:
         trainControlBox( wxPanel* parent, int id, wxString title, wxString boxName );
         void createControlBox();
-        void loadTrains();
-        void RefreshPanel();
-
-        std::unordered_map< wxString, int > cons;
+        void loadTrains( std::unordered_map< wxString, int > &cons );
+        void deleteTrains();
 
         void OnStopAll( wxCommandEvent& event );
         void StopAll();
-        void CloseAll();
 
         ~trainControlBox();
 

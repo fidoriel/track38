@@ -6,12 +6,9 @@ trainControlBox::trainControlBox( wxPanel* parent, int id, wxString title, wxStr
 
     //Sizer
     topSizer = new wxFlexGridSizer( 3, 0, 0 );
-
-    this->loadTrains();
-    this->createControlBox();
 }
 
-void trainControlBox::RefreshPanel()
+void trainControlBox::deleteTrains()
 {
 
     while ( !topSizer->IsEmpty() )
@@ -30,10 +27,6 @@ void trainControlBox::RefreshPanel()
         delete trains.front();
         trains.pop_front();
     }
-
-
-    this->loadTrains();
-    this->createControlBox();
 }
 
 void trainControlBox::createControlBox()
@@ -65,7 +58,7 @@ void trainControlBox::createControlBox()
     parent->SendSizeEventToParent();
 }
 
-void trainControlBox::loadTrains()
+void trainControlBox::loadTrains( std::unordered_map< wxString, int > &cons )
 {
     //init Config
     wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
@@ -154,16 +147,6 @@ void trainControlBox::StopAll()
     {
         selTrain->Stop();
     }  
-}
-
-void trainControlBox::CloseAll()
-{
-    // Iterate over an unordered_map using range based for loop
-    for (std::pair< wxString, int> element : cons)
-    {
-        close_port( element.second );
-        usleep(100000);
-    }
 }
 
 trainControlBox::~trainControlBox()

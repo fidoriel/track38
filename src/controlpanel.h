@@ -12,6 +12,11 @@ class controlPanel : public wxPanel
         controlPanel( wxNotebook* parent );
         ~controlPanel();
 
+        void CloseAll();
+        void RefreshPanel();
+
+        std::unordered_map< wxString, int > cons;
+
         trainControlBox* m_trainControlBox;
         wxFlexGridSizer* topSizer;
 

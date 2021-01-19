@@ -28,16 +28,23 @@ class tswitch
         void setPort( wxString wxControl );
         void setDir( wxString dir );
         void setGPIO( int sGPIO );
+        void setManufacturer( wxString manufacturer );
 
-        wxString getName();
         void OnToggle( wxCommandEvent& event );
+        void OnTurn( wxCommandEvent& event );
+        void OnStraight( wxCommandEvent& event );
         void Straight();
         void Turn();
         void ChangePos( char dir );
+        void CloseCon();
+
+        char currentPos;
         int con;
 
         void createControls( wxStaticBox* parent );
-        void CloseCon();
+
+        bool isTurn();
+        bool isStraight();
 
         wxBoxSizer* sizer;
         wxStaticText* tswitchName;
@@ -45,6 +52,7 @@ class tswitch
         wxButton* turnBtn;
 
         wxString name;
+        wxString manufacturer;
         string control;
         char port[128];
         char* portPoint;
@@ -52,11 +60,12 @@ class tswitch
 
         int sGPIO;
         char dir;
-        char sPos;
 
         enum
         {
-            ID_tswitch
+            ID_tswitch,
+            ID_turn,
+            ID_straight
         };
 };
 
