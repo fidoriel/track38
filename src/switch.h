@@ -53,7 +53,6 @@ class tswitch
         int sGPIO;
         char dir;
         char sPos;
-        int con;
 
         enum
         {
