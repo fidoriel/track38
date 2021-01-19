@@ -76,9 +76,6 @@ class train
             ID_StopTrain,
             ID_ChangeSpeed
         };
-    
-    private:
-        DECLARE_EVENT_TABLE()
 };
 
 #endif
