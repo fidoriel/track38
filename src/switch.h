@@ -27,7 +27,7 @@ class tswitch
         ~tswitch();
         void setPort( wxString wxControl );
         void setDir( wxString dir );
-        void setGPIO( int sGPIO );
+        void setGPIO( wxString wxGPIO );
         void setManufacturer( wxString manufacturer );
 
         void OnToggle( wxCommandEvent& event );
@@ -37,6 +37,7 @@ class tswitch
         void Turn();
         void ChangePos( char dir );
         void CloseCon();
+        wxString getName();
 
         char currentPos;
         int con;
@@ -47,6 +48,7 @@ class tswitch
         bool isStraight();
 
         wxBoxSizer* sizer;
+
         wxStaticText* tswitchName;
         wxButton* straightBtn;
         wxButton* turnBtn;

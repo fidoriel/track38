@@ -6,13 +6,18 @@ controlPanel::controlPanel( wxNotebook* parent ) : wxPanel( parent )
     topSizer = new wxFlexGridSizer( 2, 10 , 10);
 
     m_trainControlBox = new trainControlBox( this, wxID_ANY, "Train Control", "trainControlBox" );
+    m_switchControlBox = new switchControlBox( this, wxID_ANY, "Switch Control", "switchControlBox" );
     topSizer->Add( m_trainControlBox, 2, wxGROW | wxALL, 10 );
+    topSizer->Add( m_switchControlBox, 2, wxGROW | wxALL, 10 );
+
+    m_switchControlBox->loadswitchs( cons );
+    m_switchControlBox->createControlBox();
 
     m_trainControlBox->loadTrains( cons );
     m_trainControlBox->createControlBox();
 
-    parent->SetSizerAndFit( topSizer );
-    parent->Layout();
+    this->SetSizerAndFit( topSizer );
+    this->Layout();
 	topSizer->Fit( this );
     topSizer->SetSizeHints( this );
 }
@@ -22,6 +27,10 @@ void controlPanel::RefreshPanel()
     m_trainControlBox->deleteTrains();
     m_trainControlBox->loadTrains( cons );
     m_trainControlBox->createControlBox();
+
+    m_switchControlBox->deleteswitchs();
+    m_switchControlBox->loadswitchs( cons );
+    m_switchControlBox->createControlBox();
 }
 
 void controlPanel::CloseAll()

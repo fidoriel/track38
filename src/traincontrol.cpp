@@ -51,11 +51,11 @@ void trainControlBox::createControlBox()
     topSizer->AddSpacer( 20 );
     topSizer->Add( stopAllBtn, 0, wxALL | wxALIGN_CENTER_HORIZONTAL , 10 );
 
-    parent->SetSizer( topSizer );
-    parent->Layout();
+    this->SetSizer( topSizer );
+    this->Layout();
 	topSizer->Fit( this );
     topSizer->SetSizeHints( this );
-    parent->SendSizeEventToParent();
+    this->SendSizeEventToParent();
 }
 
 void trainControlBox::loadTrains( std::unordered_map< wxString, int > &cons )
