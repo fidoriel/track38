@@ -116,8 +116,11 @@ void trainControlBox::loadTrains()
                 usleep( 2000000 );
                 con = connect_port( selTrain->portPoint );
                 if ( con < 0 )
-                    wxMessageBox( port );
-                // wxMessageBox( wxString::Format( wxT( "%i" ), con ) );
+                {
+                    wxString msg;
+                    msg.Printf( "The port used by %s is not avaliable. Please select an other port or plug in the device.", selTrain->getName().c_str() );
+                    wxMessageBox( msg, "Train Port not avaliable");
+                }
             }
             
             selTrain->con = con;           
@@ -138,12 +141,6 @@ void trainControlBox::loadTrains()
             selTrain->setUpChannel( track38ConfigTrain->Read( "channel", "1" ) );
             selTrain->setTwoMotors( track38ConfigTrain->Read( "twoMotorsUsed", false ) );
         }
-
-        //Debug
-
-        //wxMessageBox( selTrain->name );
-        //wxMessageBox( track38ConfigTrain->Read( "port", "" ) );
-        //wxMessageBox( wxString::Format(wxT("%i"), selTrain->maxTrainSpeed ) );
     }
 }
 

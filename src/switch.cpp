@@ -24,8 +24,6 @@ void tswitch::ChangePos( char dir )
 
     copy( serialSignal.begin(), serialSignal.end(), sendSignal );
 
-    //wxMessageBox( wxString::Format( wxT( "%i" ), newSpeed ) );
-
     #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
     char str_send[ 2 ][ 128 ];
     strcpy( str_send[ 1 ], sendSignal );
@@ -37,7 +35,6 @@ void tswitch::setPort(wxString wxPort)
 {
     string stdString = string(wxPort.mb_str());
     strcpy(port, stdString.c_str());
-    //wxMessageBox(port);
     this->portPoint = port;
 }
 

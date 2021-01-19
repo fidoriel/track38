@@ -89,13 +89,33 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
       
 }
 
-
 void trainEditPanel::OnChangeControler( wxCommandEvent& event )
 {
     RefreshPanel();
     panelParent->SetSizerAndFit( topSizer );
     panelParent->Layout();
     panelParent->SendSizeEventToParent();
+
+    int sel = trainKindPicker->GetSelection();
+
+    wxTextCtrl* tName;
+    wxChoice* tPort;
+    wxSpinCtrl* tSpeed;
+
+    switch ( sel )
+    {
+        // PF
+        case 0: 
+            tName = ( wxTextCtrl* ) FindWindow( "pfName" );
+            break;
+        //UP
+        case 1:
+            tName = ( wxTextCtrl* ) FindWindow( "upName" );
+            break;
+    }
+
+    wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
+    tName->ChangeValue( trainSel );
 }
 
 void trainEditPanel::RefreshPanel()
@@ -120,7 +140,6 @@ void trainEditPanel::RefreshPanel()
         rightSizer->Insert( 1, m_trainEditBox, 0, wxALL | wxGROW, 5 );
     }
 }
-
 
 void trainEditPanel::SaveTrain()
 {
@@ -171,8 +190,6 @@ void trainEditPanel::SaveTrain()
                 break;
             }
         }
-        m_trainPicker->AppendString( tName->GetValue() );
-        m_trainPicker->SetStringSelection( tName->GetValue() );
 
         track38ConfigTrain->Write( "maxSpeed", wxString::Format( wxT( "%i" ), tSpeed->GetValue() ) );
         track38ConfigTrain->Write( "channel", tChannel->GetStringSelection() );
@@ -184,8 +201,24 @@ void trainEditPanel::SaveTrain()
 void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
 {
     this->SelectTrain();
-}
 
+    wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
+
+    wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
+    track38ConfigTrain->SetPath( "/Train/" );
+    track38ConfigTrain->SetPath( trainSel );
+    wxString control = track38ConfigTrain->Read( "control", "pf" );
+    wxChoice* tPort;
+
+    if ( control.IsSameAs( "pf" ) )
+        tPort = ( wxChoice* ) FindWindow( "pfPort" );
+
+    else if ( control.IsSameAs( "pf" ) )
+        tPort = ( wxChoice* ) FindWindow( "pfPort" );
+
+    if ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND )
+        wxMessageBox( "The saved Port was not found. Please plug in the device.", "Port Error" );
+}
 
 void trainEditPanel::SelectTrain()
 {
@@ -254,8 +287,17 @@ void trainEditPanel::SelectTrain()
 
     tName->ChangeValue( trainSel );
 
+    tSpeed->SetValue( track38ConfigTrain->Read( "maxSpeed", "7" ) );
+
+    panelParent->SetSizerAndFit( topSizer );
+    panelParent->Layout();
+    panelParent->SendSizeEventToParent();
+
     if ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND )
-        wxMessageBox( "The saved Port was not found. Please plug in the device.", "Port Error" );
+    { 
+        tPort->AppendString( "Please select a new Port" );
+        tPort->SetStringSelection( "Please select a new Port" );
+    }
 
     else
     {
@@ -265,12 +307,6 @@ void trainEditPanel::SelectTrain()
                 tPort->SetSelection( idx );   
         }
     }
-
-    tSpeed->SetValue( track38ConfigTrain->Read( "maxSpeed", "7" ) );
-
-    panelParent->SetSizerAndFit( topSizer );
-    panelParent->Layout();
-    panelParent->SendSizeEventToParent();
 }
 
 void trainEditPanel::OnAddTrain( wxCommandEvent& event )
@@ -296,7 +332,6 @@ void trainEditPanel::OnAddTrain( wxCommandEvent& event )
         switch ( dialog.ShowModal() )
         {
             case wxID_YES:
-                RemoveTrain();
                 SaveTrain();
                 break;
 
@@ -308,15 +343,33 @@ void trainEditPanel::OnAddTrain( wxCommandEvent& event )
     else
     {
         SaveTrain();
+        m_trainPicker->AppendString( tName->GetValue() );
+        m_trainPicker->SetStringSelection( tName->GetValue() );
     }
     
 }
 
 void trainEditPanel::OnUpdateTrain( wxCommandEvent& event )
 {
-    RemoveTrain();
-    //m_trainPicker->Delete( m_trainPicker->GetSelection() );
+    m_trainPicker->Delete( m_trainPicker->GetSelection() );
     SaveTrain();
+
+    int sel = trainKindPicker->GetSelection();
+    wxTextCtrl* tName;
+    switch ( sel )
+    {
+        // PF
+        case 0: 
+            tName = ( wxTextCtrl* ) FindWindow( "pfName" );
+            break;
+        // UP
+        case 1:
+            tName = ( wxTextCtrl* ) FindWindow( "upName" );
+            break;          
+    }
+
+    m_trainPicker->AppendString( tName->GetValue() );
+    m_trainPicker->SetStringSelection( tName->GetValue() );
 }
 
 void trainEditPanel::OnRemoveTrain( wxCommandEvent& event )
