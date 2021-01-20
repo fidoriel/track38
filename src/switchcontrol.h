@@ -22,7 +22,7 @@ class switchControlBox : public wxStaticBox
 
         ~switchControlBox();
 
-        list< tswitch* > switchs;
+        list< tswitch* > switches;
 
         wxBoxSizer* topSizer;
         wxPanel* parent;

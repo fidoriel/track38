@@ -15,37 +15,37 @@ void switchControlBox::deleteswitchs()
         topSizer->Detach( 0 );
     }
 
-    while ( !switchs.empty() )
+    while ( !switches.empty() )
     {
-        switchs.front()->CloseCon();
-        while ( !switchs.front()->sizer->IsEmpty() )
+        switches.front()->CloseCon();
+        while ( !switches.front()->sizer->IsEmpty() )
         {
-            switchs.front()->sizer->Detach( 0 );
+            switches.front()->sizer->Detach( 0 );
         }
         
-        delete switchs.front()->tswitchName;
-        delete switchs.front()->straightBtn;
-        delete switchs.front()->turnBtn;
-        delete switchs.front()->sizer;
-        delete switchs.front();
-        switchs.pop_front();
+        delete switches.front()->tswitchName;
+        delete switches.front()->straightBtn;
+        delete switches.front()->turnBtn;
+        delete switches.front()->sizer;
+        delete switches.front();
+        switches.pop_front();
     }
 }
 
 void switchControlBox::createControlBox()
 {
-    for (tswitch* & selswitch : this->switchs)
+    for (tswitch* & selswitch : this->switches)
     {
         selswitch->createControls(this);
-
-        Bind( wxEVT_BUTTON, &tswitch::OnStraight, selswitch, selswitch->ID_straight );
-        Bind( wxEVT_BUTTON, &tswitch::OnTurn, selswitch, selswitch->ID_turn );
 
         selswitch->sizer->Add( selswitch->tswitchName, 1, wxALL, 10 );
         selswitch->sizer->Add( selswitch->straightBtn, 1, wxALL , 10 );
         selswitch->sizer->Add( selswitch->turnBtn, 1, wxALL , 10 );
 
         topSizer->Add(selswitch->sizer);
+
+        selswitch->straightBtn->Bind( wxEVT_BUTTON, &tswitch::OnStraight, selswitch );
+        selswitch->turnBtn->Bind( wxEVT_BUTTON, &tswitch::OnTurn, selswitch );
     }
 
     this->SetSizer( topSizer );
@@ -60,24 +60,24 @@ void switchControlBox::loadswitchs( std::unordered_map< wxString, int > &cons )
     //init Config
     wxConfigBase* track38Configswitch = wxConfigBase::Get();
     track38Configswitch->SetPath( "/Switch/" );
-    switchs.clear();
+    switches.clear();
 
     // Read switch Names
     long idx;
     wxString out;
     bool exists = track38Configswitch->GetFirstGroup( out, idx );
     if (  exists == true  )
-        switchs.push_back( new tswitch(out) );
+        switches.push_back( new tswitch(out) );
     
     while ( exists )
     {
         exists = track38Configswitch->GetNextGroup( out, idx );
         if (  exists == true  )
-            switchs.push_back( new tswitch(out) );
+            switches.push_back( new tswitch(out) );
     }
 
     //Fill tain information
-    for (tswitch* & selswitch : switchs)
+    for (tswitch* & selswitch : switches)
     {
         // Access the object through iterator
         track38Configswitch->SetPath( "/Switch/" );
