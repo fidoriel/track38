@@ -11,31 +11,18 @@
 #include "wx/spinctrl.h"
 #include "wx/checkbox.h"
 
-#if defined( __linux__ ) || defined( __FreeBSD__ ) || defined( __APPLE__ )
-    #include <dirent.h>
-    #include <stdio.h>
-    #include <string.h>
-    #include <stdlib.h>
-#endif
+#include "editBox.h"
 
-#if defined( WIN32 )
-    #include <string>
-    #include <Windows.h>
-#endif
-
-class upEditBox : public wxStaticBox
+class upEditBox : public editBox
 { 
     public:
         upEditBox( wxPanel* parent, int id, wxString title );
         void OnRefreshSerial( wxCommandEvent& event );
-        void refreshSerial();
 
         wxFlexGridSizer* topSizerUpEdit;
         wxStaticText* nameTxt;
         wxTextCtrl* trainName;
-        wxArrayString serialArray;
         wxStaticText* portTxt;
-        wxChoice* portPicker;
         wxStaticText* hubAdressTxt;
         wxTextCtrl* hubAdress;
         wxStaticText* channelTxt;
