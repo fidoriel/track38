@@ -1,5 +1,5 @@
-#ifndef serial_unix_h
-#define serial_unix_h
+#ifndef serial_h
+#define serial__h
 
 #include <stdio.h>
 #include <string.h>

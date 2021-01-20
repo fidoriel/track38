@@ -1,4 +1,4 @@
-#include "serial_unix.h"
+#include "serial.h"
 
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
  

@@ -109,7 +109,9 @@ bool tswitch::isStraight()
 
 void tswitch::CloseCon()
 {
+    #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
     close_port( this->con );
+    #endif
 }
 
 tswitch::~tswitch()

@@ -14,7 +14,7 @@
 #include <wx/stattext.h>
 
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
-#include "serial/serial_unix.h"
+#include "serial/serial.h"
 #endif
 
 using namespace std;
