@@ -1,14 +1,14 @@
-#include "serial.h"
+#include "serial_unix.h"
 
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
  
-int connect_port(char* device)
+int connect_port(char* comPort)
 {
-    int connection = open(device, O_RDWR | O_NDELAY);
+    int connection = open(comPort, O_RDWR | O_NDELAY);
 
     if (connection == -1)
     {
-        perror(device);
+        perror(comPort);
         return -1;
     }
 

@@ -90,8 +90,6 @@ void trainControlBox::loadTrains( std::unordered_map< wxString, int > &cons )
         selTrain->setMaxSpeed( track38ConfigTrain->Read( "maxSpeed", "7" ) );
         wxString port = track38ConfigTrain->Read( "port", "" );
         selTrain->setPort( port );
-
-        #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
     
         if ( cons.count( port ) )
         {
@@ -105,7 +103,7 @@ void trainControlBox::loadTrains( std::unordered_map< wxString, int > &cons )
 
             if ( con < 0 )
             {
-                usleep( 2000000 );
+                // usleep( 2000000 );
                 con = connect_port( selTrain->portPoint );
                 if ( con < 0 )
                 {
@@ -118,8 +116,6 @@ void trainControlBox::loadTrains( std::unordered_map< wxString, int > &cons )
             selTrain->con = con;
             cons.insert( { port, con } );         
         }
-
-        #endif
 
         if ( selTrain->isPf() )
         {

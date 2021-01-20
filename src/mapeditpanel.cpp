@@ -140,7 +140,7 @@ void mapEditPanel::AddSwitch()
 
     track38ConfigMap->SetPath( "/Switch/" );
     track38ConfigMap->SetPath( switchName->GetValue() );
-    track38ConfigMap->Write( "gpio", gpioPicker->GetValue() );
+    track38ConfigMap->Write( "gpio", wxString::Format( wxT( "%i" ), gpioPicker->GetValue() ) );
     track38ConfigMap->Write( "dir", dirPicker->GetStringSelection() );
     track38ConfigMap->Write( "port", portPicker->GetStringSelection() );
     track38ConfigMap->Write( "manufacturer", manufacturerPicker->GetStringSelection() );

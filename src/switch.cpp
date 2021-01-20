@@ -44,11 +44,9 @@ void tswitch::ChangePos( char newPos )
 
     copy( serialSignal.begin(), serialSignal.end(), sendSignal );
 
-    #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
     char str_send[ 2 ][ 128 ];
     strcpy( str_send[ 1 ], sendSignal );
     write_port( this->con, str_send[ 1 ] );
-    #endif
 }
 
 void tswitch::setPort(wxString wxPort)
