@@ -227,9 +227,7 @@ bool train::isUp()
 
 void train::CloseCon()
 {
-    #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
     close_port( this->con );
-    #endif
 }
 
 train::~train()

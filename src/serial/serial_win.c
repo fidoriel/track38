@@ -39,20 +39,18 @@ int connect_port(char* comPort)
 
 int read_port( int device, unsigned char *buffer, int size )
 {
-    HANDLE con = ( HANDLE ) device;
     int error;
-    ReadFile( con, buffer, size, ( LPDWORD )( ( void * ) &error ), NULL );
+    ReadFile( ( HANDLE ) device, buffer, size, ( LPDWORD )( ( void * ) &error ), NULL );
     return error;
 }
 
 int write_port(int device, const char *string)
 {
-    HANDLE con = ( HANDLE ) device;
     int error;
   	while( *string !=  0)
 	{
         int bytesWritten;
-        error = WriteFile( con, ( string++ ), 1, ( LPDWORD ) &bytesWritten, NULL );
+        error = WriteFile( ( HANDLE ) device, ( string++ ), 1, ( LPDWORD ) &bytesWritten, NULL );
 	}
     if ( error < 0 )
         return 1;
@@ -61,8 +59,7 @@ int write_port(int device, const char *string)
 
 void close_port( int device )
 {
-    HANDLE con = ( HANDLE ) device;
-    CloseHandle( con );
+    CloseHandle( ( HANDLE ) device );
 }
 
 #endif

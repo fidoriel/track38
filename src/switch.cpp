@@ -47,6 +47,16 @@ void tswitch::ChangePos( char newPos )
     char str_send[ 2 ][ 128 ];
     strcpy( str_send[ 1 ], sendSignal );
     write_port( this->con, str_send[ 1 ] );
+
+    // usleep( 1000000 );
+    // int bytes = read_port( con, str_recv, 128 );
+    // if( bytes > 0 )
+    // {
+        // str_recv[ bytes ] = 0;
+
+        // printf( "Received %i bytes from Arduino: '%s'\n", bytes, ( char * )str_recv );
+        // wxMessageBox( "OK" );
+    // }
 }
 
 void tswitch::setPort(wxString wxPort)
@@ -107,9 +117,7 @@ bool tswitch::isStraight()
 
 void tswitch::CloseCon()
 {
-    #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
     close_port( this->con );
-    #endif
 }
 
 tswitch::~tswitch()
