@@ -132,7 +132,6 @@ void train::ChangeSpeed( int newSpeed )
 
         //wxMessageBox( wxString::Format( wxT( "%i" ), newSpeed ) );
 
-        #if defined( __linux__ ) || defined( __FreeBSD__ ) || defined( __APPLE__ )
 
         // con = connect_port( portPoint );
 
@@ -145,7 +144,7 @@ void train::ChangeSpeed( int newSpeed )
         for ( size_t i = 0; i < track38ConfigBase->Read( "/ControlSettings/pfRepeatCmd", 3 ); i++ )
         {
             // wxMessageBox( wxString::Format( wxT("%i"), write_port( con, str_send[ 1 ] ) ) );
-            write_port( con, str_send[ 1 ] );
+            write_port( this->con, str_send[ 1 ] );
         }
         
         // usleep( 1000000 );
@@ -157,7 +156,6 @@ void train::ChangeSpeed( int newSpeed )
 			// printf( "Received %i bytes from Arduino: '%s'\n", bytes, ( char * )str_recv );
             // wxMessageBox( "OK" );
 		// }
-        #endif
     }
 }
 
@@ -229,7 +227,9 @@ bool train::isUp()
 
 void train::CloseCon()
 {
+    #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
     close_port( this->con );
+    #endif
 }
 
 train::~train()

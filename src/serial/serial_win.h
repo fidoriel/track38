@@ -1,16 +1,12 @@
-#ifndef serial_unix_h
-#define serial_unix_h
+#ifndef serial_win_h
+#define serial_win_h
 
 #include <stdio.h>
 #include <string.h>
 
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
+#ifdef __WIN32__
 
-#include <termios.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <unistd.h>
+#include <Windows.h>
 
 #ifdef __cplusplus
 extern "C" {

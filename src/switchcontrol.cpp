@@ -38,6 +38,7 @@ void switchControlBox::createControlBox()
     {
         selswitch->createControls(this);
         selswitch->sizer->AddSpacer( 20 );
+        
         selswitch->sizer->Add( selswitch->tswitchName, 0, wxALIGN_CENTER | wxALL, 10 );
         selswitch->sizer->Add( selswitch->straightBtn, 0, wxALL , 10 );
         selswitch->sizer->Add( selswitch->turnBtn, 0, wxALL , 10 );
@@ -89,7 +90,6 @@ void switchControlBox::loadswitchs( std::unordered_map< wxString, int > &cons )
         selswitch->setDir( track38Configswitch->Read( "dir", "" ) );
         selswitch->setManufacturer( track38Configswitch->Read( "manufacturer", "" ) );
 
-        #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
     
         if ( cons.count( port ) )
         {
@@ -103,7 +103,7 @@ void switchControlBox::loadswitchs( std::unordered_map< wxString, int > &cons )
 
             if ( con < 0 )
             {
-                usleep( 2000000 );
+                // usleep( 2000000 );
                 con = connect_port( selswitch->portPoint );
                 if ( con < 0 )
                 {
@@ -114,9 +114,9 @@ void switchControlBox::loadswitchs( std::unordered_map< wxString, int > &cons )
             }
 
             selswitch->con = con;
+            // wxMessageBox( wxString::Format( wxT( "%i" ), con ) );
             cons.insert( { port, con } );
         }
-        #endif
     }
 }
 

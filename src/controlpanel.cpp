@@ -65,7 +65,9 @@ void controlPanel::CloseAll()
     // Iterate over an unordered_map using range based for loop
     for (std::pair< wxString, int> element : cons)
     {
+        #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
         close_port( element.second );
+        #endif
     }
     cons.clear();
 }

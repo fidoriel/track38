@@ -17,6 +17,11 @@
 #include "serial/serial_unix.h"
 #endif
 
+#if __WIN32__
+#include "serial/serial_win.h"
+#endif
+
+
 using namespace std;
 
 class tswitch
