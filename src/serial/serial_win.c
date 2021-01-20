@@ -14,15 +14,15 @@ int connect_port(char* comPort)
     char port[12] = "\\\\.\\";
     strcat( port, comPort );
 
-    int device = CreateFileA( port, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL );
+    HANDLE device = CreateFileA( port, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL );
 
     DCB port_settings;
-    memset(&port_settings, 0, sizeof(port_settings));  /* clear the new struct  */
-    port_settings.DCBlength = sizeof(port_settings);
+    memset( &port_settings, 0, sizeof( port_settings ) );  /* clear the new struct  */
+    port_settings.DCBlength = sizeof( port_settings );
 
-    BuildCommDCBA(options, &port_settings);
+    BuildCommDCBA( options, &port_settings );
 
-    SetCommState(device, &port_settings);
+    SetCommState( device, &port_settings );
 
     COMMTIMEOUTS Cptimeouts;
 
@@ -32,35 +32,37 @@ int connect_port(char* comPort)
     Cptimeouts.WriteTotalTimeoutMultiplier = 0;
     Cptimeouts.WriteTotalTimeoutConstant   = 0;
 
-    SetCommTimeouts(device, &Cptimeouts);
+    SetCommTimeouts( device, &Cptimeouts );
 
-    return device;
+    return ( int ) device;
 }
 
-int read_port(int device, unsigned char *buffer, int size)
+int read_port( int device, unsigned char *buffer, int size )
 {
-  int errno;
-  ReadFile( device, buffer, size, ( LPDWORD )( ( void * ) &errno ), NULL );
-  return errno;
+    HANDLE con = ( HANDLE ) device;
+    int error;
+    ReadFile( con, buffer, size, ( LPDWORD )( ( void * ) &error ), NULL );
+    return error;
 }
 
 int write_port(int device, const char *string)
 {
-  	while(*string != 0)
+    HANDLE con = ( HANDLE ) device;
+    int error;
+  	while( *string !=  0)
 	{
-        int errno;
         int bytesWritten;
-        errno = WriteFile(device, (string++), 1, &bytesWritten, NULL);
-
+        error = WriteFile( con, ( string++ ), 1, ( LPDWORD ) &bytesWritten, NULL );
 	}
-    if ( errno < 0 )
+    if ( error < 0 )
         return 1;
 	return 0;
 }
 
 void close_port( int device )
 {
-    CloseHandle( device );
+    HANDLE con = ( HANDLE ) device;
+    CloseHandle( con );
 }
 
 #endif
