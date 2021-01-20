@@ -205,10 +205,10 @@ void mapEditPanel::SelectSwitch()
 
     switchName->SetValue( m_switchPicker->GetStringSelection() );
 
-    if ( portPicker->FindString( track38ConfigMap->Read( "port", "" ) ) == wxNOT_FOUND )
+    if ( ( portPicker->FindString( track38ConfigMap->Read( "port", "" ) ) == wxNOT_FOUND ) && ( portPicker->FindString( "Please select a new Port" ) == wxNOT_FOUND ) )
     {
-        portPicker->AppendString( "Please select new Port" );
-        portPicker->SetStringSelection( "Please select new Port" );
+        portPicker->AppendString( "Please select a new Port" );
+        portPicker->SetStringSelection( "Please select a new Port" );
     }
     else
     {

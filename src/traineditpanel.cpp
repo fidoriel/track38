@@ -293,7 +293,7 @@ void trainEditPanel::SelectTrain()
     panelParent->Layout();
     panelParent->SendSizeEventToParent();
 
-    if ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND )
+    if ( ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND ) && ( tPort->FindString( "Please select a new Port" ) == wxNOT_FOUND ) )
     { 
         tPort->AppendString( "Please select a new Port" );
         tPort->SetStringSelection( "Please select a new Port" );

@@ -38,7 +38,7 @@ void switchControlBox::createControlBox()
     {
         selswitch->createControls(this);
 
-        selswitch->sizer->Add( selswitch->tswitchName, 1, wxALL, 10 );
+        selswitch->sizer->Add( selswitch->tswitchName, 1, wxALIGN_CENTER | wxALL, 10 );
         selswitch->sizer->Add( selswitch->straightBtn, 1, wxALL , 10 );
         selswitch->sizer->Add( selswitch->turnBtn, 1, wxALL , 10 );
 
@@ -93,7 +93,7 @@ void switchControlBox::loadswitchs( std::unordered_map< wxString, int > &cons )
     
         if ( cons.count( port ) )
         {
-            wxMessageBox( "port used" );
+            // wxMessageBox( "port used" );
             selswitch->con = cons[ port ];
         }
         
@@ -108,12 +108,13 @@ void switchControlBox::loadswitchs( std::unordered_map< wxString, int > &cons )
                 if ( con < 0 )
                 {
                     wxString msg;
-                    msg.Printf( "The port used by %s is not avaliable. Please select an other port or plug in the device.", selswitch->getName().c_str() );
-                    wxMessageBox( msg, "switch Port not avaliable");
+                    msg.Printf( "The port used by %s is not avaliable. Please select an other port or plug in the device.", selswitch->port );
+                    wxMessageBox( msg, "Port not avaliable");
                 }
             }
 
             selswitch->con = con;
+            cons.insert( { port, con } );
         }
         #endif
     }

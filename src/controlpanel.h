@@ -15,6 +15,7 @@ class controlPanel : public wxPanel
 
         void CloseAll();
         void RefreshPanel();
+        void OnRefreshPanel( wxCommandEvent& event );
 
         std::unordered_map< wxString, int > cons;
 

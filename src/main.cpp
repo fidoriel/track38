@@ -37,6 +37,7 @@ public:
 
     wxMenu* fileMenu;
     wxMenu* helpMenu;
+    wxMenu* controlMenu;
 
     wxNotebook* m_notebook;
 
@@ -51,7 +52,9 @@ public:
 
     enum
     {
-        ID_NbChanged
+        ID_NbChanged,
+        ID_VisitGithub,
+        ID_Reconnect
     };
 
 private:
@@ -115,28 +118,6 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
     SetIcon( wxICON( AppIcon ) );
 
     //----------------
-    //Create the menu
-    //----------------
-
-    fileMenu = new wxMenu;
-    helpMenu = new wxMenu;
-
-    helpMenu->Append( wxID_ABOUT, "&About...\tF1", "Show about dialog" );
-    fileMenu->Append( wxID_EXIT, "&Exit\tAlt-X", "Quit this program" );
-    fileMenu->Append( wxID_OPEN, "&Open\tCtrl-O", "Open a .t42 file" );
-
-    //--------
-    //Menu bar
-    //--------
-
-    // Now append the freshly created menu to the menu bar...
-    menuBar = new wxMenuBar();
-    menuBar->Append( fileMenu, "&File" );
-    menuBar->Append( helpMenu, "&Help" );
-    //attach this menu bar to the frame
-    SetMenuBar( menuBar );
-
-    //----------------
     //Main Application
     //----------------
 
@@ -166,9 +147,12 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
     //-----------
     CreateStatusBar( 2 );
 
+    // 
+    // Configuration File
+    //
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
 
-    track38ConfigBase->SetPath( "/Application" );
+    track38ConfigBase->SetPath( "/Application/" );
 
     // restore frame position and size
     int x = track38ConfigBase->Read( "frameX", 50 ),
@@ -179,6 +163,43 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
     SetClientSize( w, h );
 
     track38ConfigBase->SetPath( "/" );
+
+    //----------------
+    //Create the menu
+    //----------------
+
+    helpMenu = new wxMenu;
+    helpMenu->Append( wxID_ABOUT, "About...\tF1", "Show about dialog" );
+    helpMenu->Append( ID_VisitGithub, "GitHub Development Page", "" );
+
+    fileMenu = new wxMenu;
+    fileMenu->Append( wxID_EXIT, "Exit\tAlt-X", "Quit this program" );
+    fileMenu->Append( wxID_OPEN, "Open\tCtrl-O", "Open a .t38 file" );
+
+    controlMenu = new wxMenu;
+    controlMenu->Append( ID_Reconnect, "Reload Connections\tCtrl-R", "Reconnect all Clients" );
+    
+    
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &controlPanel::OnRefreshPanel, m_controlPanel, ID_Reconnect );
+    Bind( wxEVT_COMMAND_MENU_SELECTED,
+        []( wxCommandEvent& ) {
+        wxLaunchDefaultBrowser( "https://github.com/fidoriel/track38" );
+        }, ID_VisitGithub );
+
+    //--------
+    //Menu bar
+    //--------
+
+    // Now append the freshly created menu to the menu bar...
+    menuBar = new wxMenuBar();
+    menuBar->Append( fileMenu, "File" );
+    menuBar->Append( helpMenu, "Help" );
+    menuBar->Append( controlMenu, "Control" );
+    //attach this menu bar to the frame
+    SetMenuBar( menuBar );
+
+    // menuBar->Remove( menuBar->FindMenu( "File" ) );
+
 }
 
 void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
