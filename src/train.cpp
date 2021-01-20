@@ -1,6 +1,6 @@
 #include "train.h"
 
-train::train(wxString wxName)
+train::train( wxString wxName )
 {
     this->name = wxName;
 }
@@ -8,7 +8,7 @@ train::train(wxString wxName)
 void train::createControls( wxStaticBox* parent )
 {
     this->trainName = new wxStaticText( parent, wxID_ANY, this->name );
-    this->speedSlider = new wxSlider( parent, ID_ChangeSpeed, 0, this->maxTrainSpeed*(-1), this->maxTrainSpeed, wxDefaultPosition, wxSize( 200, -1 ), wxSL_AUTOTICKS );
+    this->speedSlider = new wxSlider( parent, ID_ChangeSpeed, 0, this->maxTrainSpeed*( -1 ), this->maxTrainSpeed, wxDefaultPosition, wxSize( 200, -1 ), wxSL_AUTOTICKS );
     this->stopBtn = new wxButton( parent, ID_StopTrain, "Stop", wxDefaultPosition, wxDefaultSize );
 }
 
@@ -19,16 +19,8 @@ void train::OnStop( wxCommandEvent& event )
 
 void train::Stop()
 {
-    if (this->isPf())
-    {
-        this->speedSlider->SetValue( 0 );
-        this->ChangeSpeed( 0 );
-    }
-    
-    else if (this->isPf())
-    {
-        this->speedSlider->SetValue(0);
-    }
+    this->speedSlider->SetValue( 0 );
+    this->ChangeSpeed( 0 );
 }
 
 void train::OnChangeSpeed( wxCommandEvent& event ) 
@@ -36,7 +28,7 @@ void train::OnChangeSpeed( wxCommandEvent& event )
     this->ChangeSpeed( speedSlider->GetValue() );
 }
 
-void train::ChangeSpeed(int newSpeed)
+void train::ChangeSpeed( int newSpeed )
 {
     if ( this->isPf() )
     {
@@ -49,9 +41,9 @@ void train::ChangeSpeed(int newSpeed)
 
         serialSignal += to_string( pfGpio );
 
-        if ( ( pfChannel == 1) && ( pfSubChannel == 'R' ) )
+        if ( ( pfChannel == 1 ) && ( pfSubChannel == 'R' ) )
             serialSignal += '1';
-        else if ( ( pfChannel == 1) && ( pfSubChannel == 'B' ) )
+        else if ( ( pfChannel == 1 ) && ( pfSubChannel == 'B' ) )
             serialSignal += '2';
         else if ( ( pfChannel == 2 ) && ( pfSubChannel == 'R' ) )
             serialSignal += '3';
@@ -140,7 +132,7 @@ void train::ChangeSpeed(int newSpeed)
 
         //wxMessageBox( wxString::Format( wxT( "%i" ), newSpeed ) );
 
-        #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
+        #if defined( __linux__ ) || defined( __FreeBSD__ ) || defined( __APPLE__ )
 
         // con = connect_port( portPoint );
 
@@ -150,8 +142,9 @@ void train::ChangeSpeed(int newSpeed)
         strcpy( str_send[ 1 ], sendSignal );
 
         wxConfigBase *track38ConfigBase = wxConfigBase::Get();
-        for (size_t i = 0; i < track38ConfigBase->Read( "/ControlSettings/pfRepeatCmd", 3 ); i++)
+        for ( size_t i = 0; i < track38ConfigBase->Read( "/ControlSettings/pfRepeatCmd", 3 ); i++ )
         {
+            // wxMessageBox( wxString::Format( wxT("%i"), write_port( con, str_send[ 1 ] ) ) );
             write_port( con, str_send[ 1 ] );
         }
         
@@ -161,58 +154,58 @@ void train::ChangeSpeed(int newSpeed)
         // {
 			// str_recv[ bytes ] = 0;
 
-			// printf("Received %i bytes from Arduino: '%s'\n", bytes, (char *)str_recv);
+			// printf( "Received %i bytes from Arduino: '%s'\n", bytes, ( char * )str_recv );
             // wxMessageBox( "OK" );
 		// }
         #endif
     }
 }
 
-void train::setControl(wxString wxControl)
+void train::setControl( wxString wxControl )
 {
-    this->control = string(wxControl.mb_str());
+    this->control = string( wxControl.mb_str() );
 }
 
-void train::setPort(wxString wxPort)
+void train::setPort( wxString wxPort )
 {
-    string stdString = string(wxPort.mb_str());
-    strcpy(port, stdString.c_str());
+    string stdString = string( wxPort.mb_str() );
+    strcpy( port, stdString.c_str() );
     this->portPoint = port;
 }
 
-void train::setMaxSpeed(wxString wxSpeed)
+void train::setMaxSpeed( wxString wxSpeed )
 {
-    this->maxTrainSpeed = wxAtoi(wxSpeed);
+    this->maxTrainSpeed = wxAtoi( wxSpeed );
 }
 
-void train::setHubAdress(wxString wxHub)
+void train::setHubAdress( wxString wxHub )
 {
-    this->upHubAdress = string(wxHub.mb_str());
+    this->upHubAdress = string( wxHub.mb_str() );
 }
 
-void train::setUpChannel(wxString wxCh)
+void train::setUpChannel( wxString wxCh )
 {
-    this->upChannel = string(wxCh.mb_str())[0];
+    this->upChannel = string( wxCh.mb_str() )[0];
 }
 
-void train::setTwoMotors(bool is)
+void train::setTwoMotors( bool is )
 {
     this->upTwoMotorsUsed = is;
 }
 
-void train::setPfChannel(wxString wxCh)
+void train::setPfChannel( wxString wxCh )
 {
-    this->pfChannel = wxAtoi(wxCh);
+    this->pfChannel = wxAtoi( wxCh );
 }
 
-void train::setPfSubChannel(wxString wxSub)
+void train::setPfSubChannel( wxString wxSub )
 {
-    this->pfSubChannel = string(wxSub.mb_str())[0];
+    this->pfSubChannel = string( wxSub.mb_str() )[0];
 }
 
-void train::setPfGPIO(wxString wxGPIO)
+void train::setPfGPIO( wxString wxGPIO )
 {
-    this->pfGpio = wxAtoi(wxGPIO);
+    this->pfGpio = wxAtoi( wxGPIO );
 }
 
 wxString train::getName()

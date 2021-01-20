@@ -41,8 +41,8 @@ void trainControlBox::createControlBox()
         topSizer->Add( selTrain->speedSlider, 1, wxALL , 10 );
         topSizer->Add( selTrain->stopBtn, 1, wxALL , 10 );
 
-        selTrain->stopBtn->Bind( wxEVT_BUTTON, &train::OnStop, selTrain, selTrain->ID_StopTrain );
-        selTrain->speedSlider->Bind( wxEVT_SLIDER, &train::OnChangeSpeed, selTrain, selTrain->ID_ChangeSpeed );
+        selTrain->stopBtn->Bind( wxEVT_BUTTON, &train::OnStop, selTrain );
+        selTrain->speedSlider->Bind( wxEVT_SLIDER, &train::OnChangeSpeed, selTrain );
     }
 
     stopAllBtn = new wxButton( this, ID_StopAll, "Stop All", wxDefaultPosition, wxDefaultSize );
@@ -51,11 +51,11 @@ void trainControlBox::createControlBox()
     topSizer->AddSpacer( 20 );
     topSizer->Add( stopAllBtn, 0, wxALL | wxALIGN_CENTER_HORIZONTAL , 10 );
 
-    parent->SetSizer( topSizer );
-    parent->Layout();
+    this->SetSizer( topSizer );
+    this->Layout();
 	topSizer->Fit( this );
     topSizer->SetSizeHints( this );
-    parent->SendSizeEventToParent();
+    this->SendSizeEventToParent();
 }
 
 void trainControlBox::loadTrains( std::unordered_map< wxString, int > &cons )
@@ -95,7 +95,7 @@ void trainControlBox::loadTrains( std::unordered_map< wxString, int > &cons )
     
         if ( cons.count( port ) )
         {
-            wxMessageBox( "port used" );
+            // wxMessageBox( "port used" );
             selTrain->con = cons[ port ];
         }
         
@@ -110,12 +110,13 @@ void trainControlBox::loadTrains( std::unordered_map< wxString, int > &cons )
                 if ( con < 0 )
                 {
                     wxString msg;
-                    msg.Printf( "The port used by %s is not avaliable. Please select an other port or plug in the device.", selTrain->getName().c_str() );
-                    wxMessageBox( msg, "Train Port not avaliable");
+                    msg.Printf( "The port %s is not avaliable. Please select an other port or plug in the device.", selTrain->port );
+                    wxMessageBox( msg, "Port not avaliable");
                 }
             }
             
-            selTrain->con = con;           
+            selTrain->con = con;
+            cons.insert( { port, con } );         
         }
 
         #endif

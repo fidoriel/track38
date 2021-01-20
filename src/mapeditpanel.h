@@ -7,23 +7,12 @@
 #include "wx/spinctrl.h"
 #include "wx/fileconf.h"
 
-#if defined( __linux__ ) || defined( __FreeBSD__ ) || defined( __APPLE__ )
-    #include <dirent.h>
-    #include <stdio.h>
-    #include <string.h>
-    #include <stdlib.h>
-#endif
-
-#if defined( WIN32 )
-    #include <string>
-    #include <Windows.h>
-#endif
+#include "editBox.h"
 
 class mapEditPanel : public wxPanel
 { 
     public:
         mapEditPanel( wxNotebook* parent );
-        void refreshSerial();
         void OnRefreshSerial( wxCommandEvent& event );
         void OnAddSwitch( wxCommandEvent& event );
         void AddSwitch();
@@ -37,7 +26,7 @@ class mapEditPanel : public wxPanel
         wxBoxSizer* topSizer;
 
         //Picker
-        wxStaticBox* switchPickerBox;
+        editBox* switchPickerBox;
         wxStaticBoxSizer* switchPickerBoxSizer;
         wxListBox* m_switchPicker;
 
@@ -61,7 +50,6 @@ class mapEditPanel : public wxPanel
 
         wxArrayString dirList;
         wxArrayString manufacturerList;
-        wxArrayString serialArray;
 
         enum
         {

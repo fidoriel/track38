@@ -26,7 +26,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     //
 
     // Picker
-    switchPickerBox = new wxStaticBox( this, wxID_ANY, "Pick Switch to edit" );
+    switchPickerBox = new editBox( this, wxID_ANY, "Pick Switch to edit" );
     switchPickerBoxSizer = new wxStaticBoxSizer( switchPickerBox, wxHORIZONTAL );
     m_switchPicker = new wxListBox( this, ID_SelectSwitch, wxDefaultPosition, wxDefaultSize, 0, NULL );
 
@@ -38,8 +38,8 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
 
     refreshSizer = new wxBoxSizer( wxHORIZONTAL );
     labelPort = new wxStaticText( this, wxID_ANY, "Arduino ComPort:" );
-    this->refreshSerial();
-    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), serialArray, 0L, wxDefaultValidator, "switchPort" );
+    this->switchPickerBox->refreshSerial();
+    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), switchPickerBox->serialArray, 0L, wxDefaultValidator, "switchPort" );
     m_RefreshBtn = new wxButton( this, ID_RefreshSerial, "Refresh", wxDefaultPosition, wxDefaultSize );
     refreshSizer->Add( portPicker, 0, wxALL, 10 );
     refreshSizer->Add( m_RefreshBtn, 0, wxALL, 10 );
@@ -104,8 +104,8 @@ void mapEditPanel::OnRefreshSerial( wxCommandEvent& event )
 {
     refreshSizer->Detach( 0 );
     delete portPicker;
-    this->refreshSerial();
-    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), serialArray, 0L, wxDefaultValidator, "switchPort" );
+    this->switchPickerBox->refreshSerial();
+    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), switchPickerBox->serialArray, 0L, wxDefaultValidator, "switchPort" );
     refreshSizer->Insert( 0, portPicker, 0, wxALL, 10 );
     refreshSizer->Layout();
 }
@@ -205,10 +205,10 @@ void mapEditPanel::SelectSwitch()
 
     switchName->SetValue( m_switchPicker->GetStringSelection() );
 
-    if ( portPicker->FindString( track38ConfigMap->Read( "port", "" ) ) == wxNOT_FOUND )
+    if ( ( portPicker->FindString( track38ConfigMap->Read( "port", "" ) ) == wxNOT_FOUND ) && ( portPicker->FindString( "Please select a new Port" ) == wxNOT_FOUND ) )
     {
-        portPicker->AppendString( "Please select new Port" );
-        portPicker->SetStringSelection( "Please select new Port" );
+        portPicker->AppendString( "Please select a new Port" );
+        portPicker->SetStringSelection( "Please select a new Port" );
     }
     else
     {
@@ -259,54 +259,4 @@ void mapEditPanel::loadSwitches()
         m_switchPicker->SetSelection( 0 );
         this->SelectSwitch();
     }
-}
-
-void mapEditPanel::refreshSerial()
-{
-    #if defined( __linux__ ) || defined( __FreeBSD__ ) || defined( __APPLE__ )
-        this->serialArray.Empty();
-        int comportsElements;
-        char directory_name[  ] = "/dev/";
-        DIR *ptr;
-        struct dirent *directory;
-        ptr = opendir( directory_name );
-        while( ( directory = readdir( ptr ) ) != NULL )
-        {
-            #if defined( __APPLE__ )
-            if ( strstr( directory->d_name, "cu.usb" ) != NULL )
-            #endif
-            #if defined( __linux__ ) || defined( __FreeBSD__ )
-            if ( strstr( directory->d_name, "ttyUSB" ) != NULL )
-            #endif
-            {
-                char tmp[ 100 ] = "/dev/";
-                for ( int i = 0; i < 95; i++ )
-                {
-                    tmp[ 5+i ] = directory->d_name[ i ];
-                }
-                this->serialArray.Add( tmp );
-            }
-        }
-    #endif
-
-    #if defined( WIN32 )
-        this->serialArray.Empty();
-        wchar_t lpTargetPath[ 5000 ]; // buffer to store the path of the COMPORTS
-
-        for ( int i = 0; i < 255; i++ ) // checking ports from COM0 to COM255
-        {
-            std::wstring str = L"COM" + std::to_wstring( i ); // converting to COM0, COM1, COM2
-            DWORD res = QueryDosDevice( str.c_str(), lpTargetPath, 5000 );
-
-            // Test the return value and error if any
-            if ( res != 0 ) //QueryDosDevice returns zero if it didn't find an object
-            {
-                //std::cout << str << ": " << lpTargetPath << std::endl;
-                this->serialArray.Add( str );
-            }
-            if ( ::GetLastError() == ERROR_INSUFFICIENT_BUFFER )
-            {
-            }
-        }
-    #endif
 }

@@ -1,12 +1,13 @@
 #include "switch.h"
 
-tswitch::tswitch(wxString wxName)
+tswitch::tswitch( wxString wxName )
 {
     this->name = wxName;
 }
 
 void tswitch::createControls( wxStaticBox* parent )
 {
+    this->sizer = new wxBoxSizer( wxVERTICAL );
     this->tswitchName = new wxStaticText( parent, wxID_ANY, this->name );
     this->straightBtn = new wxButton( parent, ID_turn, "Turn", wxDefaultPosition, wxDefaultSize );
     this->turnBtn = new wxButton( parent, ID_straight, "Straight", wxDefaultPosition, wxDefaultSize );
@@ -34,10 +35,10 @@ void tswitch::ChangePos( char newPos )
         serialSignal += '0';
     }
 
-    serialSignal += dir;
-    serialSignal += newPos;
+    serialSignal += to_string( sGPIO );
 
-    serialSignal += to_string( sGPIO );     
+    serialSignal += dir;
+    serialSignal += newPos; 
 
     serialSignal += '>';
 
@@ -46,7 +47,7 @@ void tswitch::ChangePos( char newPos )
     #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
     char str_send[ 2 ][ 128 ];
     strcpy( str_send[ 1 ], sendSignal );
-    write_port( con, str_send[ 1 ] );
+    write_port( this->con, str_send[ 1 ] );
     #endif
 }
 
@@ -57,9 +58,9 @@ void tswitch::setPort(wxString wxPort)
     this->portPoint = port;
 }
 
-void tswitch::setGPIO( int sGPIO )
+void tswitch::setGPIO( wxString wxGPIO )
 {
-    this->sGPIO = sGPIO;
+    this->sGPIO = wxAtoi( wxGPIO );
 }
 
 void tswitch::setDir( wxString wxDir )
@@ -89,6 +90,11 @@ void tswitch::OnStraight( wxCommandEvent& event )
 void tswitch::OnTurn( wxCommandEvent& event )
 {
     this->Turn();
+}
+
+wxString tswitch::getName()
+{
+    return this->name;
 }
 
 bool tswitch::isTurn()
