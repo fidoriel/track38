@@ -193,8 +193,8 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
     // Now append the freshly created menu to the menu bar...
     menuBar = new wxMenuBar();
     menuBar->Append( fileMenu, "File" );
-    menuBar->Append( helpMenu, "Help" );
     menuBar->Append( controlMenu, "Control" );
+    menuBar->Append( helpMenu, "Help" );
     //attach this menu bar to the frame
     SetMenuBar( menuBar );
 

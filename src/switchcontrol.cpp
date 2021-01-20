@@ -37,10 +37,10 @@ void switchControlBox::createControlBox()
     for (tswitch* & selswitch : this->switches)
     {
         selswitch->createControls(this);
-
-        selswitch->sizer->Add( selswitch->tswitchName, 1, wxALIGN_CENTER | wxALL, 10 );
-        selswitch->sizer->Add( selswitch->straightBtn, 1, wxALL , 10 );
-        selswitch->sizer->Add( selswitch->turnBtn, 1, wxALL , 10 );
+        selswitch->sizer->AddSpacer( 20 );
+        selswitch->sizer->Add( selswitch->tswitchName, 0, wxALIGN_CENTER | wxALL, 10 );
+        selswitch->sizer->Add( selswitch->straightBtn, 0, wxALL , 10 );
+        selswitch->sizer->Add( selswitch->turnBtn, 0, wxALL , 10 );
 
         topSizer->Add(selswitch->sizer);
 
