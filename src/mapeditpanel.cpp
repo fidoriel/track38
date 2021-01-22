@@ -17,9 +17,37 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
 
 
     //
-    // Map ToDo
+    // Map
     //
+    
+    map = new wxGrid( this,
+                       wxID_ANY,
+                       wxPoint( 0, 0 ),
+                       wxSize( 40, 40) );
 
+    map->CreateGrid( 25, 50);
+    map->HideColLabels();
+    map->HideRowLabels();
+    map->EnableDragGridSize( false );
+    map->DisableCellEditControl();
+
+    for ( size_t i = 0; i < map->GetNumberRows(); i++ )
+    {
+        map->SetRowSize( i, 40 );
+    }
+
+    for ( size_t i = 0; i < map->GetNumberCols(); i++ )
+    {
+        map->SetColSize( i, 40 );
+    }
+
+    for ( size_t col = 0; col < map->GetNumberCols(); col++ )
+    {
+        for ( size_t row = 0; row < map->GetNumberRows(); row++ )
+        {
+            map->SetReadOnly( row, col );
+        }
+    }
 
     //
     // Switch Edit Panel
@@ -86,11 +114,17 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     switchPickerBoxSizer->Add( editSizer, 0, wxEXPAND | wxALL, 10 );
     switchPickerBoxSizer->Add( saveSizer, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 10 );
 
+    //
+    // Map Picker
+    //
+
     // 
     // Topsizer
-    // 
+    //
 
-    topSizer->Add( switchPickerBoxSizer, 0, wxALIGN_CENTER | wxALL, 0 );
+    topSizer->Add( map, 3, wxEXPAND | wxALL, 5 );
+
+    topSizer->Add( switchPickerBoxSizer, 1, wxALIGN_CENTER | wxALL, 0 );
 
     this->SetSizerAndFit( topSizer );
     this->Layout();

@@ -18,7 +18,6 @@ class switchControlBox : public wxStaticBox
         switchControlBox( wxPanel* parent, int id, wxString title, wxString boxName );
         void createControlBox();
         void loadswitchs( std::unordered_map< wxString, int > &cons );
-        void deleteswitchs();
 
         ~switchControlBox();
 

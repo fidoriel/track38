@@ -25,6 +25,9 @@ class mapEditPanel : public wxPanel
         // Topsizer
         wxBoxSizer* topSizer;
 
+        // Map
+        wxGrid* map;
+
         //Picker
         editBox* switchPickerBox;
         wxStaticBoxSizer* switchPickerBoxSizer;

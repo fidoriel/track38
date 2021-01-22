@@ -8,30 +8,6 @@ switchControlBox::switchControlBox( wxPanel* parent, int id, wxString title, wxS
     topSizer = new wxBoxSizer( wxHORIZONTAL );
 }
 
-void switchControlBox::deleteswitchs()
-{
-    while ( !topSizer->IsEmpty() )
-    {
-        topSizer->Detach( 0 );
-    }
-
-    while ( !switches.empty() )
-    {
-        switches.front()->CloseCon();
-        while ( !switches.front()->sizer->IsEmpty() )
-        {
-            switches.front()->sizer->Detach( 0 );
-        }
-        
-        delete switches.front()->tswitchName;
-        delete switches.front()->straightBtn;
-        delete switches.front()->turnBtn;
-        delete switches.front()->sizer;
-        delete switches.front();
-        switches.pop_front();
-    }
-}
-
 void switchControlBox::createControlBox()
 {
     for (tswitch* & selswitch : this->switches)

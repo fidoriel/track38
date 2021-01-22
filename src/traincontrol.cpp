@@ -8,27 +8,6 @@ trainControlBox::trainControlBox( wxPanel* parent, int id, wxString title, wxStr
     topSizer = new wxFlexGridSizer( 3, 0, 0 );
 }
 
-void trainControlBox::deleteTrains()
-{
-
-    while ( !topSizer->IsEmpty() )
-    {
-        topSizer->Remove( 0 );
-    }
-    
-    delete stopAllBtn;
-
-    while ( !trains.empty() )
-    {
-        trains.front()->CloseCon();
-        delete trains.front()->speedSlider;
-        delete trains.front()->trainName;
-        delete trains.front()->stopBtn;
-        delete trains.front();
-        trains.pop_front();
-    }
-}
-
 void trainControlBox::createControlBox()
 {
     topSizer->AddSpacer(10);

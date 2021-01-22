@@ -18,7 +18,6 @@ class trainControlBox : public wxStaticBox
         trainControlBox( wxPanel* parent, int id, wxString title, wxString boxName );
         void createControlBox();
         void loadTrains( std::unordered_map< wxString, int > &cons );
-        void deleteTrains();
 
         void OnStopAll( wxCommandEvent& event );
         void StopAll();
