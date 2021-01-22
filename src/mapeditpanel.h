@@ -25,7 +25,8 @@ class mapEditPanel : public wxPanel
         void OnUpdateSwitch( wxCommandEvent& event );
         void OnRemoveSwitch( wxCommandEvent& event );
         void OnSelectSwitch( wxCommandEvent& event );
-        void OnSelectCellPicker( wxGridEvent& event );
+        void OnDragCellPicker( wxGridEvent& event );
+        void OnDragCellMap( wxGridEvent& event );
         void SelectSwitch();
         void loadSwitches();
 
@@ -75,17 +76,18 @@ class mapEditPanel : public wxPanel
             ID_UpdateSwitch,
             ID_RemoveSwitch,
             ID_SelectSwitch,
-            ID_DragPicker
+            ID_DragPicker,
+            ID_DragMap
         };
 
     private:
         DECLARE_EVENT_TABLE()
 };
 
-class DnDText : public wxTextDropTarget
+class gridTextDropTarget : public wxTextDropTarget
 {
     public:
-        DnDText(wxGrid *grid)
+        gridTextDropTarget(wxGrid *grid)
         {
             m_grid = grid;
         }
@@ -98,7 +100,7 @@ class DnDText : public wxTextDropTarget
 	        int col = coordinates.GetCol() + m_grid->GetFirstFullyVisibleColumn();
 	        m_grid->SetCellValue(row,col, text);
 
-            wxMessageBox( wxString::Format( wxT( "R %i \n C %i"), row, col ) );
+            // wxMessageBox( wxString::Format( wxT( "R %i \n C %i"), row, col ) );
             return true;
         }
 };

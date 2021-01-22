@@ -6,7 +6,8 @@ wxBEGIN_EVENT_TABLE( mapEditPanel, wxPanel )
     EVT_BUTTON( ID_UpdateSwitch, mapEditPanel::OnUpdateSwitch )
     EVT_BUTTON( ID_RemoveSwitch, mapEditPanel::OnRemoveSwitch )
     EVT_LISTBOX( ID_SelectSwitch, mapEditPanel::OnSelectSwitch )
-    EVT_GRID_CMD_CELL_LEFT_CLICK( ID_DragPicker, mapEditPanel::OnSelectCellPicker )
+    EVT_GRID_CMD_CELL_LEFT_CLICK( ID_DragPicker, mapEditPanel::OnDragCellPicker )
+    EVT_GRID_CMD_CELL_LEFT_CLICK( ID_DragMap, mapEditPanel::OnDragCellMap )
 wxEND_EVENT_TABLE()
 
 mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
@@ -21,10 +22,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // Map
     //
     
-    map = new wxGrid( this,
-                       wxID_ANY,
-                       wxPoint( 0, 0 ),
-                       wxSize( 40, 40) );
+    map = new wxGrid( this, ID_DragMap, wxPoint( 0, 0 ), wxSize( 40, 40) );
 
     map->CreateGrid( 25, 50);
     map->HideColLabels();
@@ -39,7 +37,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     map->SetCellHighlightColour( *wxWHITE );
     map->SetCellHighlightROPenWidth( 0 );
 
-    map->SetDropTarget( new DnDText( map ) );
+    map->SetDropTarget( new gridTextDropTarget( map ) );
 
     for ( size_t i = 0; i < map->GetNumberRows(); i++ )
     {
@@ -348,9 +346,17 @@ void mapEditPanel::loadSwitches()
     }
 }
 
-void mapEditPanel::OnSelectCellPicker( wxGridEvent& event)
+void mapEditPanel::OnDragCellPicker( wxGridEvent& event)
 {
     wxTextDataObject myData(wxT("This text will be dragged."));
+    wxDropSource dragSource(this);
+    dragSource.SetData(myData);
+    wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove);
+}
+
+void mapEditPanel::OnDragCellMap( wxGridEvent& event)
+{
+    wxTextDataObject myData(wxT(""));
     wxDropSource dragSource(this);
     dragSource.SetData(myData);
     wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove);
