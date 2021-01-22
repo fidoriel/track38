@@ -14,7 +14,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // Topsizer
     //
     topSizer = new wxBoxSizer( wxVERTICAL );
-
+    bottomSizer = new wxBoxSizer( wxHORIZONTAL );
 
     //
     // Map
@@ -30,6 +30,13 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     map->HideRowLabels();
     map->EnableDragGridSize( false );
     map->DisableCellEditControl();
+    map->EnableEditing( false );
+    map->EnableGridLines( false );
+    map->EnableDragGridSize( false );
+    map->DisableCellEditControl();
+    map->SetMargins( 0, 0 );
+    map->SetCellHighlightColour( *wxWHITE );
+    map->SetCellHighlightROPenWidth( 0 );
 
     for ( size_t i = 0; i < map->GetNumberRows(); i++ )
     {
@@ -46,6 +53,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
         for ( size_t row = 0; row < map->GetNumberRows(); row++ )
         {
             map->SetReadOnly( row, col );
+            map->SetCellBackgroundColour( row, col, *wxWHITE );
         }
     }
 
@@ -118,13 +126,54 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // Map Picker
     //
 
+    mapPickerBox = new wxStaticBox( this, wxID_ANY, "Symbol Picker");
+    mapPickerBoxSizer = new wxStaticBoxSizer( mapPickerBox, wxHORIZONTAL );
+
+    pickerGrid = new wxGrid( this, ID_SelectCell, wxPoint( 0, 0 ), wxSize( 10, 10) );
+
+    // Grid
+    pickerGrid->CreateGrid( 5, 4 );
+    pickerGrid->HideColLabels();
+    pickerGrid->HideRowLabels();
+    pickerGrid->EnableEditing( false );
+    pickerGrid->EnableGridLines( false );
+    pickerGrid->EnableDragGridSize( false );
+    pickerGrid->DisableCellEditControl();
+    pickerGrid->SetMargins( 0, 0 );
+    pickerGrid->SetCellHighlightColour( *wxWHITE );
+    pickerGrid->SetCellHighlightROPenWidth( 0 );
+    // pickerGrid->Bind( wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler( mapEditPanel::OnSelectCellPicker ), NULL, this );
+
+    for ( size_t i = 0; i < pickerGrid->GetNumberRows(); i++ )
+    {
+        pickerGrid->SetRowSize( i, 30 );
+    }
+
+    for ( size_t i = 0; i < pickerGrid->GetNumberCols(); i++ )
+    {
+        pickerGrid->SetColSize( i, 30 );
+    }
+
+    for ( size_t col = 0; col < pickerGrid->GetNumberCols(); col++ )
+    {
+        for ( size_t row = 0; row < pickerGrid->GetNumberRows(); row++ )
+        {
+            pickerGrid->SetReadOnly( row, col );
+            pickerGrid->SetCellBackgroundColour( row, col, *wxWHITE );
+        }
+    }
+
+    mapPickerBoxSizer->Add( pickerGrid, 1, wxEXPAND | wxALL, 5 );
+
     // 
     // Topsizer
     //
 
-    topSizer->Add( map, 3, wxEXPAND | wxALL, 5 );
+    bottomSizer->Add( switchPickerBoxSizer, 4, wxALIGN_CENTER | wxALL, 5);
+    bottomSizer->Add( mapPickerBoxSizer, 1, wxEXPAND | wxALL, 5 );
 
-    topSizer->Add( switchPickerBoxSizer, 1, wxALIGN_CENTER | wxALL, 0 );
+    topSizer->Add( map, 3, wxEXPAND | wxALL, 5 );
+    topSizer->Add( bottomSizer, 1, wxALIGN_CENTER | wxALL, 5);
 
     this->SetSizerAndFit( topSizer );
     this->Layout();
@@ -293,4 +342,9 @@ void mapEditPanel::loadSwitches()
         m_switchPicker->SetSelection( 0 );
         this->SelectSwitch();
     }
+}
+
+void mapEditPanel::OnSelectCellPicker( wxCommandEvent& event)
+{
+
 }

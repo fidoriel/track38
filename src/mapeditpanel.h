@@ -6,6 +6,9 @@
 #include "wx/grid.h"
 #include "wx/spinctrl.h"
 #include "wx/fileconf.h"
+#include "wx/statbox.h"
+#include "wx/colour.h"
+#include "wx/event.h"
 
 #include "editBox.h"
 
@@ -19,19 +22,27 @@ class mapEditPanel : public wxPanel
         void OnUpdateSwitch( wxCommandEvent& event );
         void OnRemoveSwitch( wxCommandEvent& event );
         void OnSelectSwitch( wxCommandEvent& event );
+        void OnSelectCellPicker( wxCommandEvent& event );
         void SelectSwitch();
         void loadSwitches();
 
         // Topsizer
         wxBoxSizer* topSizer;
+        wxBoxSizer* bottomSizer;
 
         // Map
         wxGrid* map;
 
-        //Picker
+        // switch
         editBox* switchPickerBox;
         wxStaticBoxSizer* switchPickerBoxSizer;
         wxListBox* m_switchPicker;
+
+        // Symbol Picker
+
+        wxStaticBox* mapPickerBox;
+        wxStaticBoxSizer* mapPickerBoxSizer;
+        wxGrid* pickerGrid;
 
         // EditSizer
         wxFlexGridSizer* editSizer;
@@ -60,7 +71,8 @@ class mapEditPanel : public wxPanel
             ID_AddSwitch,
             ID_UpdateSwitch,
             ID_RemoveSwitch,
-            ID_SelectSwitch
+            ID_SelectSwitch,
+            ID_SelectCell
         };
 
     private:
