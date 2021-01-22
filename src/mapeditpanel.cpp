@@ -6,6 +6,7 @@ wxBEGIN_EVENT_TABLE( mapEditPanel, wxPanel )
     EVT_BUTTON( ID_UpdateSwitch, mapEditPanel::OnUpdateSwitch )
     EVT_BUTTON( ID_RemoveSwitch, mapEditPanel::OnRemoveSwitch )
     EVT_LISTBOX( ID_SelectSwitch, mapEditPanel::OnSelectSwitch )
+    EVT_GRID_CMD_CELL_LEFT_CLICK( ID_DragPicker, mapEditPanel::OnSelectCellPicker )
 wxEND_EVENT_TABLE()
 
 mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
@@ -38,14 +39,16 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     map->SetCellHighlightColour( *wxWHITE );
     map->SetCellHighlightROPenWidth( 0 );
 
+    map->SetDropTarget( new DnDText( map ) );
+
     for ( size_t i = 0; i < map->GetNumberRows(); i++ )
     {
-        map->SetRowSize( i, 40 );
+        map->SetRowSize( i, 25 );
     }
 
     for ( size_t i = 0; i < map->GetNumberCols(); i++ )
     {
-        map->SetColSize( i, 40 );
+        map->SetColSize( i, 25 );
     }
 
     for ( size_t col = 0; col < map->GetNumberCols(); col++ )
@@ -54,6 +57,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
         {
             map->SetReadOnly( row, col );
             map->SetCellBackgroundColour( row, col, *wxWHITE );
+            map->SetCellTextColour( row, col, *wxBLACK );
         }
     }
 
@@ -129,7 +133,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     mapPickerBox = new wxStaticBox( this, wxID_ANY, "Symbol Picker");
     mapPickerBoxSizer = new wxStaticBoxSizer( mapPickerBox, wxHORIZONTAL );
 
-    pickerGrid = new wxGrid( this, ID_SelectCell, wxPoint( 0, 0 ), wxSize( 10, 10) );
+    pickerGrid = new wxGrid( this, ID_DragPicker, wxPoint( 0, 0 ), wxSize( 10, 10) );
 
     // Grid
     pickerGrid->CreateGrid( 5, 4 );
@@ -344,7 +348,10 @@ void mapEditPanel::loadSwitches()
     }
 }
 
-void mapEditPanel::OnSelectCellPicker( wxCommandEvent& event)
+void mapEditPanel::OnSelectCellPicker( wxGridEvent& event)
 {
-
+    wxTextDataObject myData(wxT("This text will be dragged."));
+    wxDropSource dragSource(this);
+    dragSource.SetData(myData);
+    wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove);
 }

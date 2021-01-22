@@ -9,6 +9,9 @@
 #include "wx/statbox.h"
 #include "wx/colour.h"
 #include "wx/event.h"
+#include "wx/dnd.h"
+#include "wx/utils.h"
+#include "wx/string.h"
 
 #include "editBox.h"
 
@@ -22,7 +25,7 @@ class mapEditPanel : public wxPanel
         void OnUpdateSwitch( wxCommandEvent& event );
         void OnRemoveSwitch( wxCommandEvent& event );
         void OnSelectSwitch( wxCommandEvent& event );
-        void OnSelectCellPicker( wxCommandEvent& event );
+        void OnSelectCellPicker( wxGridEvent& event );
         void SelectSwitch();
         void loadSwitches();
 
@@ -72,11 +75,32 @@ class mapEditPanel : public wxPanel
             ID_UpdateSwitch,
             ID_RemoveSwitch,
             ID_SelectSwitch,
-            ID_SelectCell
+            ID_DragPicker
         };
 
     private:
         DECLARE_EVENT_TABLE()
+};
+
+class DnDText : public wxTextDropTarget
+{
+    public:
+        DnDText(wxGrid *grid)
+        {
+            m_grid = grid;
+        }
+        wxGrid *m_grid;
+        virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& text)
+        {
+            wxGridCellCoords coordinates = m_grid->XYToCell( x, y );
+
+            int row = coordinates.GetRow() + m_grid->GetFirstFullyVisibleRow();
+	        int col = coordinates.GetCol() + m_grid->GetFirstFullyVisibleColumn();
+	        m_grid->SetCellValue(row,col, text);
+
+            wxMessageBox( wxString::Format( wxT( "R %i \n C %i"), row, col ) );
+            return true;
+        }
 };
 
 #endif
