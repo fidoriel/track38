@@ -134,27 +134,17 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     pickerGrid = new wxGrid( this, ID_DragPicker, wxPoint( 0, 0 ), wxSize( 10, 10) );
 
     // Grid
-    pickerGrid->CreateGrid( 5, 4 );
+    pickerGrid->CreateGrid( 30, 1 );
     pickerGrid->HideColLabels();
     pickerGrid->HideRowLabels();
     pickerGrid->EnableEditing( false );
     pickerGrid->EnableGridLines( false );
     pickerGrid->EnableDragGridSize( false );
     pickerGrid->DisableCellEditControl();
-    pickerGrid->SetMargins( 0, 0 );
+    pickerGrid->SetMargins( 0 - wxSYS_VSCROLL_X , 0 );
     pickerGrid->SetCellHighlightColour( *wxWHITE );
     pickerGrid->SetCellHighlightROPenWidth( 0 );
-    
 
-    for ( size_t i = 0; i < pickerGrid->GetNumberRows(); i++ )
-    {
-        pickerGrid->SetRowSize( i, 40 );
-    }
-
-    for ( size_t i = 0; i < pickerGrid->GetNumberCols(); i++ )
-    {
-        pickerGrid->SetColSize( i, 40 );
-    }
 
     for ( size_t col = 0; col < pickerGrid->GetNumberCols(); col++ )
     {
@@ -172,10 +162,10 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     //
 
     bottomSizer->Add( switchPickerBoxSizer, 4, wxALIGN_CENTER | wxALL, 5);
-    bottomSizer->Add( mapPickerBoxSizer, 1, wxEXPAND | wxALL, 5 );
+    bottomSizer->Add( mapPickerBoxSizer, 0, wxEXPAND | wxALL, 5 );
 
     topSizer->Add( map, 3, wxEXPAND | wxALL, 5 );
-    topSizer->Add( bottomSizer, 1, wxALIGN_CENTER | wxALL, 5);
+    topSizer->Add( bottomSizer, 0, wxALIGN_CENTER | wxALL, 5);
 
     this->SetSizerAndFit( topSizer );
     this->Layout();
