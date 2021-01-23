@@ -28,11 +28,8 @@ set( CMAKE_BIULD_TYPE Debug )
 set( CMAKE_CXX_STANDARD 11 )
 
 project( track38 )
-#set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_NAME}/" )
 
-#set flags
-#set( MONO 0 )
-#set( RELEASE 0 )
+set( WXWIDGETS_VERSION_IN_HOME_DIR "wxWidgets-3.1.4" )
 
 message( "CXX Compiler: ${CMAKE_CXX_COMPILER}" )
 message( "CXX Compiler ID: ${CMAKE_CXX_COMPILER_ID}" )
@@ -42,7 +39,7 @@ if( WIN32 )
     message( "Target: Windows32" )
     #MONOLITHIC compiled value
     #directory where wxwidget is located root folder
-    set( wxWidgets_BASE_DIR_WIN "C:/Users/lucak/wxWidgets-3.1.4" )
+    set( wxWidgets_BASE_DIR_WIN "C:/Users/$ENV{username}/${WXWIDGETS_VERSION_IN_HOME_DIR}" )
     include_directories( 
         includes
         "${wxWidgets_BASE_DIR_WIN}/include/"
@@ -97,7 +94,7 @@ if( WIN32 )
 elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
     message( "Target: Linux" )
     #directory where wxwidget is located root folder
-    set( wxWidgets_ROOT_DIR "/home/pi/wxWidgets-3.1.4" )
+    set( wxWidgets_ROOT_DIR "$ENV{HOME}/${WXWIDGETS_VERSION_IN_HOME_DIR}" )
     set( wxWidgets_CONFIG_EXECUTABLE "${wxWidgets_ROOT_DIR}/gtkbuild/wx-config" )
 
     if( RELEASE )
@@ -106,7 +103,7 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
 elseif( APPLE )
     message( "Target: Apple" )
     #directory where wxwidget is located root folder
-	set( wxWidgets_ROOT_DIR "/Users/lucakleinschmidt/wxWidgets-3.1.4" )
+	set( wxWidgets_ROOT_DIR "$ENV{HOME}/${WXWIDGETS_VERSION_IN_HOME_DIR}" )
 	set( wxWidgets_CONFIG_EXECUTABLE "${wxWidgets_ROOT_DIR}/macbuild/wx-config" )
 endif()
 
