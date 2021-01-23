@@ -173,7 +173,8 @@ if( APPLE )
         TARGET ${PROJECT_NAME}
         POST_BUILD
         COMMAND plutil -replace NSHighResolutionCapable -bool true ${PROJECT_NAME}.app/Contents/Info.plist
-         )
+        COMMAND cp -r "../resources/tracks" "${PROJECT_NAME}.app/Contents/Resources"
+        )
 elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
     EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
     message( STATUS "Architecture: ${ARCHITECTURE}" )

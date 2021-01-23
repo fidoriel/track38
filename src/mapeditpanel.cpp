@@ -129,7 +129,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     //
 
     mapPickerBox = new wxStaticBox( this, wxID_ANY, "Symbol Picker");
-    mapPickerBoxSizer = new wxStaticBoxSizer( mapPickerBox, wxHORIZONTAL );
+    mapPickerBoxSizer = new wxStaticBoxSizer( mapPickerBox, wxVERTICAL );
 
     pickerGrid = new wxGrid( this, ID_DragPicker, wxPoint( 0, 0 ), wxSize( 10, 10) );
 
@@ -144,16 +144,16 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     pickerGrid->SetMargins( 0, 0 );
     pickerGrid->SetCellHighlightColour( *wxWHITE );
     pickerGrid->SetCellHighlightROPenWidth( 0 );
-    // pickerGrid->Bind( wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler( mapEditPanel::OnSelectCellPicker ), NULL, this );
+    
 
     for ( size_t i = 0; i < pickerGrid->GetNumberRows(); i++ )
     {
-        pickerGrid->SetRowSize( i, 30 );
+        pickerGrid->SetRowSize( i, 40 );
     }
 
     for ( size_t i = 0; i < pickerGrid->GetNumberCols(); i++ )
     {
-        pickerGrid->SetColSize( i, 30 );
+        pickerGrid->SetColSize( i, 40 );
     }
 
     for ( size_t col = 0; col < pickerGrid->GetNumberCols(); col++ )
@@ -354,7 +354,7 @@ void mapEditPanel::OnDragCellPicker( wxGridEvent& event)
     wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove);
 }
 
-void mapEditPanel::OnDragCellMap( wxGridEvent& event)
+void mapEditPanel::OnDragCellMap( wxGridEvent& event )
 {
     wxTextDataObject myData(wxT(""));
     wxDropSource dragSource(this);
