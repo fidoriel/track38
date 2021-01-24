@@ -24,13 +24,29 @@ cellImageRenderer::cellImageRenderer( wxString filename, int border, int degree 
     wxString path = "resources/";
     #endif
 
-    file = filename;
+    filepath = "";
 
-    filepath += path;
-    filepath += filename;
+    if ( filename.Find( "|" ) == wxNOT_FOUND )
+    {
+        this->rotation = degree;
+        this->file = filename;
+
+        this->filepath += path;
+        this->filepath += filename;
+    }
+
+    else
+    {
+        wxArrayString ary = wxArrayString( wxSplit( filename, '|' ) );
+
+        this->filepath += path;
+        this->filepath += ary.Item( 0 );
+        this->rotation = wxAtoi( ary.Item( 1 ) );
+        this->file = ary.Item( 0 );
+        // wxMessageBox(filepath);
+    }
 
     this->border = border;
-    this->rotation = degree;
     this->isEmptyCell = false;
 
     wxBitmap bitmap( 100, 100 );

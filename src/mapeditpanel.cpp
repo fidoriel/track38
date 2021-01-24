@@ -368,16 +368,17 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
     cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( event.GetRow(), event.GetCol() );
     if (this->clickToDrag)
     {
-        if ( !cellRenderer->isEmptyCell )
-        {
-            wxTextDataObject myData( cellRenderer->file );
-            wxDropSource dragSource( this );
-            dragSource.SetData( myData );
-            wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
 
-            map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer() );
-            map->ForceRefresh();
-        }
+        wxString fileRot = cellRenderer->file;
+        fileRot += "|";
+        fileRot += wxString::Format( wxT( "%i" ), cellRenderer->rotation );
+        wxTextDataObject myData( fileRot );
+        wxDropSource dragSource( this );
+        dragSource.SetData( myData );
+        wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
+
+        map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer() );
+        map->ForceRefresh();
     }
     else
     {
@@ -430,7 +431,12 @@ void mapEditPanel::turn( int row, int col, bool clockwise )
             if (clockwise)
                 degree += 90;
             else
-                degree -= 90;
+            {
+                if ( degree == 0)
+                    degree = 270;
+                else
+                    degree -= 90;
+            }
 
             map->SetCellRenderer( row, col, new cellImageRenderer( filename, 0, degree ) );
             map->ForceRefresh();

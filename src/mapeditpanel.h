@@ -13,6 +13,7 @@
 #include "wx/utils.h"
 #include "wx/string.h"
 #include "wx/menu.h"
+#include <wx/arrstr.h>
 
 #include "editBox.h"
 #include "cellImageRenderer.h"
