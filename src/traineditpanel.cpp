@@ -56,8 +56,8 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     rightSizer->Add( m_trainEditBox, 0, wxALL | wxGROW, 5 );
     rightSizer->Add( saveSizer, 0, wxALL | wxALIGN_CENTER, 5 );
 
-    topSizer->Add( leftSizer, 1, wxGROW | wxALL, 5 );
-    topSizer->Add( rightSizer, 4, wxGROW | wxALL, 5 );
+    topSizer->Add( leftSizer, 1, wxALL, 5 );
+    topSizer->Add( rightSizer, 4, wxALL, 5 );
     parent->SetSizer( topSizer );
     parent->Layout();
 	topSizer->Fit( this );
