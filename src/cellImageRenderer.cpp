@@ -1,23 +1,31 @@
 #include "cellImageRenderer.h"
 
-cellImageRenderer::cellImageRenderer( std::string filename, int border )
+// cellImageRenderer::cellImageRenderer( std::string filename, int border )
+// {
+//     cellImageRenderer( wxString( filename ), border );
+// }
+
+cellImageRenderer::cellImageRenderer( wxString filename, int border )
 {
     // -- find --
 
     ::wxInitAllImageHandlers();
 
     #ifdef __APPLE__
-    wxString path = wxString( "track38.app/Contents/Resources/tracks/" );
+    wxString path = wxString( "track38.app/Contents/Resources/" );
     #elif defined(__linux__) || defined(__FreeBSD__)
     wxString path = "resources/";
     #elif __WIN32__
     wxString path = "resources/";
     #endif
 
+    file = filename;
+
     filepath += path;
-    filepath += wxString( filename );
+    filepath += filename;
 
     this->border = border;
+    this->degree = 0;
 
     // wxMessageBox( filepath );
 }

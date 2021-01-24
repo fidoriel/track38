@@ -87,10 +87,10 @@ class mapEditPanel : public wxPanel
         DECLARE_EVENT_TABLE()
 };
 
-class gridTextDropTarget : public wxTextDropTarget
+class mapDropTarget : public wxTextDropTarget
 {
     public:
-        gridTextDropTarget(wxGrid *grid)
+        mapDropTarget(wxGrid *grid)
         {
             m_grid = grid;
         }
@@ -101,8 +101,10 @@ class gridTextDropTarget : public wxTextDropTarget
 
             int row = coordinates.GetRow() + m_grid->GetFirstFullyVisibleRow();
 	        int col = coordinates.GetCol() + m_grid->GetFirstFullyVisibleColumn();
-	        m_grid->SetCellValue(row,col, text);
+	        // m_grid->SetCellValue(row,col, text);
+            m_grid->SetCellRenderer( row, col, new cellImageRenderer( text ) );
 
+            m_grid->ForceRefresh();
             // wxMessageBox( wxString::Format( wxT( "R %i \n C %i"), row, col ) );
             return true;
         }

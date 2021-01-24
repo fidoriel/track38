@@ -30,14 +30,14 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     map->HideColLabels();
     map->HideRowLabels();
     map->EnableEditing( false );
-    // map->EnableGridLines( false );
+    map->EnableGridLines( false );
     map->EnableDragGridSize( false );
     map->DisableCellEditControl();
     map->SetMargins( 0 , 0 );
     map->SetCellHighlightColour( *wxWHITE );
     map->SetCellHighlightROPenWidth( 0 );
 
-    map->SetDropTarget( new gridTextDropTarget( map ) );
+    map->SetDropTarget( new mapDropTarget( map ) );
 
     for ( size_t i = 0; i < map->GetNumberRows(); i++ )
     {
@@ -59,12 +59,13 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
         }
     }
 
-    map->SetCellRenderer( 0, 0, new cellImageRenderer( "straightn.png" ) );
-    map->SetCellRenderer( 0, 1, new cellImageRenderer( "straightn.png" ) );
-    map->SetCellRenderer( 0, 2, new cellImageRenderer( "curven.png" ) );
-    map->SetCellRenderer( 1, 1, new cellImageRenderer( "straightn.png" ) );
-    map->SetCellRenderer( 2, 2, new cellImageRenderer( "straightn.png" ) );
-    map->SetCellRenderer( 3, 3, new cellImageRenderer( "straightn.png" ) );
+    // map->SetCellRenderer( 0, 0, new cellImageRenderer( "tracks/straightn.png" ) );
+    // map->SetCellRenderer( 0, 1, new cellImageRenderer( "tracks/straightn.png" ) );
+    // map->SetCellRenderer( 0, 2, new cellImageRenderer( "tracks/curven.png" ) );
+    // map->SetCellRenderer( 1, 1, new cellImageRenderer( "tracks/straightn.png" ) );
+    // map->SetCellRenderer( 2, 2, new cellImageRenderer( "tracks/straightn.png" ) );
+    // map->SetCellRenderer( 3, 3, new cellImageRenderer( "tracks/straightn.png" ) );
+    // map->SetCellRenderer( 1, 2, new cellImageRenderer( "tracks/switchLn.png" ) );
 
     //
     // Switch Edit Panel
@@ -163,12 +164,12 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
         }
     }
 
-    pickerGrid->SetCellRenderer( 0, 0, new cellImageRenderer( "straightn.png", 2 ) );
-    pickerGrid->SetCellRenderer( 1, 0, new cellImageRenderer( "curven.png", 2 ) );
-    pickerGrid->SetCellRenderer( 2, 0, new cellImageRenderer( "switchLn.png", 2 ) );
-    pickerGrid->SetCellRenderer( 3, 0, new cellImageRenderer( "switchRn.png", 2 ) );
-    pickerGrid->SetCellRenderer( 4, 0, new cellImageRenderer( "stopn.png", 2 ) );
-    pickerGrid->SetCellRenderer( 5, 0, new cellImageRenderer( "crossn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 0, 0, new cellImageRenderer( "tracks/straightn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 1, 0, new cellImageRenderer( "tracks/curven.png", 2 ) );
+    pickerGrid->SetCellRenderer( 2, 0, new cellImageRenderer( "tracks/switchLn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 3, 0, new cellImageRenderer( "tracks/switchRn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 4, 0, new cellImageRenderer( "tracks/stopn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 5, 0, new cellImageRenderer( "tracks/crossn.png", 2 ) );
 
     mapPickerBoxSizer->Add( pickerGrid, 1, wxEXPAND | wxALL, 5 );
 
@@ -353,18 +354,19 @@ void mapEditPanel::loadSwitches()
 
 void mapEditPanel::OnDragCellPicker( wxGridEvent& event )
 {
-    wxTextDataObject myData(wxT("This text will be dragged."));
-    wxDropSource dragSource(this);
-    dragSource.SetData(myData);
-    wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove);
+    cellImageRenderer* cellRenderer = (cellImageRenderer*) pickerGrid->GetCellRenderer( event.GetRow(), event.GetCol() );
+    wxTextDataObject myData( cellRenderer->file );
+    wxDropSource dragSource( this );
+    dragSource.SetData( myData );
+    wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
 }
 
 void mapEditPanel::OnDragCellMap( wxGridEvent& event )
 {
-    wxTextDataObject myData(wxT(""));
-    wxDropSource dragSource(this);
-    dragSource.SetData(myData);
-    wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove);
+    wxTextDataObject myData( wxT( "" ) );
+    wxDropSource dragSource( this );
+    dragSource.SetData( myData );
+    wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
 }
 
 void mapEditPanel::OnDClickMap( wxGridEvent& event )
