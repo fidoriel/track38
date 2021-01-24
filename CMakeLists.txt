@@ -38,6 +38,9 @@ message( "CXX Compiler is GNU: ${CMAKE_COMPILER_IS_GNUCXX}" )
 
 if( WIN32 )
     message( "Target: Windows32" )
+    if( RELEASE )
+        set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_NAME}/" )
+    endif()
     #MONOLITHIC compiled value
     #directory where wxwidget is located root folder
     set( wxWidgets_BASE_DIR_WIN "C:/Users/$ENV{username}/${WXWIDGETS_VERSION_IN_HOME_DIR}" )
@@ -210,5 +213,13 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
         COMMAND gcc AppRun.c -o AppDir/AppRun
 
         COMMAND ./${AppImageRelease} AppDir
-	)
+	    )
+elseif( WIN32 )
+    add_custom_command(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND if not exist "${PROJECT_NAME}\\resources" mkdir "${PROJECT_NAME}\\resources"
+        COMMAND if not exist "${PROJECT_NAME}\\resources\\tracks" mkdir "${PROJECT_NAME}\\resources\\tracks"
+        COMMAND copy "..\\resources\\tracks" "${PROJECT_NAME}\\resources\\tracks\\"
+    )
 endif()
