@@ -30,6 +30,7 @@ set( CMAKE_CXX_STANDARD 11 )
 project( track38 )
 
 set( WXWIDGETS_VERSION_IN_HOME_DIR "wxWidgets-3.1.4" )
+set( RELEASE 1 )
 
 message( "CXX Compiler: ${CMAKE_CXX_COMPILER}" )
 message( "CXX Compiler ID: ${CMAKE_CXX_COMPILER_ID}" )
@@ -189,6 +190,9 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
     add_custom_command(
         TARGET ${PROJECT_NAME}
         POST_BUILD
+        COMMAND mkdir "AppDir/usr/share/"
+        COMMAND mkdir "AppDir/usr/share/icons"
+        COMMAND cp -r "../resources/tracks/" "AppDir/usr/share/icons/"
         COMMAND wget -N https://github.com/AppImage/AppImageKit/releases/download/continuous/${AppImageRelease}
         COMMAND chmod a+x ${AppImageRelease}
         COMMAND cp ../icons/AppIcon.png AppDir/AppIcon.png

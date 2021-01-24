@@ -19,7 +19,7 @@ cellImageRenderer::cellImageRenderer( wxString filename, int border, int degree 
     #ifdef __APPLE__
     wxString path = wxString( "track38.app/Contents/Resources/" );
     #elif defined(__linux__) || defined(__FreeBSD__)
-    wxString path = "resources/";
+    wxString path = "../usr/share/icons/";
     #elif __WIN32__
     wxString path = "resources/";
     #endif
