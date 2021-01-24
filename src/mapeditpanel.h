@@ -14,6 +14,7 @@
 #include "wx/string.h"
 
 #include "editBox.h"
+#include "cellImageRenderer.h"
 
 class mapEditPanel : public wxPanel
 { 
@@ -29,6 +30,8 @@ class mapEditPanel : public wxPanel
         void OnDragCellMap( wxGridEvent& event );
         void SelectSwitch();
         void loadSwitches();
+        void OnDClickMap( wxGridEvent& event );
+        void OnRClickMap( wxGridEvent& event );
 
         // Topsizer
         wxBoxSizer* topSizer;
@@ -77,7 +80,7 @@ class mapEditPanel : public wxPanel
             ID_RemoveSwitch,
             ID_SelectSwitch,
             ID_DragPicker,
-            ID_DragMap
+            ID_Map
         };
 
     private:

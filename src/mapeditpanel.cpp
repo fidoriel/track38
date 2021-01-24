@@ -7,7 +7,9 @@ wxBEGIN_EVENT_TABLE( mapEditPanel, wxPanel )
     EVT_BUTTON( ID_RemoveSwitch, mapEditPanel::OnRemoveSwitch )
     EVT_LISTBOX( ID_SelectSwitch, mapEditPanel::OnSelectSwitch )
     EVT_GRID_CMD_CELL_LEFT_CLICK( ID_DragPicker, mapEditPanel::OnDragCellPicker )
-    EVT_GRID_CMD_CELL_LEFT_CLICK( ID_DragMap, mapEditPanel::OnDragCellMap )
+    EVT_GRID_CMD_CELL_LEFT_CLICK( ID_Map, mapEditPanel::OnDragCellMap )
+    EVT_GRID_CMD_CELL_LEFT_DCLICK( ID_Map, mapEditPanel::OnDClickMap )
+    EVT_GRID_CMD_CELL_RIGHT_CLICK( ID_Map, mapEditPanel::OnRClickMap )
 wxEND_EVENT_TABLE()
 
 mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
@@ -22,18 +24,16 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // Map
     //
     
-    map = new wxGrid( this, ID_DragMap, wxPoint( 0, 0 ), wxSize( 40, 40) );
+    map = new wxGrid( this, ID_Map, wxPoint( 0, 0 ), wxSize( 40, 40) );
 
     map->CreateGrid( 25, 50);
     map->HideColLabels();
     map->HideRowLabels();
-    map->EnableDragGridSize( false );
-    map->DisableCellEditControl();
     map->EnableEditing( false );
-    map->EnableGridLines( false );
+    // map->EnableGridLines( false );
     map->EnableDragGridSize( false );
     map->DisableCellEditControl();
-    map->SetMargins( 0, 0 );
+    map->SetMargins( 0 , 0 );
     map->SetCellHighlightColour( *wxWHITE );
     map->SetCellHighlightROPenWidth( 0 );
 
@@ -41,12 +41,12 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
 
     for ( size_t i = 0; i < map->GetNumberRows(); i++ )
     {
-        map->SetRowSize( i, 25 );
+        map->SetRowSize( i, 50 );
     }
 
     for ( size_t i = 0; i < map->GetNumberCols(); i++ )
     {
-        map->SetColSize( i, 25 );
+        map->SetColSize( i, 50 );
     }
 
     for ( size_t col = 0; col < map->GetNumberCols(); col++ )
@@ -58,6 +58,13 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
             map->SetCellTextColour( row, col, *wxBLACK );
         }
     }
+
+    map->SetCellRenderer( 0, 0, new cellImageRenderer( "straightn.png" ) );
+    map->SetCellRenderer( 0, 1, new cellImageRenderer( "straightn.png" ) );
+    map->SetCellRenderer( 0, 2, new cellImageRenderer( "curven.png" ) );
+    map->SetCellRenderer( 1, 1, new cellImageRenderer( "straightn.png" ) );
+    map->SetCellRenderer( 2, 2, new cellImageRenderer( "straightn.png" ) );
+    map->SetCellRenderer( 3, 3, new cellImageRenderer( "straightn.png" ) );
 
     //
     // Switch Edit Panel
@@ -134,7 +141,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     pickerGrid = new wxGrid( this, ID_DragPicker, wxPoint( 0, 0 ), wxSize( 10, 10) );
 
     // Grid
-    pickerGrid->CreateGrid( 30, 1 );
+    pickerGrid->CreateGrid( 6, 1 );
     pickerGrid->HideColLabels();
     pickerGrid->HideRowLabels();
     pickerGrid->EnableEditing( false );
@@ -151,9 +158,17 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
         for ( size_t row = 0; row < pickerGrid->GetNumberRows(); row++ )
         {
             pickerGrid->SetReadOnly( row, col );
+            pickerGrid->SetRowSize( row, ( pickerGrid->GetColSize( 0 ) - wxSYS_VSCROLL_X ) );
             pickerGrid->SetCellBackgroundColour( row, col, *wxWHITE );
         }
     }
+
+    pickerGrid->SetCellRenderer( 0, 0, new cellImageRenderer( "straightn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 1, 0, new cellImageRenderer( "curven.png", 2 ) );
+    pickerGrid->SetCellRenderer( 2, 0, new cellImageRenderer( "switchLn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 3, 0, new cellImageRenderer( "switchRn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 4, 0, new cellImageRenderer( "stopn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 5, 0, new cellImageRenderer( "crossn.png", 2 ) );
 
     mapPickerBoxSizer->Add( pickerGrid, 1, wxEXPAND | wxALL, 5 );
 
@@ -336,7 +351,7 @@ void mapEditPanel::loadSwitches()
     }
 }
 
-void mapEditPanel::OnDragCellPicker( wxGridEvent& event)
+void mapEditPanel::OnDragCellPicker( wxGridEvent& event )
 {
     wxTextDataObject myData(wxT("This text will be dragged."));
     wxDropSource dragSource(this);
@@ -350,4 +365,14 @@ void mapEditPanel::OnDragCellMap( wxGridEvent& event )
     wxDropSource dragSource(this);
     dragSource.SetData(myData);
     wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove);
+}
+
+void mapEditPanel::OnDClickMap( wxGridEvent& event )
+{
+
+}
+
+void mapEditPanel::OnRClickMap( wxGridEvent& event )
+{
+    
 }

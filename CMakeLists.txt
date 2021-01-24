@@ -165,7 +165,7 @@ if( APPLE )
         MACOSX_BUNDLE_ICON_FILE AppIcon.icns
         MACOSX_BUNDLE_COPYRIGHT "Copyright fidoriel 2020"
         MACOSX_BUNDLE_GUI_IDENTIFIER "${PROJECT_NAME}"
-         )
+        )
     add_custom_command( 
         TARGET ${PROJECT_NAME}
         POST_BUILD

@@ -2,6 +2,7 @@
 #include <string>
 #include "wx/fileconf.h"
 #include "wx/config.h"
+#include "wx/image.h"
 
 #include "../icons/AppIcon.xpm"
 
