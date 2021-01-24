@@ -22,6 +22,9 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     //
     // Map
     //
+
+    // Options
+    this->clickToDrag = false;
     
     map = new wxGrid( this, ID_Map, wxPoint( 0, 0 ), wxSize( 40, 40) );
 
@@ -367,20 +370,6 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
     {
         if ( !cellRenderer->isEmptyCell )
         {
-            wxString filename = cellRenderer->file;
-            int degree = cellRenderer->rotation;
-            cellRenderer->DecRef();
-
-            degree += 90;
-
-            map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( filename, 0, degree ) );
-            map->ForceRefresh();
-        }
-    }
-    else
-    {
-        if ( !cellRenderer->isEmptyCell )
-        {
             wxTextDataObject myData( cellRenderer->file );
             wxDropSource dragSource( this );
             dragSource.SetData( myData );
@@ -390,14 +379,78 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
             map->ForceRefresh();
         }
     }
+    else
+    {
+        this->turn( event.GetRow(), event.GetCol() );
+
+    }
 }
 
 void mapEditPanel::OnRClickMap( wxGridEvent& event )
 {
- 	wxMenu mnu;
- 	mnu.Append(wxID_ANY, 	"Do something");
- 	mnu.Append(wxID_ANY, 	"Do something else");
- 	PopupMenu(&mnu);
+    eventCellRow = event.GetRow();
+    eventCellCol = event.GetCol();
+    mapMenu = new wxMenu();
+ 	mapMenu->Append( ID_RMenueTurnCW, "Rotate Clockwise" );
+ 	mapMenu->Append( ID_RMenueTurnCC, "Rotate Counter Clockwise" );
+    mapMenu->AppendSeparator();
+    mapMenu->AppendCheckItem( ID_DragMode, "DragMode" );
+ 	mapMenu->AppendSeparator();
+    mapMenu->Append( ID_CellRemove, "Remove" );
+
+    mapMenu->Check( ID_DragMode, this->clickToDrag );
+
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnDragMode, this, ID_DragMode );
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnMapRemove, this, ID_CellRemove );
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnTurnCW, this, ID_RMenueTurnCW );
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnTurnCC, this, ID_RMenueTurnCC );
+
+ 	PopupMenu( mapMenu );
+}
+
+void mapEditPanel::OnTurnCC( wxCommandEvent& event )
+{
+    this->turn( eventCellRow, eventCellCol, false );
+}
+
+void mapEditPanel::OnTurnCW( wxCommandEvent& event )
+{
+    this->turn( eventCellRow, eventCellCol, true );
+}
+
+void mapEditPanel::turn( int row, int col, bool clockwise )
+{
+    cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( row, col );
+    if ( !cellRenderer->isEmptyCell )
+        {
+            wxString filename = cellRenderer->file;
+            int degree = cellRenderer->rotation;
+            cellRenderer->DecRef();
+
+            if (clockwise)
+                degree += 90;
+            else
+                degree -= 90;
+
+            map->SetCellRenderer( row, col, new cellImageRenderer( filename, 0, degree ) );
+            map->ForceRefresh();
+        }
+}
+
+void mapEditPanel::OnMapRemove( wxCommandEvent& event )
+{
+    cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( eventCellRow, eventCellCol );
+
+    cellRenderer->DecRef();
+
+    map->SetCellRenderer( eventCellRow, eventCellCol, new cellImageRenderer() );
+    map->ForceRefresh();
+}
+
+void mapEditPanel::OnDragMode( wxCommandEvent& event )
+{
+    this->clickToDrag = !this->clickToDrag;
+    mapMenu->Check( ID_DragMode, this->clickToDrag );
 }
 
 

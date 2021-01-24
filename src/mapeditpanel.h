@@ -27,7 +27,12 @@ class mapEditPanel : public wxPanel
         void OnUpdateSwitch( wxCommandEvent& event );
         void OnRemoveSwitch( wxCommandEvent& event );
         void OnSelectSwitch( wxCommandEvent& event );
+        void OnDragMode( wxCommandEvent& event );
+        void OnMapRemove( wxCommandEvent& event );
         void OnDragCellPicker( wxGridEvent& event );
+        void turn( int row, int col, bool clockwise = true);
+        void OnTurnCC( wxCommandEvent& event );
+        void OnTurnCW( wxCommandEvent& event );
         void SelectSwitch();
         void loadSwitches();
         void OnLClickMap( wxGridEvent& event );
@@ -40,6 +45,9 @@ class mapEditPanel : public wxPanel
         // Map
         wxGrid* map;
         bool clickToDrag;
+        wxMenu* mapMenu;
+        int eventCellRow;
+        int eventCellCol;
 
         // switch
         editBox* switchPickerBox;
@@ -81,7 +89,11 @@ class mapEditPanel : public wxPanel
             ID_RemoveSwitch,
             ID_SelectSwitch,
             ID_DragPicker,
-            ID_Map
+            ID_Map,
+            ID_DragMode,
+            ID_CellRemove,
+            ID_RMenueTurnCW,
+            ID_RMenueTurnCC
         };
 
     private:
@@ -94,29 +106,6 @@ class mapDropTarget : public wxTextDropTarget
         mapDropTarget(wxGrid *grid);
         wxGrid *m_grid;
         virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& text);
-};
-
-class MyDialog : public wxDialog
-{
-public:
-    MyDialog(wxWindow* parent);
-    void OnContextMenu(wxContextMenuEvent& event);
-    void OnRightUp(wxMouseEvent& event)
-        { //ShowContextMenu(event.GetPosition());
-        }
-
-    void OnMenuOpen(wxMenuEvent& event)
-        {}
-    void OnMenuClose(wxMenuEvent& event)
-        {}
-    void OnMenuHighlight(wxMenuEvent& event)
-        {}
-
-private:
-    void LogMenuOpenCloseOrHighlight(const wxMenuEvent& event, const wxString& what);
-    void ShowContextMenu(const wxPoint& pos);
-    wxTextCtrl *m_textctrl;
-
 };
 
 #endif
