@@ -19,8 +19,8 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     //
 
     leftBox = new wxStaticBox( this, wxID_ANY, "&Pick Train to edit" );
-    leftSizer = new wxStaticBoxSizer( leftBox, wxVERTICAL );
-    m_trainPicker = new wxListBox( this, ID_SelectTrain, wxDefaultPosition, wxDefaultSize, 0, NULL );
+    leftSizer = new wxStaticBoxSizer( leftBox, wxHORIZONTAL );
+    m_trainPicker = new wxListBox( this, ID_SelectTrain, wxDefaultPosition, wxSize( -1, 500 ), 0, NULL );
 
     leftSizer->Add( m_trainPicker, 1, wxGROW | wxALL, 5 );
     leftSizer->SetMinSize( 200, 0 );
@@ -58,6 +58,7 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
 
     topSizer->Add( leftSizer, 1, wxALL, 5 );
     topSizer->Add( rightSizer, 4, wxALL, 5 );
+
     parent->SetSizer( topSizer );
     parent->Layout();
 	topSizer->Fit( this );
@@ -218,6 +219,8 @@ void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
 
     if ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND )
         wxMessageBox( "The saved Port was not found. Please plug in the device.", "Port Error" );
+    
+    tPort->Refresh();
 }
 
 void trainEditPanel::SelectTrain()
