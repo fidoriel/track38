@@ -12,6 +12,7 @@
 #include "wx/dnd.h"
 #include "wx/utils.h"
 #include "wx/string.h"
+#include "wx/menu.h"
 
 #include "editBox.h"
 #include "cellImageRenderer.h"
@@ -27,10 +28,9 @@ class mapEditPanel : public wxPanel
         void OnRemoveSwitch( wxCommandEvent& event );
         void OnSelectSwitch( wxCommandEvent& event );
         void OnDragCellPicker( wxGridEvent& event );
-        void OnDragCellMap( wxGridEvent& event );
         void SelectSwitch();
         void loadSwitches();
-        void OnDClickMap( wxGridEvent& event );
+        void OnLClickMap( wxGridEvent& event );
         void OnRClickMap( wxGridEvent& event );
 
         // Topsizer
@@ -39,6 +39,7 @@ class mapEditPanel : public wxPanel
 
         // Map
         wxGrid* map;
+        bool clickToDrag;
 
         // switch
         editBox* switchPickerBox;
@@ -90,24 +91,32 @@ class mapEditPanel : public wxPanel
 class mapDropTarget : public wxTextDropTarget
 {
     public:
-        mapDropTarget(wxGrid *grid)
-        {
-            m_grid = grid;
-        }
+        mapDropTarget(wxGrid *grid);
         wxGrid *m_grid;
-        virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& text)
-        {
-            wxGridCellCoords coordinates = m_grid->XYToCell( x, y );
+        virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& text);
+};
 
-            int row = coordinates.GetRow() + m_grid->GetFirstFullyVisibleRow();
-	        int col = coordinates.GetCol() + m_grid->GetFirstFullyVisibleColumn();
-	        // m_grid->SetCellValue(row,col, text);
-            m_grid->SetCellRenderer( row, col, new cellImageRenderer( text ) );
-
-            m_grid->ForceRefresh();
-            // wxMessageBox( wxString::Format( wxT( "R %i \n C %i"), row, col ) );
-            return true;
+class MyDialog : public wxDialog
+{
+public:
+    MyDialog(wxWindow* parent);
+    void OnContextMenu(wxContextMenuEvent& event);
+    void OnRightUp(wxMouseEvent& event)
+        { //ShowContextMenu(event.GetPosition());
         }
+
+    void OnMenuOpen(wxMenuEvent& event)
+        {}
+    void OnMenuClose(wxMenuEvent& event)
+        {}
+    void OnMenuHighlight(wxMenuEvent& event)
+        {}
+
+private:
+    void LogMenuOpenCloseOrHighlight(const wxMenuEvent& event, const wxString& what);
+    void ShowContextMenu(const wxPoint& pos);
+    wxTextCtrl *m_textctrl;
+
 };
 
 #endif

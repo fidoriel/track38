@@ -7,8 +7,7 @@ wxBEGIN_EVENT_TABLE( mapEditPanel, wxPanel )
     EVT_BUTTON( ID_RemoveSwitch, mapEditPanel::OnRemoveSwitch )
     EVT_LISTBOX( ID_SelectSwitch, mapEditPanel::OnSelectSwitch )
     EVT_GRID_CMD_CELL_LEFT_CLICK( ID_DragPicker, mapEditPanel::OnDragCellPicker )
-    EVT_GRID_CMD_CELL_LEFT_CLICK( ID_Map, mapEditPanel::OnDragCellMap )
-    EVT_GRID_CMD_CELL_LEFT_DCLICK( ID_Map, mapEditPanel::OnDClickMap )
+    EVT_GRID_CMD_CELL_LEFT_CLICK( ID_Map, mapEditPanel::OnLClickMap )
     EVT_GRID_CMD_CELL_RIGHT_CLICK( ID_Map, mapEditPanel::OnRClickMap )
 wxEND_EVENT_TABLE()
 
@@ -56,6 +55,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
             map->SetReadOnly( row, col );
             map->SetCellBackgroundColour( row, col, *wxWHITE );
             map->SetCellTextColour( row, col, *wxBLACK );
+            map->SetCellRenderer( row, col, new cellImageRenderer() );
         }
     }
 
@@ -152,7 +152,6 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     pickerGrid->SetMargins( 0 - wxSYS_VSCROLL_X , 0 );
     pickerGrid->SetCellHighlightColour( *wxWHITE );
     pickerGrid->SetCellHighlightROPenWidth( 0 );
-
 
     for ( size_t col = 0; col < pickerGrid->GetNumberCols(); col++ )
     {
@@ -361,20 +360,63 @@ void mapEditPanel::OnDragCellPicker( wxGridEvent& event )
     wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
 }
 
-void mapEditPanel::OnDragCellMap( wxGridEvent& event )
+void mapEditPanel::OnLClickMap( wxGridEvent& event )
 {
-    wxTextDataObject myData( wxT( "" ) );
-    wxDropSource dragSource( this );
-    dragSource.SetData( myData );
-    wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
-}
+    cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( event.GetRow(), event.GetCol() );
+    if (this->clickToDrag)
+    {
+        if ( !cellRenderer->isEmptyCell )
+        {
+            wxString filename = cellRenderer->file;
+            int degree = cellRenderer->rotation;
+            cellRenderer->DecRef();
 
-void mapEditPanel::OnDClickMap( wxGridEvent& event )
-{
+            degree += 90;
 
+            map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( filename, 0, degree ) );
+            map->ForceRefresh();
+        }
+    }
+    else
+    {
+        if ( !cellRenderer->isEmptyCell )
+        {
+            wxTextDataObject myData( cellRenderer->file );
+            wxDropSource dragSource( this );
+            dragSource.SetData( myData );
+            wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
+
+            map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer() );
+            map->ForceRefresh();
+        }
+    }
 }
 
 void mapEditPanel::OnRClickMap( wxGridEvent& event )
 {
-    
+ 	wxMenu mnu;
+ 	mnu.Append(wxID_ANY, 	"Do something");
+ 	mnu.Append(wxID_ANY, 	"Do something else");
+ 	PopupMenu(&mnu);
+}
+
+
+mapDropTarget::mapDropTarget(wxGrid *grid)
+{
+    m_grid = grid;
+}
+
+bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
+{
+    wxGridCellCoords coordinates = m_grid->XYToCell( x, y );
+
+    int row = coordinates.GetRow() + m_grid->GetFirstFullyVisibleRow();
+    int col = coordinates.GetCol() + m_grid->GetFirstFullyVisibleColumn();
+    // m_grid->SetCellValue(row,col, text);
+    m_grid->SetCellRenderer( row, col, new cellImageRenderer( text ) );
+
+    m_grid->ForceRefresh();
+    // wxMessageBox( wxString::Format( wxT( "R %i \n C %i"), row, col ) );
+
+    return true;
 }
