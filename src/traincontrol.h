@@ -11,18 +11,19 @@
 #include <algorithm>
 
 #include "train.h"
+#include "traincontrol.h"
 
-class trainControlBox : public wxStaticBox
+class trainControlPanel : public wxScrolledWindow
 { 
     public:
-        trainControlBox( wxPanel* parent, int id, wxString title, wxString boxName );
+        trainControlPanel( wxPanel* parent, int id );
         void createControlBox();
         void loadTrains( std::unordered_map< wxString, int > &cons );
 
         void OnStopAll( wxCommandEvent& event );
         void StopAll();
 
-        ~trainControlBox();
+        ~trainControlPanel();
 
         list< train* > trains;
 

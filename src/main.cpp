@@ -211,7 +211,7 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
         switch ( dialog.ShowModal() )
         {
             case wxID_YES:
-                m_controlPanel->m_trainControlBox->StopAll();
+                // m_controlPanel->m_trainControlPanel->StopAll();
                 m_controlPanel->CloseAll();
                 return;
                 break;
@@ -244,7 +244,7 @@ void track38Frame::Settings()
 
 track38Frame::~track38Frame()
 {
-    m_controlPanel->m_trainControlBox->StopAll();
+    // m_controlPanel->m_trainControlPanel->StopAll();
     m_controlPanel->CloseAll();
 
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();

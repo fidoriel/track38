@@ -194,7 +194,9 @@ void trainEditPanel::SaveTrain()
 
         track38ConfigTrain->Write( "maxSpeed", wxString::Format( wxT( "%i" ), tSpeed->GetValue() ) );
         track38ConfigTrain->Write( "channel", tChannel->GetStringSelection() );
+
         track38ConfigTrain->Write( "port", tPort->GetStringSelection() );
+        
         track38ConfigTrain->Flush();
     }
 }

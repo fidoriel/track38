@@ -1,6 +1,6 @@
 #include "switchcontrol.h"
 
-switchControlBox::switchControlBox( wxPanel* parent, int id, wxString title, wxString boxName ) : wxStaticBox( parent, id, title, wxDefaultPosition, wxDefaultSize, 0L, boxName )
+switchControlPanel::switchControlPanel( wxPanel* parent, int id ) : wxScrolledWindow( parent, id )
 {
     this->parent = parent;
 
@@ -8,11 +8,11 @@ switchControlBox::switchControlBox( wxPanel* parent, int id, wxString title, wxS
     topSizer = new wxBoxSizer( wxHORIZONTAL );
 }
 
-void switchControlBox::createControlBox()
+void switchControlPanel::createControlBox()
 {
     for (tswitch* & selswitch : this->switches)
     {
-        selswitch->createControls(this);
+        selswitch->createControls( this );
         selswitch->sizer->AddSpacer( 20 );
         
         selswitch->sizer->Add( selswitch->tswitchName, 0, wxALIGN_CENTER | wxALL, 10 );
@@ -25,14 +25,16 @@ void switchControlBox::createControlBox()
         selswitch->turnBtn->Bind( wxEVT_BUTTON, &tswitch::OnTurn, selswitch );
     }
 
-    this->SetSizer( topSizer );
     this->Layout();
-	topSizer->Fit( this );
     topSizer->SetSizeHints( this );
     this->SendSizeEventToParent();
+
+    this->SetSizer(topSizer);
+    this->FitInside();
+    this->SetScrollRate(20, 20);
 }
 
-void switchControlBox::loadswitchs( std::unordered_map< wxString, int > &cons )
+void switchControlPanel::loadswitchs( std::unordered_map< wxString, int > &cons )
 {
     //init Config
     wxConfigBase* track38Configswitch = wxConfigBase::Get();
@@ -96,6 +98,6 @@ void switchControlBox::loadswitchs( std::unordered_map< wxString, int > &cons )
     }
 }
 
-switchControlBox::~switchControlBox()
+switchControlPanel::~switchControlPanel()
 {
 }

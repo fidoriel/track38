@@ -12,14 +12,14 @@
 
 #include "switch.h"
 
-class switchControlBox : public wxStaticBox
+class switchControlPanel : public wxScrolledWindow
 { 
     public:
-        switchControlBox( wxPanel* parent, int id, wxString title, wxString boxName );
+        switchControlPanel( wxPanel* parent, int id );
         void createControlBox();
         void loadswitchs( std::unordered_map< wxString, int > &cons );
 
-        ~switchControlBox();
+        ~switchControlPanel();
 
         list< tswitch* > switches;
 

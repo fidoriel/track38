@@ -47,7 +47,7 @@ class train
         void CloseCon();
         int con;
 
-        void createControls( wxStaticBox* parent );
+        void createControls( wxPanel* parent );
 
         bool isPf();
         bool isUp();
