@@ -3,12 +3,16 @@
 #include "wx/fileconf.h"
 #include "wx/config.h"
 #include "wx/image.h"
+#include "wx/preferences.h"
+#include "wx/scopedptr.h"
+#include "wx/artprov.h"
 
 #include "../icons/AppIcon.xpm"
 
 #include "traineditpanel.h"
 #include "mapeditpanel.h"
 #include "controlpanel.h"
+#include "preferences.h"
 
 //-------------------------
 // Class/Function declaration
@@ -17,7 +21,11 @@
 class track38App : public wxApp
 {
 public:
-  virtual bool OnInit();
+    virtual bool OnInit();
+    void ShowPreferencesEditor( wxWindow* parent );
+
+private:
+    wxScopedPtr<wxPreferencesEditor> m_prefEditor;
 };
 
 
@@ -30,10 +38,9 @@ public:
     wxString name = "track38";
 
     // Event handlers
-    void OnQuit( wxCommandEvent& event );
-    void OnAbout( wxCommandEvent& event );
     void OnNbChangeing( wxBookCtrlEvent& event );
     void OnNbChanged( wxBookCtrlEvent& event );
+    void OnSettings( wxCommandEvent& event );
     void Settings();
 
     wxMenu* fileMenu;
@@ -59,7 +66,9 @@ public:
     };
 
 private:
-    // This class handles events
+    void OnQuit( wxCommandEvent& event );
+    void OnAbout( wxCommandEvent& event );
+
     DECLARE_EVENT_TABLE()
 };
 
@@ -90,6 +99,17 @@ bool track38App::OnInit()
     track38Frame* m_frame = new track38Frame();
     m_frame->Show();
     return true;
+}
+
+void track38App::ShowPreferencesEditor( wxWindow* parent )
+{
+    if ( !m_prefEditor )
+    {
+        m_prefEditor.reset( new wxPreferencesEditor );
+        m_prefEditor->AddPage( new track38PreferencePageGeneral );
+    }
+
+    m_prefEditor->Show( parent );
 }
 
 void track38Frame::OnAbout( wxCommandEvent& event )
@@ -170,11 +190,13 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
     //----------------
 
     helpMenu = new wxMenu;
-    helpMenu->Append( wxID_ABOUT, "About...\tF1", "Show about dialog" );
+    helpMenu->Append( wxID_ABOUT );
     helpMenu->Append( ID_VisitGithub, "GitHub Development Page", "" );
+    helpMenu->Append( wxID_PREFERENCES );
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &track38Frame::OnSettings, this, wxID_PREFERENCES );
 
     fileMenu = new wxMenu;
-    fileMenu->Append( wxID_EXIT, "Exit\tAlt-X", "Quit this program" );
+    fileMenu->Append( wxID_EXIT );
     fileMenu->Append( wxID_OPEN, "Open\tCtrl-O", "Open a .t38 file" );
 
     controlMenu = new wxMenu;
@@ -211,7 +233,7 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
         switch ( dialog.ShowModal() )
         {
             case wxID_YES:
-                // m_controlPanel->m_trainControlPanel->StopAll();
+                m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
                 m_controlPanel->CloseAll();
                 return;
                 break;
@@ -223,7 +245,6 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
         }
     }
 }
-
 
 void track38Frame::OnNbChanged( wxBookCtrlEvent& event )
 {
@@ -242,9 +263,14 @@ void track38Frame::Settings()
     track38ConfigBase->Write( "/ControlSettings/pfRepeatCmd", 5 );   
 }
 
+void track38Frame::OnSettings( wxCommandEvent& event )
+{
+    wxGetApp().ShowPreferencesEditor( this );
+}
+
 track38Frame::~track38Frame()
 {
-    // m_controlPanel->m_trainControlPanel->StopAll();
+    m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
     m_controlPanel->CloseAll();
 
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
