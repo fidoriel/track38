@@ -6,6 +6,9 @@
 #include "wx/preferences.h"
 #include "wx/scopedptr.h"
 #include "wx/artprov.h"
+#include <wx/stdpaths.h>
+#include <wx/filefn.h> 
+#include <wx/dir.h>
 
 #include "../icons/AppIcon.xpm"
 
@@ -256,11 +259,31 @@ void track38Frame::OnNbChanged( wxBookCtrlEvent& event )
 
 void track38Frame::Settings()
 {
+    #ifdef __APPLE__
+    wxString ini_dir = wxFileName::GetHomeDir() + "/Library/Application Support/track38/";
+    #elif __linux__
+    wxString ini_dir = wxFileName::GetHomeDir() + "/track38/";
+    #elif __WIN32__
+    wxString ini_dir = wxFileName::GetHomeDir() + "\\AppData\\Roaming\\PrusaSlicer\\";
+    #endif
+
+    if ( !wxDirExists( ini_dir ) )
+    {
+        wxDir::Make( ini_dir );
+        wxMessageBox( ini_dir );
+    }
+
+    ini_dir += "track38.ini";
+
+    wxFileConfig *config = new wxFileConfig( "track38", "fidoriel", ini_dir, "", wxCONFIG_USE_GLOBAL_FILE );
+
+    wxConfigBase::Set(config);
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
     if ( track38ConfigBase == NULL )
         return;
 
     track38ConfigBase->Write( "/ControlSettings/pfRepeatCmd", 5 );   
+    track38ConfigBase->Flush();
 }
 
 void track38Frame::OnSettings( wxCommandEvent& event )
