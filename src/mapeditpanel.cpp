@@ -90,8 +90,8 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     this->switchPickerBox->refreshSerial();
     portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), switchPickerBox->serialArray, 0L, wxDefaultValidator, "switchPort" );
     m_RefreshBtn = new wxButton( this, ID_RefreshSerial, "Refresh", wxDefaultPosition, wxDefaultSize );
-    refreshSizer->Add( portPicker, 0, wxALL, 10 );
-    refreshSizer->Add( m_RefreshBtn, 0, wxALL, 10 );
+    refreshSizer->Add( portPicker, 0, wxALL, 5 );
+    refreshSizer->Add( m_RefreshBtn, 0, wxALL, 5 );
 
     labelGpio = new wxStaticText( this, wxID_ANY, "GPIO:" );
     gpioPicker = new wxSpinCtrl( this, wxID_ANY, "2", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 2, "switchGpio" );
@@ -105,20 +105,20 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     manufacturerList.Add( "4d Brixx" );
     manufacturerPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, manufacturerList, 0L, wxDefaultValidator, "manufacturerPicker" );
 
-    editSizer->Add( labelName, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    editSizer->Add( switchName, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    editSizer->Add( labelName, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    editSizer->Add( switchName, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    editSizer->Add( labelPort, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    editSizer->Add( labelPort, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
     editSizer->Add( refreshSizer, 0, wxALL | ( wxALL & ~wxLEFT ), 0 );
 
-    editSizer->Add( labelGpio, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    editSizer->Add( gpioPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    editSizer->Add( labelGpio, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    editSizer->Add( gpioPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    editSizer->Add( labelDir, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    editSizer->Add( dirPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    editSizer->Add( labelDir, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    editSizer->Add( dirPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    editSizer->Add( labelManufacturer, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    editSizer->Add( manufacturerPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    editSizer->Add( labelManufacturer, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    editSizer->Add( manufacturerPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
     // Save Sizer
     wxStaticBox* saveBox = new wxStaticBox( this, wxID_ANY, "" );
@@ -126,14 +126,14 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     wxButton* m_AddBtn = new wxButton( this, ID_AddSwitch, "Add", wxDefaultPosition, wxDefaultSize );
     wxButton* m_UpdateBtn = new wxButton( this, ID_UpdateSwitch, "Update", wxDefaultPosition, wxDefaultSize );
     wxButton* m_RemoveBtn = new wxButton( this, ID_RemoveSwitch, "Remove", wxDefaultPosition, wxDefaultSize );
-    saveSizer->Add( m_AddBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
+    saveSizer->Add( m_AddBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Add( m_UpdateBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Add( m_RemoveBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Layout();
 
-    switchPickerBoxSizer->Add( m_switchPicker, 0, wxEXPAND | wxALL, 10 );
-    switchPickerBoxSizer->Add( editSizer, 0, wxEXPAND | wxALL, 10 );
-    switchPickerBoxSizer->Add( saveSizer, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 10 );
+    switchPickerBoxSizer->Add( m_switchPicker, 0, wxEXPAND | wxALL, 5 );
+    switchPickerBoxSizer->Add( editSizer, 0, wxEXPAND | wxALL, 5 );
+    switchPickerBoxSizer->Add( saveSizer, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
 
     //
     // Map Picker
@@ -179,11 +179,11 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // Topsizer
     //
 
-    bottomSizer->Add( switchPickerBoxSizer, 4, wxALIGN_CENTER | wxALL, 5);
+    bottomSizer->Add( switchPickerBoxSizer, 4, wxALIGN_CENTER | wxALL, 5 );
     bottomSizer->Add( mapPickerBoxSizer, 0, wxEXPAND | wxALL, 5 );
 
     topSizer->Add( map, 3, wxEXPAND | wxALL, 5 );
-    topSizer->Add( bottomSizer, 0, wxALIGN_CENTER | wxALL, 5);
+    topSizer->Add( bottomSizer, 0, wxALIGN_CENTER | wxALL, 5 );
 
     this->SetSizerAndFit( topSizer );
     this->Layout();
@@ -199,7 +199,7 @@ void mapEditPanel::OnRefreshSerial( wxCommandEvent& event )
     delete portPicker;
     this->switchPickerBox->refreshSerial();
     portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), switchPickerBox->serialArray, 0L, wxDefaultValidator, "switchPort" );
-    refreshSizer->Insert( 0, portPicker, 0, wxALL, 10 );
+    refreshSizer->Insert( 0, portPicker, 0, wxALL, 5 );
     refreshSizer->Layout();
 }
 

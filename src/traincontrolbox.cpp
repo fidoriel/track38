@@ -8,8 +8,8 @@ trainControlBox::trainControlBox( wxPanel* parent, int id, wxString title, wxStr
     m_trainControlPanel->loadTrains( cons );
     m_trainControlPanel->createControlBox();
 
-    sizer->Add( m_trainControlPanel->stopAllBtn, 0, wxALL | wxALIGN_CENTER, 10 );
-    sizer->Add( m_trainControlPanel, 0, wxEXPAND | wxALL, 10 );
+    sizer->Add( m_trainControlPanel->stopAllBtn, 0, wxALL | wxALIGN_CENTER, 5 );
+    sizer->Add( m_trainControlPanel, 0, wxEXPAND | wxALL, 5 );
 }
 
 trainControlBox::~trainControlBox()

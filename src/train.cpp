@@ -141,7 +141,7 @@ void train::ChangeSpeed( int newSpeed )
         strcpy( str_send[ 1 ], sendSignal );
 
         wxConfigBase *track38ConfigBase = wxConfigBase::Get();
-        for ( size_t i = 0; i < track38ConfigBase->Read( "/ControlSettings/pfRepeatCmd", 3 ); i++ )
+        for ( size_t i = 0; i < track38ConfigBase->Read( "/ControlSettings/pfRepeatCmd", 5 ); i++ )
         {
             // wxMessageBox( wxString::Format( wxT("%i"), write_port( con, str_send[ 1 ] ) ) );
             write_port( this->con, str_send[ 1 ] );

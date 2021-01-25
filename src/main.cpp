@@ -239,7 +239,7 @@ void track38Frame::Settings()
     if ( track38ConfigBase == NULL )
         return;
 
-    track38ConfigBase->Write( "/ControlSettings/pfRepeatCmd", 3 );   
+    track38ConfigBase->Write( "/ControlSettings/pfRepeatCmd", 5 );   
 }
 
 track38Frame::~track38Frame()

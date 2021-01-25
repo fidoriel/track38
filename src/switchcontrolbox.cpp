@@ -8,7 +8,7 @@ switchControlBox::switchControlBox( wxPanel* parent, int id, wxString title, wxS
     m_switchControlPanel->loadswitchs( cons );
     m_switchControlPanel->createControlBox();
 
-    sizer->Add( m_switchControlPanel, 0, wxEXPAND | wxALL, 10 );
+    sizer->Add( m_switchControlPanel, 0, wxEXPAND | wxALL, 5 );
 }
 
 switchControlBox::~switchControlBox()

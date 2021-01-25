@@ -15,9 +15,9 @@ void switchControlPanel::createControlBox()
         selswitch->createControls( this );
         selswitch->sizer->AddSpacer( 20 );
         
-        selswitch->sizer->Add( selswitch->tswitchName, 0, wxALIGN_CENTER | wxALL, 10 );
-        selswitch->sizer->Add( selswitch->straightBtn, 0, wxALL , 10 );
-        selswitch->sizer->Add( selswitch->turnBtn, 0, wxALL , 10 );
+        selswitch->sizer->Add( selswitch->tswitchName, 0, wxALIGN_CENTER | wxALL, 5 );
+        selswitch->sizer->Add( selswitch->straightBtn, 0, wxALL , 5 );
+        selswitch->sizer->Add( selswitch->turnBtn, 0, wxALL , 5 );
 
         topSizer->Add(selswitch->sizer);
 

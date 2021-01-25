@@ -11,10 +11,10 @@ controlPanel::controlPanel( wxNotebook* parent ) : wxPanel( parent )
 
     this->CreateMap();
 
-    mapSizer->Add( map, 1, wxGROW | wxALL, 10 );
-    mapSizer->Add( m_switchControlBox->sizer, 0, wxGROW | wxALL, 10 );
-    topSizer->Add( m_trainControlBox->sizer, 0, wxGROW | wxALL, 10 );  
-    topSizer->Add( mapSizer, 1, wxGROW | wxALL, 10 ); 
+    mapSizer->Add( map, 1, wxGROW | wxALL, 5 );
+    mapSizer->Add( m_switchControlBox->sizer, 0, wxGROW | wxALL, 5 );
+    topSizer->Add( m_trainControlBox->sizer, 0, wxGROW | wxALL, 5 );  
+    topSizer->Add( mapSizer, 1, wxGROW | wxALL, 5 ); 
 
     this->SetSizerAndFit( topSizer );
     this->Layout();
@@ -49,10 +49,10 @@ void controlPanel::RefreshPanel()
     m_trainControlBox = new trainControlBox( this, wxID_ANY, "Train Control", "trainControlBox", cons );
     m_switchControlBox = new switchControlBox( this, wxID_ANY, "Switch Control", "switchControlBox", cons );
     
-    mapSizer->Add( map, 1, wxGROW | wxALL, 10 );
-    mapSizer->Add( m_switchControlBox->sizer, 0, wxGROW | wxALL, 10 );
-    topSizer->Add( m_trainControlBox->sizer, 0, wxGROW | wxALL, 10 );  
-    topSizer->Add( mapSizer, 1, wxGROW | wxALL, 10 ); 
+    mapSizer->Add( map, 1, wxGROW | wxALL, 5 );
+    mapSizer->Add( m_switchControlBox->sizer, 0, wxGROW | wxALL, 5 );
+    topSizer->Add( m_trainControlBox->sizer, 0, wxGROW | wxALL, 5 );  
+    topSizer->Add( mapSizer, 1, wxGROW | wxALL, 5 ); 
 
     this->SetSizerAndFit( topSizer );
     this->Layout();

@@ -18,8 +18,8 @@ pfEditBox::pfEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), serialArray, 0L, wxDefaultValidator, "pfPort" );
 
     m_RefreshBtn = new wxButton( this, ID_REFRESHSERIAL, "Refresh", wxDefaultPosition, wxDefaultSize );
-    refreshSizer->Add( portPicker, 0, wxALL, 10 );
-    refreshSizer->Add( m_RefreshBtn, 0, wxALL, 10 );
+    refreshSizer->Add( portPicker, 0, wxALL, 5 );
+    refreshSizer->Add( m_RefreshBtn, 0, wxALL, 5 );
 
     gpioTxt = new wxStaticText( this, wxID_ANY, "GPIO:" );
     gpioPicker = new wxSpinCtrl( this, wxID_ANY, "13", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 13, "pfGpio" );
@@ -41,23 +41,23 @@ pfEditBox::pfEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 
     topSizerPfEdit->AddSpacer( 10 );
     topSizerPfEdit->AddSpacer( 10 );
-    topSizerPfEdit->Add( nameTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    topSizerPfEdit->Add( trainName, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerPfEdit->Add( nameTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    topSizerPfEdit->Add( trainName, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    topSizerPfEdit->Add( portTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerPfEdit->Add( portTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
     topSizerPfEdit->Add( refreshSizer, 0, wxALL | ( wxALL & ~wxLEFT ), 0 );
 
-    topSizerPfEdit->Add( gpioTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    topSizerPfEdit->Add( gpioPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerPfEdit->Add( gpioTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    topSizerPfEdit->Add( gpioPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    topSizerPfEdit->Add( channelTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    topSizerPfEdit->Add( channelPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerPfEdit->Add( channelTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    topSizerPfEdit->Add( channelPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    topSizerPfEdit->Add( subChannelTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    topSizerPfEdit->Add( subChannelPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerPfEdit->Add( subChannelTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    topSizerPfEdit->Add( subChannelPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    topSizerPfEdit->Add( maxSpeedTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    topSizerPfEdit->Add( maxSpeedPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerPfEdit->Add( maxSpeedTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    topSizerPfEdit->Add( maxSpeedPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
     topSizerPfEdit->AddSpacer( 10 );
     topSizerPfEdit->AddSpacer( 10 );
@@ -75,6 +75,6 @@ void pfEditBox::OnRefreshSerial( wxCommandEvent& event )
     delete portPicker;
     this->refreshSerial();
     portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), serialArray, 0L, wxDefaultValidator, "pfPort" );
-    refreshSizer->Insert( 0, portPicker, 0, wxALL, 10 );
+    refreshSizer->Insert( 0, portPicker, 0, wxALL, 5 );
     refreshSizer->Layout();
 }
