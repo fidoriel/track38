@@ -193,8 +193,8 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
     add_custom_command(
         TARGET ${PROJECT_NAME}
         POST_BUILD
-        COMMAND mkdir "AppDir/usr/share/"
-        COMMAND mkdir "AppDir/usr/share/icons"
+        COMMAND mkdir -p "AppDir/usr/share/"
+        COMMAND mkdir -p "AppDir/usr/share/icons"
         COMMAND cp -r "../resources/tracks/" "AppDir/usr/share/icons/"
         COMMAND wget -N https://github.com/AppImage/AppImageKit/releases/download/continuous/${AppImageRelease}
         COMMAND chmod a+x ${AppImageRelease}
