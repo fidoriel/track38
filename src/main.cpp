@@ -264,7 +264,7 @@ void track38Frame::Settings()
     #elif __linux__
     wxString ini_dir = wxFileName::GetHomeDir() + "/track38/";
     #elif __WIN32__
-    wxString ini_dir = wxFileName::GetHomeDir() + "\\AppData\\Roaming\\PrusaSlicer\\";
+    wxString ini_dir = wxFileName::GetHomeDir() + "\\AppData\\Roaming\\track38\\";
     #endif
 
     if ( !wxDirExists( ini_dir ) )
