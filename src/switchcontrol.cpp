@@ -13,7 +13,6 @@ void switchControlPanel::createControlBox()
     for (tswitch* & selswitch : this->switches)
     {
         selswitch->createControls( this );
-        selswitch->sizer->AddSpacer( 20 );
         
         selswitch->sizer->Add( selswitch->tswitchName, 0, wxALIGN_CENTER | wxALL, 5 );
         selswitch->sizer->Add( selswitch->straightBtn, 0, wxALL , 5 );
