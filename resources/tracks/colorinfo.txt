@@ -1,0 +1,3 @@
+Black = RGB HEX #000000
+Grey = RGB HEX #C0C0C0
+Green = RGB HEX #00CC00

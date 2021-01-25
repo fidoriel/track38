@@ -6,6 +6,9 @@ wxBEGIN_EVENT_TABLE( mapEditPanel, wxPanel )
     EVT_BUTTON( ID_UpdateSwitch, mapEditPanel::OnUpdateSwitch )
     EVT_BUTTON( ID_RemoveSwitch, mapEditPanel::OnRemoveSwitch )
     EVT_LISTBOX( ID_SelectSwitch, mapEditPanel::OnSelectSwitch )
+    EVT_GRID_CMD_CELL_LEFT_CLICK( ID_DragPicker, mapEditPanel::OnDragCellPicker )
+    EVT_GRID_CMD_CELL_LEFT_CLICK( ID_Map, mapEditPanel::OnLClickMap )
+    EVT_GRID_CMD_CELL_RIGHT_CLICK( ID_Map, mapEditPanel::OnRClickMap )
 wxEND_EVENT_TABLE()
 
 mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
@@ -14,31 +17,38 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // Topsizer
     //
     topSizer = new wxBoxSizer( wxVERTICAL );
-
+    bottomSizer = new wxBoxSizer( wxHORIZONTAL );
 
     //
     // Map
     //
+
+    // Options
+    this->clickToDrag = false;
     
-    map = new wxGrid( this,
-                       wxID_ANY,
-                       wxPoint( 0, 0 ),
-                       wxSize( 40, 40) );
+    map = new wxGrid( this, ID_Map, wxPoint( 0, 0 ), wxSize( 40, 40) );
 
     map->CreateGrid( 25, 50);
     map->HideColLabels();
     map->HideRowLabels();
+    map->EnableEditing( false );
+    map->EnableGridLines( false );
     map->EnableDragGridSize( false );
     map->DisableCellEditControl();
+    map->SetMargins( 0 , 0 );
+    map->SetCellHighlightColour( *wxWHITE );
+    map->SetCellHighlightROPenWidth( 0 );
+
+    map->SetDropTarget( new mapDropTarget( map ) );
 
     for ( size_t i = 0; i < map->GetNumberRows(); i++ )
     {
-        map->SetRowSize( i, 40 );
+        map->SetRowSize( i, 50 );
     }
 
     for ( size_t i = 0; i < map->GetNumberCols(); i++ )
     {
-        map->SetColSize( i, 40 );
+        map->SetColSize( i, 50 );
     }
 
     for ( size_t col = 0; col < map->GetNumberCols(); col++ )
@@ -46,8 +56,19 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
         for ( size_t row = 0; row < map->GetNumberRows(); row++ )
         {
             map->SetReadOnly( row, col );
+            map->SetCellBackgroundColour( row, col, *wxWHITE );
+            map->SetCellTextColour( row, col, *wxBLACK );
+            map->SetCellRenderer( row, col, new cellImageRenderer() );
         }
     }
+
+    // map->SetCellRenderer( 0, 0, new cellImageRenderer( "tracks/straightn.png" ) );
+    // map->SetCellRenderer( 0, 1, new cellImageRenderer( "tracks/straightn.png" ) );
+    // map->SetCellRenderer( 0, 2, new cellImageRenderer( "tracks/curven.png" ) );
+    // map->SetCellRenderer( 1, 1, new cellImageRenderer( "tracks/straightn.png" ) );
+    // map->SetCellRenderer( 2, 2, new cellImageRenderer( "tracks/straightn.png" ) );
+    // map->SetCellRenderer( 3, 3, new cellImageRenderer( "tracks/straightn.png" ) );
+    // map->SetCellRenderer( 1, 2, new cellImageRenderer( "tracks/switchLn.png" ) );
 
     //
     // Switch Edit Panel
@@ -69,8 +90,8 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     this->switchPickerBox->refreshSerial();
     portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), switchPickerBox->serialArray, 0L, wxDefaultValidator, "switchPort" );
     m_RefreshBtn = new wxButton( this, ID_RefreshSerial, "Refresh", wxDefaultPosition, wxDefaultSize );
-    refreshSizer->Add( portPicker, 0, wxALL, 10 );
-    refreshSizer->Add( m_RefreshBtn, 0, wxALL, 10 );
+    refreshSizer->Add( portPicker, 0, wxALL, 5 );
+    refreshSizer->Add( m_RefreshBtn, 0, wxALL, 5 );
 
     labelGpio = new wxStaticText( this, wxID_ANY, "GPIO:" );
     gpioPicker = new wxSpinCtrl( this, wxID_ANY, "2", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 2, "switchGpio" );
@@ -84,20 +105,20 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     manufacturerList.Add( "4d Brixx" );
     manufacturerPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, manufacturerList, 0L, wxDefaultValidator, "manufacturerPicker" );
 
-    editSizer->Add( labelName, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    editSizer->Add( switchName, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    editSizer->Add( labelName, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    editSizer->Add( switchName, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    editSizer->Add( labelPort, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    editSizer->Add( labelPort, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
     editSizer->Add( refreshSizer, 0, wxALL | ( wxALL & ~wxLEFT ), 0 );
 
-    editSizer->Add( labelGpio, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    editSizer->Add( gpioPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    editSizer->Add( labelGpio, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    editSizer->Add( gpioPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    editSizer->Add( labelDir, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    editSizer->Add( dirPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    editSizer->Add( labelDir, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    editSizer->Add( dirPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    editSizer->Add( labelManufacturer, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    editSizer->Add( manufacturerPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    editSizer->Add( labelManufacturer, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    editSizer->Add( manufacturerPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
     // Save Sizer
     wxStaticBox* saveBox = new wxStaticBox( this, wxID_ANY, "" );
@@ -105,26 +126,64 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     wxButton* m_AddBtn = new wxButton( this, ID_AddSwitch, "Add", wxDefaultPosition, wxDefaultSize );
     wxButton* m_UpdateBtn = new wxButton( this, ID_UpdateSwitch, "Update", wxDefaultPosition, wxDefaultSize );
     wxButton* m_RemoveBtn = new wxButton( this, ID_RemoveSwitch, "Remove", wxDefaultPosition, wxDefaultSize );
-    saveSizer->Add( m_AddBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5);
+    saveSizer->Add( m_AddBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Add( m_UpdateBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Add( m_RemoveBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Layout();
 
-    switchPickerBoxSizer->Add( m_switchPicker, 0, wxEXPAND | wxALL, 10 );
-    switchPickerBoxSizer->Add( editSizer, 0, wxEXPAND | wxALL, 10 );
-    switchPickerBoxSizer->Add( saveSizer, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 10 );
+    switchPickerBoxSizer->Add( m_switchPicker, 0, wxEXPAND | wxALL, 5 );
+    switchPickerBoxSizer->Add( editSizer, 0, wxEXPAND | wxALL, 5 );
+    switchPickerBoxSizer->Add( saveSizer, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
 
     //
     // Map Picker
     //
 
+    mapPickerBox = new wxStaticBox( this, wxID_ANY, "Symbol Picker");
+    mapPickerBoxSizer = new wxStaticBoxSizer( mapPickerBox, wxVERTICAL );
+
+    pickerGrid = new wxGrid( this, ID_DragPicker, wxPoint( 0, 0 ), wxSize( 10, 10) );
+
+    // Grid
+    pickerGrid->CreateGrid( 6, 1 );
+    pickerGrid->HideColLabels();
+    pickerGrid->HideRowLabels();
+    pickerGrid->EnableEditing( false );
+    pickerGrid->EnableGridLines( false );
+    pickerGrid->EnableDragGridSize( false );
+    pickerGrid->DisableCellEditControl();
+    pickerGrid->SetMargins( 0 - wxSYS_VSCROLL_X , 0 );
+    pickerGrid->SetCellHighlightColour( *wxWHITE );
+    pickerGrid->SetCellHighlightROPenWidth( 0 );
+
+    for ( size_t col = 0; col < pickerGrid->GetNumberCols(); col++ )
+    {
+        for ( size_t row = 0; row < pickerGrid->GetNumberRows(); row++ )
+        {
+            pickerGrid->SetReadOnly( row, col );
+            pickerGrid->SetRowSize( row, ( pickerGrid->GetColSize( 0 ) - wxSYS_VSCROLL_X ) );
+            pickerGrid->SetCellBackgroundColour( row, col, *wxWHITE );
+        }
+    }
+
+    pickerGrid->SetCellRenderer( 0, 0, new cellImageRenderer( "tracks/straightn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 1, 0, new cellImageRenderer( "tracks/curven.png", 2 ) );
+    pickerGrid->SetCellRenderer( 2, 0, new cellImageRenderer( "tracks/switchLn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 3, 0, new cellImageRenderer( "tracks/switchRn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 4, 0, new cellImageRenderer( "tracks/stopn.png", 2 ) );
+    pickerGrid->SetCellRenderer( 5, 0, new cellImageRenderer( "tracks/crossn.png", 2 ) );
+
+    mapPickerBoxSizer->Add( pickerGrid, 1, wxEXPAND | wxALL, 5 );
+
     // 
     // Topsizer
     //
 
-    topSizer->Add( map, 3, wxEXPAND | wxALL, 5 );
+    bottomSizer->Add( switchPickerBoxSizer, 4, wxALIGN_CENTER | wxALL, 5 );
+    bottomSizer->Add( mapPickerBoxSizer, 0, wxEXPAND | wxALL, 5 );
 
-    topSizer->Add( switchPickerBoxSizer, 1, wxALIGN_CENTER | wxALL, 0 );
+    topSizer->Add( map, 3, wxEXPAND | wxALL, 5 );
+    topSizer->Add( bottomSizer, 0, wxALIGN_CENTER | wxALL, 5 );
 
     this->SetSizerAndFit( topSizer );
     this->Layout();
@@ -140,7 +199,7 @@ void mapEditPanel::OnRefreshSerial( wxCommandEvent& event )
     delete portPicker;
     this->switchPickerBox->refreshSerial();
     portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), switchPickerBox->serialArray, 0L, wxDefaultValidator, "switchPort" );
-    refreshSizer->Insert( 0, portPicker, 0, wxALL, 10 );
+    refreshSizer->Insert( 0, portPicker, 0, wxALL, 5 );
     refreshSizer->Layout();
 }
 
@@ -176,6 +235,9 @@ void mapEditPanel::AddSwitch()
     track38ConfigMap->SetPath( switchName->GetValue() );
     track38ConfigMap->Write( "gpio", wxString::Format( wxT( "%i" ), gpioPicker->GetValue() ) );
     track38ConfigMap->Write( "dir", dirPicker->GetStringSelection() );
+
+    track38ConfigMap->Write( "port", portPicker->GetStringSelection() );
+
     track38ConfigMap->Write( "port", portPicker->GetStringSelection() );
     track38ConfigMap->Write( "manufacturer", manufacturerPicker->GetStringSelection() );
     track38ConfigMap->Flush();
@@ -293,4 +355,140 @@ void mapEditPanel::loadSwitches()
         m_switchPicker->SetSelection( 0 );
         this->SelectSwitch();
     }
+}
+
+void mapEditPanel::OnDragCellPicker( wxGridEvent& event )
+{
+    cellImageRenderer* cellRenderer = (cellImageRenderer*) pickerGrid->GetCellRenderer( event.GetRow(), event.GetCol() );
+    wxTextDataObject myData( cellRenderer->file );
+    wxDropSource dragSource( this );
+    dragSource.SetData( myData );
+    wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
+}
+
+void mapEditPanel::OnLClickMap( wxGridEvent& event )
+{
+    cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( event.GetRow(), event.GetCol() );
+    if (this->clickToDrag)
+    {
+
+        wxString fileRot = cellRenderer->file;
+        fileRot += "|";
+        fileRot += wxString::Format( wxT( "%i" ), cellRenderer->rotation );
+        wxTextDataObject myData( fileRot );
+        wxDropSource dragSource( this );
+        dragSource.SetData( myData );
+        wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
+
+        map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer() );
+        map->ForceRefresh();
+    }
+    else
+    {
+        this->turn( event.GetRow(), event.GetCol() );
+
+    }
+}
+
+void mapEditPanel::OnRClickMap( wxGridEvent& event )
+{
+    eventCellRow = event.GetRow();
+    eventCellCol = event.GetCol();
+    mapMenu = new wxMenu();
+ 	mapMenu->Append( ID_RMenuTurnCW, "Rotate Clockwise" );
+ 	mapMenu->Append( ID_RMenuTurnCC, "Rotate Counter Clockwise" );
+    mapMenu->AppendSeparator();
+    mapMenu->AppendCheckItem( ID_DragMode, "DragMode" );
+ 	mapMenu->AppendSeparator();
+    mapMenu->AppendCheckItem( ID_RMenuEdit, "Edit" );
+    mapMenu->Append( ID_CellRemove, "Remove" );
+
+
+    mapMenu->Check( ID_DragMode, this->clickToDrag );
+    cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( eventCellRow, eventCellCol );
+    if ( cellRenderer->file.Find( "switch" ) == wxNOT_FOUND )
+        mapMenu->Enable( ID_RMenuEdit, false );
+
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnDragMode, this, ID_DragMode );
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnMapRemove, this, ID_CellRemove );
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnTurnCW, this, ID_RMenuTurnCW );
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnTurnCC, this, ID_RMenuTurnCC );
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnEditSwitch, this, ID_RMenuEdit );
+
+ 	PopupMenu( mapMenu );
+}
+
+void mapEditPanel::OnEditSwitch( wxCommandEvent& event )
+{
+}
+
+void mapEditPanel::OnTurnCC( wxCommandEvent& event )
+{
+    this->turn( eventCellRow, eventCellCol, false );
+}
+
+void mapEditPanel::OnTurnCW( wxCommandEvent& event )
+{
+    this->turn( eventCellRow, eventCellCol, true );
+}
+
+void mapEditPanel::turn( int row, int col, bool clockwise )
+{
+    cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( row, col );
+    if ( !cellRenderer->isEmptyCell )
+        {
+            wxString filename = cellRenderer->file;
+            int degree = cellRenderer->rotation;
+            cellRenderer->DecRef();
+
+            if (clockwise)
+                degree += 90;
+            else
+            {
+                if ( degree == 0)
+                    degree = 270;
+                else
+                    degree -= 90;
+            }
+
+            map->SetCellRenderer( row, col, new cellImageRenderer( filename, 0, degree ) );
+            map->ForceRefresh();
+        }
+}
+
+void mapEditPanel::OnMapRemove( wxCommandEvent& event )
+{
+    cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( eventCellRow, eventCellCol );
+
+    cellRenderer->DecRef();
+
+    map->SetCellRenderer( eventCellRow, eventCellCol, new cellImageRenderer() );
+    map->ForceRefresh();
+}
+
+void mapEditPanel::OnDragMode( wxCommandEvent& event )
+{
+    this->clickToDrag = !this->clickToDrag;
+    mapMenu->Check( ID_DragMode, this->clickToDrag );
+}
+
+
+mapDropTarget::mapDropTarget(wxGrid *grid)
+{
+    m_grid = grid;
+}
+
+bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
+{
+    wxGridCellCoords coordinates = m_grid->XYToCell( x, y );
+
+    int row = coordinates.GetRow() + m_grid->GetFirstFullyVisibleRow();
+    int col = coordinates.GetCol() + m_grid->GetFirstFullyVisibleColumn();
+    // m_grid->SetCellValue(row,col, text);
+    m_grid->SetCellRenderer( row, col, new cellImageRenderer( text ) );
+
+    m_grid->ForceRefresh();
+    // wxMessageBox( wxString::Format( wxT( "R %i \n C %i"), row, col ) );
+
+    return true;
 }

@@ -5,7 +5,7 @@ tswitch::tswitch( wxString wxName )
     this->name = wxName;
 }
 
-void tswitch::createControls( wxStaticBox* parent )
+void tswitch::createControls( wxPanel* parent )
 {
     this->sizer = new wxBoxSizer( wxVERTICAL );
     this->tswitchName = new wxStaticText( parent, wxID_ANY, this->name );

@@ -5,7 +5,7 @@ train::train( wxString wxName )
     this->name = wxName;
 }
 
-void train::createControls( wxStaticBox* parent )
+void train::createControls( wxPanel* parent )
 {
     this->trainName = new wxStaticText( parent, wxID_ANY, this->name );
     this->speedSlider = new wxSlider( parent, ID_ChangeSpeed, 0, this->maxTrainSpeed*( -1 ), this->maxTrainSpeed, wxDefaultPosition, wxSize( 200, -1 ), wxSL_AUTOTICKS );
@@ -141,7 +141,7 @@ void train::ChangeSpeed( int newSpeed )
         strcpy( str_send[ 1 ], sendSignal );
 
         wxConfigBase *track38ConfigBase = wxConfigBase::Get();
-        for ( size_t i = 0; i < track38ConfigBase->Read( "/ControlSettings/pfRepeatCmd", 3 ); i++ )
+        for ( size_t i = 0; i < track38ConfigBase->Read( "/ControlSettings/pfRepeatCmd", 5 ); i++ )
         {
             // wxMessageBox( wxString::Format( wxT("%i"), write_port( con, str_send[ 1 ] ) ) );
             write_port( this->con, str_send[ 1 ] );

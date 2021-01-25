@@ -6,6 +6,9 @@
 #include "wx/grid.h"
 #include "traincontrol.h"
 #include "switchcontrol.h"
+#include "traincontrolbox.h"
+#include "switchcontrolbox.h"
+#include "cellImageRenderer.h"
 
 class controlPanel : public wxPanel
 { 
@@ -15,13 +18,16 @@ class controlPanel : public wxPanel
 
         void CloseAll();
         void RefreshPanel();
+        void CreateMap();
         void OnRefreshPanel( wxCommandEvent& event );
 
         std::unordered_map< wxString, int > cons;
 
         trainControlBox* m_trainControlBox;
         switchControlBox* m_switchControlBox;
-        wxFlexGridSizer* topSizer;
+        wxBoxSizer* topSizer;
+        wxBoxSizer* mapSizer;
+        wxGrid* map;
 
         wxNotebook* parent;
 };

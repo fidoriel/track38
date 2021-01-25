@@ -2,6 +2,7 @@
 #include <string>
 #include "wx/fileconf.h"
 #include "wx/config.h"
+#include "wx/image.h"
 
 #include "../icons/AppIcon.xpm"
 
@@ -210,7 +211,7 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
         switch ( dialog.ShowModal() )
         {
             case wxID_YES:
-                m_controlPanel->m_trainControlBox->StopAll();
+                // m_controlPanel->m_trainControlPanel->StopAll();
                 m_controlPanel->CloseAll();
                 return;
                 break;
@@ -238,12 +239,12 @@ void track38Frame::Settings()
     if ( track38ConfigBase == NULL )
         return;
 
-    track38ConfigBase->Write( "/ControlSettings/pfRepeatCmd", 3 );   
+    track38ConfigBase->Write( "/ControlSettings/pfRepeatCmd", 5 );   
 }
 
 track38Frame::~track38Frame()
 {
-    m_controlPanel->m_trainControlBox->StopAll();
+    // m_controlPanel->m_trainControlPanel->StopAll();
     m_controlPanel->CloseAll();
 
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();

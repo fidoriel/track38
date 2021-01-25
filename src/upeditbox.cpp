@@ -17,8 +17,8 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), serialArray, 0L, wxDefaultValidator, "upPort" );
 
     m_RefreshBtn = new wxButton( this, ID_REFRESHSERIAL, "Refresh", wxDefaultPosition, wxDefaultSize );
-    refreshSizer->Add( portPicker, 0, wxALL, 10 );
-    refreshSizer->Add( m_RefreshBtn, 0, wxALL, 10 );
+    refreshSizer->Add( portPicker, 0, wxALL, 5 );
+    refreshSizer->Add( m_RefreshBtn, 0, wxALL, 5 );
 
     hubAdressTxt = new wxStaticText( this, wxID_ANY, "Hub Adress:" );
     hubAdress = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 300, -1 ), 0L, wxDefaultValidator, "upHubAdress" );
@@ -37,23 +37,23 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     topSizerUpEdit->AddSpacer( 10 );
     topSizerUpEdit->AddSpacer( 10 );
     
-    topSizerUpEdit->Add( nameTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    topSizerUpEdit->Add( trainName, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerUpEdit->Add( nameTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    topSizerUpEdit->Add( trainName, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    topSizerUpEdit->Add( portTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerUpEdit->Add( portTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
     topSizerUpEdit->Add( refreshSizer, 0, wxALL | ( wxALL & ~wxLEFT ), 0 );
 
-    topSizerUpEdit->Add( hubAdressTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    topSizerUpEdit->Add( hubAdress, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerUpEdit->Add( hubAdressTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    topSizerUpEdit->Add( hubAdress, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    topSizerUpEdit->Add( channelTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    topSizerUpEdit->Add( channelPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerUpEdit->Add( channelTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    topSizerUpEdit->Add( channelPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    topSizerUpEdit->Add( hasTwoMotorsTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    topSizerUpEdit->Add( hasTwoMotors, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerUpEdit->Add( hasTwoMotorsTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    topSizerUpEdit->Add( hasTwoMotors, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    topSizerUpEdit->Add( maxSpeedTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
-    topSizerUpEdit->Add( maxSpeedPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 10 );
+    topSizerUpEdit->Add( maxSpeedTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    topSizerUpEdit->Add( maxSpeedPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
     topSizerUpEdit->AddSpacer( 10 );
     topSizerUpEdit->AddSpacer( 10 );
@@ -71,6 +71,6 @@ void upEditBox::OnRefreshSerial( wxCommandEvent& event )
     delete portPicker;
     this->refreshSerial();
     portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), serialArray, 0L, wxDefaultValidator, "upPort" );
-    refreshSizer->Insert( 0, portPicker, 0, wxALL, 10 );
+    refreshSizer->Insert( 0, portPicker, 0, wxALL, 5 );
     refreshSizer->Layout();
 }
