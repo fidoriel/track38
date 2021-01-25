@@ -5,7 +5,7 @@ train::train( wxString wxName )
     this->name = wxName;
 }
 
-void train::createControls( wxStaticBox* parent )
+void train::createControls( wxPanel* parent )
 {
     this->trainName = new wxStaticText( parent, wxID_ANY, this->name );
     this->speedSlider = new wxSlider( parent, ID_ChangeSpeed, 0, this->maxTrainSpeed*( -1 ), this->maxTrainSpeed, wxDefaultPosition, wxSize( 200, -1 ), wxSL_AUTOTICKS );

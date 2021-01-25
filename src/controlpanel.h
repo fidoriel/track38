@@ -6,6 +6,8 @@
 #include "wx/grid.h"
 #include "traincontrol.h"
 #include "switchcontrol.h"
+#include "traincontrolbox.h"
+#include "switchcontrolbox.h"
 
 class controlPanel : public wxPanel
 { 

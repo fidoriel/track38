@@ -47,7 +47,7 @@ class tswitch
         char currentPos;
         int con;
 
-        void createControls( wxStaticBox* parent );
+        void createControls( wxPanel* parent );
 
         bool isTurn();
         bool isStraight();
