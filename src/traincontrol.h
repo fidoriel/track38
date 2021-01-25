@@ -13,17 +13,17 @@
 #include "train.h"
 #include "traincontrol.h"
 
-class trainControlBox : public wxScrolledWindow
+class trainControlPanel : public wxScrolledWindow
 { 
     public:
-        trainControlBox( wxPanel* parent, int id );
+        trainControlPanel( wxPanel* parent, int id );
         void createControlBox();
         void loadTrains( std::unordered_map< wxString, int > &cons );
 
         void OnStopAll( wxCommandEvent& event );
         void StopAll();
 
-        ~trainControlBox();
+        ~trainControlPanel();
 
         list< train* > trains;
 

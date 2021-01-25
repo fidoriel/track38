@@ -1,6 +1,6 @@
 #include "traincontrol.h"
 
-trainControlBox::trainControlBox( wxPanel* parent, int id ) : wxScrolledWindow( parent, id )
+trainControlPanel::trainControlPanel( wxPanel* parent, int id ) : wxScrolledWindow( parent, id )
 {
     this->parent = parent;
 
@@ -8,7 +8,7 @@ trainControlBox::trainControlBox( wxPanel* parent, int id ) : wxScrolledWindow( 
     topSizer = new wxFlexGridSizer( 3, 0, 0 );
 }
 
-void trainControlBox::createControlBox()
+void trainControlPanel::createControlBox()
 {
     topSizer->AddSpacer(10);
     topSizer->AddSpacer(10);
@@ -25,7 +25,7 @@ void trainControlBox::createControlBox()
     }
 
     stopAllBtn = new wxButton( parent, ID_StopAll, "Stop All", wxDefaultPosition, wxDefaultSize );
-    stopAllBtn->Bind( wxEVT_BUTTON, &trainControlBox::OnStopAll, this, ID_StopAll);
+    stopAllBtn->Bind( wxEVT_BUTTON, &trainControlPanel::OnStopAll, this, ID_StopAll);
 
     this->Layout();
     topSizer->SetSizeHints( this );
@@ -33,10 +33,10 @@ void trainControlBox::createControlBox()
 
     this->SetSizer(topSizer);
     this->FitInside();
-    this->SetScrollRate(30, 20);
+    this->SetScrollRate(20, 20);
 }
 
-void trainControlBox::loadTrains( std::unordered_map< wxString, int > &cons )
+void trainControlPanel::loadTrains( std::unordered_map< wxString, int > &cons )
 {
     //init Config
     wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
@@ -111,12 +111,12 @@ void trainControlBox::loadTrains( std::unordered_map< wxString, int > &cons )
     }
 }
 
-void trainControlBox::OnStopAll( wxCommandEvent& event )
+void trainControlPanel::OnStopAll( wxCommandEvent& event )
 {
     this->StopAll();
 }
 
-void trainControlBox::StopAll()
+void trainControlPanel::StopAll()
 {
     for (train* & selTrain : this->trains)
     {
@@ -124,6 +124,7 @@ void trainControlBox::StopAll()
     }  
 }
 
-trainControlBox::~trainControlBox()
+trainControlPanel::~trainControlPanel()
 {
+    delete stopAllBtn;
 }

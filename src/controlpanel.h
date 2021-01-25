@@ -6,6 +6,8 @@
 #include "wx/grid.h"
 #include "traincontrol.h"
 #include "switchcontrol.h"
+#include "traincontrolbox.h"
+#include "switchcontrolbox.h"
 
 class controlPanel : public wxPanel
 { 
@@ -19,7 +21,7 @@ class controlPanel : public wxPanel
 
         std::unordered_map< wxString, int > cons;
 
-        wxStaticBox* m_trainControlBox;
+        trainControlBox* m_trainControlBox;
         switchControlBox* m_switchControlBox;
         wxFlexGridSizer* topSizer;
 
