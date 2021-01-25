@@ -1,6 +1,6 @@
 #include "traincontrol.h"
 
-trainControlBox::trainControlBox( wxPanel* parent, int id, wxString title, wxString boxName ) : wxStaticBox( parent, id, title, wxDefaultPosition, wxDefaultSize, 0L, boxName )
+trainControlBox::trainControlBox( wxPanel* parent, int id ) : wxScrolledWindow( parent, id )
 {
     this->parent = parent;
 
@@ -15,7 +15,7 @@ void trainControlBox::createControlBox()
     topSizer->AddSpacer(10);
     for (train* & selTrain : this->trains)
     {
-        selTrain->createControls(this);
+        selTrain->createControls( this );
         topSizer->Add( selTrain->trainName, 1, wxALL, 10 );
         topSizer->Add( selTrain->speedSlider, 1, wxALL , 10 );
         topSizer->Add( selTrain->stopBtn, 1, wxALL , 10 );
@@ -24,17 +24,16 @@ void trainControlBox::createControlBox()
         selTrain->speedSlider->Bind( wxEVT_SLIDER, &train::OnChangeSpeed, selTrain );
     }
 
-    stopAllBtn = new wxButton( this, ID_StopAll, "Stop All", wxDefaultPosition, wxDefaultSize );
+    stopAllBtn = new wxButton( parent, ID_StopAll, "Stop All", wxDefaultPosition, wxDefaultSize );
     stopAllBtn->Bind( wxEVT_BUTTON, &trainControlBox::OnStopAll, this, ID_StopAll);
-    
-    topSizer->AddSpacer( 20 );
-    topSizer->Add( stopAllBtn, 0, wxALL | wxALIGN_CENTER_HORIZONTAL , 10 );
 
-    this->SetSizer( topSizer );
     this->Layout();
-	topSizer->Fit( this );
     topSizer->SetSizeHints( this );
     this->SendSizeEventToParent();
+
+    this->SetSizer(topSizer);
+    this->FitInside();
+    this->SetScrollRate(30, 20);
 }
 
 void trainControlBox::loadTrains( std::unordered_map< wxString, int > &cons )

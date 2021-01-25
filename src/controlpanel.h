@@ -19,7 +19,7 @@ class controlPanel : public wxPanel
 
         std::unordered_map< wxString, int > cons;
 
-        trainControlBox* m_trainControlBox;
+        wxStaticBox* m_trainControlBox;
         switchControlBox* m_switchControlBox;
         wxFlexGridSizer* topSizer;
 
