@@ -7,14 +7,9 @@ controlPanel::controlPanel( wxNotebook* parent ) : wxPanel( parent )
 
     m_trainControlBox = new wxStaticBox( this, wxID_ANY, "Train Control", wxDefaultPosition, wxDefaultSize, 0L,  "trainControlBox" );
     m_switchControlBox = new switchControlBox( this, wxID_ANY, "Switch Control", "switchControlBox" );
-
-    //
     wxStaticBoxSizer* sizer = new wxStaticBoxSizer( m_trainControlBox, wxVERTICAL );
     
     trainControlBox* my_image = new trainControlBox( this, wxID_ANY );
-    //
-
-    // topSizer->Add( m_trainControlBox, 2, wxGROW | wxALL, 10 );
     topSizer->Add( m_switchControlBox, 2, wxGROW | wxALL, 10 );
 
     m_switchControlBox->loadswitchs( cons );
