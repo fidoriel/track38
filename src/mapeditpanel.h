@@ -31,6 +31,7 @@ class mapEditPanel : public wxPanel
         void OnDragMode( wxCommandEvent& event );
         void OnMapRemove( wxCommandEvent& event );
         void OnDragCellPicker( wxGridEvent& event );
+        void OnEditSwitch( wxCommandEvent& event );
         void turn( int row, int col, bool clockwise = true);
         void OnTurnCC( wxCommandEvent& event );
         void OnTurnCW( wxCommandEvent& event );
@@ -93,8 +94,9 @@ class mapEditPanel : public wxPanel
             ID_Map,
             ID_DragMode,
             ID_CellRemove,
-            ID_RMenueTurnCW,
-            ID_RMenueTurnCC
+            ID_RMenuTurnCW,
+            ID_RMenuTurnCC,
+            ID_RMenuEdit
         };
 
     private:

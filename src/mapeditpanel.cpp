@@ -392,21 +392,31 @@ void mapEditPanel::OnRClickMap( wxGridEvent& event )
     eventCellRow = event.GetRow();
     eventCellCol = event.GetCol();
     mapMenu = new wxMenu();
- 	mapMenu->Append( ID_RMenueTurnCW, "Rotate Clockwise" );
- 	mapMenu->Append( ID_RMenueTurnCC, "Rotate Counter Clockwise" );
+ 	mapMenu->Append( ID_RMenuTurnCW, "Rotate Clockwise" );
+ 	mapMenu->Append( ID_RMenuTurnCC, "Rotate Counter Clockwise" );
     mapMenu->AppendSeparator();
     mapMenu->AppendCheckItem( ID_DragMode, "DragMode" );
  	mapMenu->AppendSeparator();
+    mapMenu->AppendCheckItem( ID_RMenuEdit, "Edit" );
     mapMenu->Append( ID_CellRemove, "Remove" );
 
+
     mapMenu->Check( ID_DragMode, this->clickToDrag );
+    cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( eventCellRow, eventCellCol );
+    if ( cellRenderer->file.Find( "switch" ) == wxNOT_FOUND )
+        mapMenu->Enable( ID_RMenuEdit, false );
 
     Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnDragMode, this, ID_DragMode );
     Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnMapRemove, this, ID_CellRemove );
-    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnTurnCW, this, ID_RMenueTurnCW );
-    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnTurnCC, this, ID_RMenueTurnCC );
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnTurnCW, this, ID_RMenuTurnCW );
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnTurnCC, this, ID_RMenuTurnCC );
+    Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnEditSwitch, this, ID_RMenuEdit );
 
  	PopupMenu( mapMenu );
+}
+
+void mapEditPanel::OnEditSwitch( wxCommandEvent& event )
+{
 }
 
 void mapEditPanel::OnTurnCC( wxCommandEvent& event )
