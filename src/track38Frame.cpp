@@ -36,9 +36,8 @@ void track38Frame::OnQuit( wxCommandEvent& event )
 track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/*, wxPoint( 30, 30 ), wxSize( 200, 200 )*/ )
 {
 
-    this->Settings();
-
     SetIcon( wxICON( AppIcon ) );
+    this->Settings();
 
     //----------------
     //Main Application
@@ -66,13 +65,15 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/
     this->Layout();
 
     //-----------
-    //Status bar
+    // Status bar
     //-----------
     CreateStatusBar( 2 );
 
-    // 
-    // Configuration File
-    //
+    //--------------
+    // Load Settings
+    //--------------
+
+    wxConfigBase::Set( configMain );
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
 
     track38ConfigBase->SetPath( "/Application/" );
@@ -82,8 +83,8 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/
         y = track38ConfigBase->Read( "frameY", 50 ),
         w = track38ConfigBase->Read( "frameW", minw ),
         h = track38ConfigBase->Read( "frameH", minh );
-    Move( x, y );
-    SetClientSize( w, h );
+    this->Move( x, y );
+    this->SetClientSize( w, h );
 
     track38ConfigBase->SetPath( "/" );
 
@@ -129,22 +130,34 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/
 
 void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
 {
-    if ( event.GetOldSelection() == 0 )
+    switch ( event.GetOldSelection() )
     {
-        wxMessageDialog dialog( this, "By switching to the Edit Panel all trains are going to be stopped", "Stop all Trains", wxYES_NO | wxICON_INFORMATION );
-        switch ( dialog.ShowModal() )
+    case 0:
         {
-            case wxID_YES:
-                m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
-                m_controlPanel->CloseAll();
-                return;
-                break;
+            wxMessageDialog dialog( this, "By switching to the Edit Panel all trains are going to be stopped", "Stop all Trains", wxYES_NO | wxICON_INFORMATION );
+            switch ( dialog.ShowModal() )
+            {
+                case wxID_YES:
+                    m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
+                    m_controlPanel->CloseAll();
+                    return;
+                    break;
 
-            case wxID_NO:
-                event.Veto();
-                return;
-                break;
+                case wxID_NO:
+                    event.Veto();
+                    return;
+                    break;
+            }
         }
+        break;
+    
+    case 1:
+        wxMessageBox( "map" );
+        m_mapEditPanel->SaveMapToFile();
+        break;
+    
+    default:
+        break;
     }
 }
 
@@ -168,14 +181,10 @@ void track38Frame::Settings()
 
     ini_dir += "track38.ini";
 
-    wxFileConfig *config = new wxFileConfig( "track38", "fidoriel", ini_dir, "", wxCONFIG_USE_GLOBAL_FILE );
+    configMain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), ini_dir, "", wxCONFIG_USE_GLOBAL_FILE );
 
-    wxConfigBase::Set(config);
+    wxConfigBase::Set( configMain );
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
-    if ( track38ConfigBase == NULL )
-        return;
-
-    track38ConfigBase->Write( "/ControlSettings/pfRepeatCmd", 5 );   
     track38ConfigBase->Flush();
 }
 
@@ -189,9 +198,8 @@ track38Frame::~track38Frame()
     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
     m_controlPanel->CloseAll();
 
+    wxConfigBase::Set( configMain );
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
-    if ( track38ConfigBase == NULL )
-        return;
 
     // save the frame position
     int x, y, w, h;

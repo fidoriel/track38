@@ -25,6 +25,10 @@ class switchControlPanel : public wxScrolledWindow
 
         wxBoxSizer* topSizer;
         wxPanel* parent;
+
+
+        wxFileConfig* configSwitch;
+        wxConfigBase* track38ConfigSwitch;
 };
 
 #endif

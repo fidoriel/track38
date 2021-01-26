@@ -130,22 +130,12 @@ void train::ChangeSpeed( int newSpeed )
 
         copy( serialSignal.begin(), serialSignal.end(), sendSignal );
 
-        //wxMessageBox( wxString::Format( wxT( "%i" ), newSpeed ) );
-
-
-        // con = connect_port( portPoint );
 
         char str_send[ 2 ][ 128 ];
         // unsigned char str_recv[ 128 ];
 
         strcpy( str_send[ 1 ], sendSignal );
-
-        wxConfigBase *track38ConfigBase = wxConfigBase::Get();
-        for ( size_t i = 0; i < track38ConfigBase->Read( "/ControlSettings/pfRepeatCmd", 5 ); i++ )
-        {
-            // wxMessageBox( wxString::Format( wxT("%i"), write_port( con, str_send[ 1 ] ) ) );
-            write_port( this->con, str_send[ 1 ] );
-        }
+        write_port( this->con, str_send[ 1 ] );
         
         // usleep( 1000000 );
         // int bytes = read_port( con, str_recv, 128 );

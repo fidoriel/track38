@@ -10,7 +10,6 @@
 #include "wx/fileconf.h"
 #include "wx/config.h"
 
-#include "track38App.h"
 #include "pfeditbox.h"
 #include "upeditbox.h"
 
@@ -42,6 +41,8 @@ class trainEditPanel : public wxPanel
         wxButton* m_UpdateBtn;
         wxButton* m_RemoveBtn;
         wxNotebook* panelParent;
+        wxConfigBase* configTrain;
+        wxConfigBase* track38ConfigTrain;
 
     private:
         DECLARE_EVENT_TABLE();

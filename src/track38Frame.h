@@ -44,6 +44,8 @@ public:
     trainEditPanel* m_trainEditPanel;
     mapEditPanel* m_mapEditPanel;
 
+    wxFileConfig *configMain;
+
     int minw = 900;
     int minh = 650;
 

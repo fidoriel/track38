@@ -55,8 +55,13 @@ class mapEditPanel : public wxPanel
         wxMenu* mapMenu;
         int eventCellRow;
         int eventCellCol;
+        wxFileConfig* configMap;
+        wxConfigBase* track38ConfigMap;
 
         // switch
+        wxFileConfig* configSwitch;
+        wxConfigBase* track38ConfigSwitch;
+
         editBox* switchPickerBox;
         wxStaticBoxSizer* switchPickerBoxSizer;
         wxListBox* m_switchPicker;
