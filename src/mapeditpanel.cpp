@@ -1,5 +1,7 @@
 #include "mapeditpanel.h"
 
+#include "track38App.h"
+
 wxBEGIN_EVENT_TABLE( mapEditPanel, wxPanel )
     EVT_BUTTON( ID_RefreshSerial, mapEditPanel::OnRefreshSerial )
     EVT_BUTTON( ID_AddSwitch, mapEditPanel::OnAddSwitch )
@@ -379,7 +381,7 @@ void mapEditPanel::OnRClickMap( wxGridEvent& event )
 
 void mapEditPanel::LoadMapFromFile()
 {
-    // wxGetApp();
+    wxGetApp();
     map->CreateGrid( 25, 50);
     map->HideColLabels();
     map->HideRowLabels();

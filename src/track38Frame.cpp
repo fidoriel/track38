@@ -1,5 +1,8 @@
 #include "track38Frame.h"
 
+// user wxGetApp()
+#include "track38App.h"
+
 //-------------------------
 // Macro stuff
 //-------------------------
@@ -10,9 +13,6 @@ BEGIN_EVENT_TABLE( track38Frame, wxFrame )
     EVT_NOTEBOOK_PAGE_CHANGING( ID_NbChanged, track38Frame::OnNbChangeing )
     EVT_NOTEBOOK_PAGE_CHANGED( ID_NbChanged, track38Frame::OnNbChanged )
 END_EVENT_TABLE()
-
-// Implements track38 GetApp()
-wxDECLARE_APP( track38App );
 
 void track38Frame::OnAbout( wxCommandEvent& event )
 {

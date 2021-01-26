@@ -15,7 +15,6 @@
 
 #include "../icons/AppIcon.xpm"
 
-#include "track38App.h"
 #include "traineditpanel.h"
 #include "mapeditpanel.h"
 #include "controlpanel.h"

@@ -10,6 +10,7 @@
 #include "wx/fileconf.h"
 #include "wx/config.h"
 
+#include "track38App.h"
 #include "pfeditbox.h"
 #include "upeditbox.h"
 

@@ -10,7 +10,6 @@
 #include "wx/scopedptr.h"
 
 #include "preferences.h"
-#include "track38Frame.h"
 
 class track38App : public wxApp
 {
@@ -32,5 +31,8 @@ public:
 private:
     wxScopedPtr<wxPreferencesEditor> m_prefEditor;
 };
+
+// Implements track38 GetApp()
+DECLARE_APP( track38App );
 
 #endif

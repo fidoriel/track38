@@ -1,9 +1,8 @@
 #include "track38App.h"
+#include "track38Frame.h"
 
-// Implements track38 GetApp()
-wxDECLARE_APP( track38App );
 // Give wxWidgets the means to create a track38 object
-wxIMPLEMENT_APP( track38App );
+IMPLEMENT_APP( track38App );
 
 bool track38App::OnInit()
 {
