@@ -152,7 +152,6 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
         break;
     
     case 1:
-        wxMessageBox( "map" );
         m_mapEditPanel->SaveMapToFile();
         break;
     
@@ -197,6 +196,7 @@ track38Frame::~track38Frame()
 {
     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
     m_controlPanel->CloseAll();
+    m_mapEditPanel->SaveMapToFile();
 
     wxConfigBase::Set( configMain );
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();

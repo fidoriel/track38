@@ -42,6 +42,7 @@ class mapEditPanel : public wxPanel
         void OnRClickMap( wxGridEvent& event );
         void LoadMapFromFile();
         void SaveMapToFile();
+        void DragSwitchToMap( int row, int col );
 
         // Topsizer
         wxBoxSizer* topSizer;
