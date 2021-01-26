@@ -27,48 +27,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     this->clickToDrag = false;
     
     map = new wxGrid( this, ID_Map, wxPoint( 0, 0 ), wxSize( 40, 40) );
-
-    map->CreateGrid( 25, 50);
-    map->HideColLabels();
-    map->HideRowLabels();
-    map->EnableEditing( false );
-    map->EnableGridLines( false );
-    map->EnableDragGridSize( false );
-    map->DisableCellEditControl();
-    map->SetMargins( 0 , 0 );
-    map->SetCellHighlightColour( *wxWHITE );
-    map->SetCellHighlightROPenWidth( 0 );
-
-    map->SetDropTarget( new mapDropTarget( map ) );
-
-    for ( size_t i = 0; i < map->GetNumberRows(); i++ )
-    {
-        map->SetRowSize( i, 50 );
-    }
-
-    for ( size_t i = 0; i < map->GetNumberCols(); i++ )
-    {
-        map->SetColSize( i, 50 );
-    }
-
-    for ( size_t col = 0; col < map->GetNumberCols(); col++ )
-    {
-        for ( size_t row = 0; row < map->GetNumberRows(); row++ )
-        {
-            map->SetReadOnly( row, col );
-            map->SetCellBackgroundColour( row, col, *wxWHITE );
-            map->SetCellTextColour( row, col, *wxBLACK );
-            map->SetCellRenderer( row, col, new cellImageRenderer() );
-        }
-    }
-
-    // map->SetCellRenderer( 0, 0, new cellImageRenderer( "tracks/straightn.png" ) );
-    // map->SetCellRenderer( 0, 1, new cellImageRenderer( "tracks/straightn.png" ) );
-    // map->SetCellRenderer( 0, 2, new cellImageRenderer( "tracks/curven.png" ) );
-    // map->SetCellRenderer( 1, 1, new cellImageRenderer( "tracks/straightn.png" ) );
-    // map->SetCellRenderer( 2, 2, new cellImageRenderer( "tracks/straightn.png" ) );
-    // map->SetCellRenderer( 3, 3, new cellImageRenderer( "tracks/straightn.png" ) );
-    // map->SetCellRenderer( 1, 2, new cellImageRenderer( "tracks/switchLn.png" ) );
+    this->LoadMapFromFile();
 
     //
     // Switch Edit Panel
@@ -416,6 +375,49 @@ void mapEditPanel::OnRClickMap( wxGridEvent& event )
     Bind( wxEVT_COMMAND_MENU_SELECTED, &mapEditPanel::OnEditSwitch, this, ID_RMenuEdit );
 
  	PopupMenu( mapMenu );
+}
+
+void mapEditPanel::LoadMapFromFile()
+{
+    // wxGetApp();
+    map->CreateGrid( 25, 50);
+    map->HideColLabels();
+    map->HideRowLabels();
+    map->EnableEditing( false );
+    map->EnableGridLines( false );
+    map->EnableDragGridSize( false );
+    map->DisableCellEditControl();
+    map->SetMargins( 0 , 0 );
+    map->SetCellHighlightColour( *wxWHITE );
+    map->SetCellHighlightROPenWidth( 0 );
+
+    map->SetDropTarget( new mapDropTarget( map ) );
+
+    for ( size_t i = 0; i < map->GetNumberRows(); i++ )
+    {
+        map->SetRowSize( i, 50 );
+    }
+
+    for ( size_t i = 0; i < map->GetNumberCols(); i++ )
+    {
+        map->SetColSize( i, 50 );
+    }
+
+    for ( size_t col = 0; col < map->GetNumberCols(); col++ )
+    {
+        for ( size_t row = 0; row < map->GetNumberRows(); row++ )
+        {
+            map->SetReadOnly( row, col );
+            map->SetCellBackgroundColour( row, col, *wxWHITE );
+            map->SetCellTextColour( row, col, *wxBLACK );
+            map->SetCellRenderer( row, col, new cellImageRenderer() );
+        }
+    }
+}
+
+void mapEditPanel::SaveMapToFile()
+{
+
 }
 
 void mapEditPanel::OnEditSwitch( wxCommandEvent& event )

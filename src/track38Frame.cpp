@@ -1,79 +1,4 @@
-#include "wx/wx.h"
-#include <string>
-#include "wx/fileconf.h"
-#include "wx/config.h"
-#include "wx/image.h"
-#include "wx/preferences.h"
-#include "wx/scopedptr.h"
-#include "wx/artprov.h"
-#include <wx/stdpaths.h>
-#include <wx/filefn.h> 
-#include <wx/dir.h>
-
-#include "../icons/AppIcon.xpm"
-
-#include "traineditpanel.h"
-#include "mapeditpanel.h"
-#include "controlpanel.h"
-#include "preferences.h"
-
-//-------------------------
-// Class/Function declaration
-//-------------------------
-
-class track38App : public wxApp
-{
-public:
-    virtual bool OnInit();
-    void ShowPreferencesEditor( wxWindow* parent );
-
-private:
-    wxScopedPtr<wxPreferencesEditor> m_prefEditor;
-};
-
-
-class track38Frame : public wxFrame
-{
-public:
-    track38Frame();
-    ~track38Frame();
-
-    wxString name = "track38";
-
-    // Event handlers
-    void OnNbChangeing( wxBookCtrlEvent& event );
-    void OnNbChanged( wxBookCtrlEvent& event );
-    void OnSettings( wxCommandEvent& event );
-    void Settings();
-
-    wxMenu* fileMenu;
-    wxMenu* helpMenu;
-    wxMenu* controlMenu;
-
-    wxNotebook* m_notebook;
-
-    wxMenuBar* menuBar;
-    wxBoxSizer* topSizer;
-    controlPanel* m_controlPanel;
-    trainEditPanel* m_trainEditPanel;
-    mapEditPanel* m_mapEditPanel;
-
-    int minw = 900;
-    int minh = 650;
-
-    enum
-    {
-        ID_NbChanged,
-        ID_VisitGithub,
-        ID_Reconnect
-    };
-
-private:
-    void OnQuit( wxCommandEvent& event );
-    void OnAbout( wxCommandEvent& event );
-
-    DECLARE_EVENT_TABLE()
-};
+#include "track38Frame.h"
 
 //-------------------------
 // Macro stuff
@@ -86,34 +11,8 @@ BEGIN_EVENT_TABLE( track38Frame, wxFrame )
     EVT_NOTEBOOK_PAGE_CHANGED( ID_NbChanged, track38Frame::OnNbChanged )
 END_EVENT_TABLE()
 
-// Implements track38& GetApp()
+// Implements track38 GetApp()
 wxDECLARE_APP( track38App );
-// Give wxWidgets the means to create a track38 object
-wxIMPLEMENT_APP( track38App );
-
-//-------------------------
-// function definition
-//-------------------------
-
-bool track38App::OnInit()
-{
-    //SetVendorName( "fidoriel" );
-    //SetAppName( "track38" );
-    track38Frame* m_frame = new track38Frame();
-    m_frame->Show();
-    return true;
-}
-
-void track38App::ShowPreferencesEditor( wxWindow* parent )
-{
-    if ( !m_prefEditor )
-    {
-        m_prefEditor.reset( new wxPreferencesEditor );
-        m_prefEditor->AddPage( new track38PreferencePageGeneral );
-    }
-
-    m_prefEditor->Show( parent );
-}
 
 void track38Frame::OnAbout( wxCommandEvent& event )
 {
@@ -124,7 +23,7 @@ void track38Frame::OnAbout( wxCommandEvent& event )
     wxString msg;
     msg.Printf( "track38 is a LEGO Train Layout Control Software developed by fidoriel. It is able to control LEGO PoweredUp, PowerFunctions and Track Switches via Arduino and esp8266.", wxVERSION_STRING );
     wxString title;
-    title.Printf( "About %s", name );
+    title.Printf( "About %s", wxGetApp().GetAppName() );
     wxMessageBox( msg, title, wxOK | wxICON_INFORMATION, this );
 }
 
@@ -134,7 +33,7 @@ void track38Frame::OnQuit( wxCommandEvent& event )
     Close( true );
 }
 
-track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30, 30 ), wxSize( 200, 200 )*/ )
+track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/*, wxPoint( 30, 30 ), wxSize( 200, 200 )*/ )
 {
 
     this->Settings();
@@ -259,18 +158,12 @@ void track38Frame::OnNbChanged( wxBookCtrlEvent& event )
 
 void track38Frame::Settings()
 {
-    #ifdef __APPLE__
-    wxString ini_dir = wxFileName::GetHomeDir() + "/Library/Application Support/track38/";
-    #elif __linux__
-    wxString ini_dir = wxFileName::GetHomeDir() + "/.track38/";
-    #elif __WIN32__
-    wxString ini_dir = wxFileName::GetHomeDir() + "\\AppData\\Roaming\\track38\\";
-    #endif
+    wxString ini_dir = wxGetApp().ini_dir;
 
     if ( !wxDirExists( ini_dir ) )
     {
         wxDir::Make( ini_dir );
-        wxMessageBox( ini_dir );
+        // wxMessageBox( ini_dir );
     }
 
     ini_dir += "track38.ini";

@@ -14,6 +14,7 @@
 #include "wx/string.h"
 #include "wx/menu.h"
 #include <wx/arrstr.h>
+#include "wx/app.h"
 
 #include "editBox.h"
 #include "cellImageRenderer.h"
@@ -39,12 +40,16 @@ class mapEditPanel : public wxPanel
         void loadSwitches();
         void OnLClickMap( wxGridEvent& event );
         void OnRClickMap( wxGridEvent& event );
+        void LoadMapFromFile();
+        void SaveMapToFile();
 
         // Topsizer
         wxBoxSizer* topSizer;
         wxBoxSizer* bottomSizer;
 
         // Map
+        int mapRows;
+        int mapCols;
         wxGrid* map;
         bool clickToDrag;
         wxMenu* mapMenu;
