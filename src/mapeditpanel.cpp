@@ -292,8 +292,8 @@ void mapEditPanel::SelectSwitch()
 
     if ( ( portPicker->FindString( track38ConfigSwitch->Read( "port", "" ) ) == wxNOT_FOUND ) && ( portPicker->FindString( "Please select a new Port" ) == wxNOT_FOUND ) )
     {
-        portPicker->AppendString( "Please select a new Port" );
-        portPicker->SetStringSelection( "Please select a new Port" );
+        // portPicker->AppendString( "Please select a new Port" );
+        // portPicker->SetStringSelection( "Please select a new Port" );
     }
     else
     {

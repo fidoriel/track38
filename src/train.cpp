@@ -9,7 +9,7 @@ void train::createControls( wxPanel* parent )
 {
     this->trainName = new wxStaticText( parent, wxID_ANY, this->name );
     this->speedSlider = new wxSlider( parent, ID_ChangeSpeed, 0, this->maxTrainSpeed*( -1 ), this->maxTrainSpeed, wxDefaultPosition, wxSize( 200, -1 ), wxSL_AUTOTICKS );
-    this->stopBtn = new wxButton( parent, ID_StopTrain, "Stop", wxDefaultPosition, wxDefaultSize );
+    this->stopBtn = new wxButton( parent, ID_StopTrain, "X", wxDefaultPosition, wxSize( 30, 30 ) );
 }
 
 void train::OnStop( wxCommandEvent& event ) 

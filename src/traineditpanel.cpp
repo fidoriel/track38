@@ -206,8 +206,6 @@ void trainEditPanel::SaveTrain()
 
 void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
 {
-    this->SelectTrain();
-
     wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
 
     track38ConfigTrain->SetPath( "/Train/" );
@@ -221,10 +219,12 @@ void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
     else if ( control.IsSameAs( "pf" ) )
         tPort = ( wxChoice* ) FindWindow( "pfPort" );
 
-    if ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND )
-        wxMessageBox( "The saved Port was not found. Please plug in the device.", "Port Error" );
-    
     tPort->Refresh();
+
+    // if ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND )
+    //     wxMessageBox( "The saved Port was not found. Please plug in the device.", "Port Error" );
+
+    this->SelectTrain();
 }
 
 void trainEditPanel::SelectTrain()
@@ -301,8 +301,8 @@ void trainEditPanel::SelectTrain()
 
     if ( ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND ) && ( tPort->FindString( "Please select a new Port" ) == wxNOT_FOUND ) )
     { 
-        tPort->AppendString( "Please select a new Port" );
-        tPort->SetStringSelection( "Please select a new Port" );
+        // tPort->AppendString( "Please select a new Port" );
+        // tPort->SetStringSelection( "Please select a new Port" );
     }
 
     else
