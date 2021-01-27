@@ -468,14 +468,13 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
         }
 
         map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer() );
+        map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxWHITE );
+        map->ForceRefresh();
 
         wxTextDataObject myData( fileRot );
         wxDropSource dragSource( this );
         dragSource.SetData( myData );
         wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
-
-        
-        map->ForceRefresh();
     }
 
     else
