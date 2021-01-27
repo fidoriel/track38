@@ -295,6 +295,41 @@ void mapEditPanel::OnSelectSwitch( wxCommandEvent& event )
     //     wxMessageBox( "The saved Port was not found. Please plug in the device.", "Port Error" );
 }
 
+void mapEditPanel::SelectSwitch( int row, int col )
+{
+    long idx;
+    wxString out;
+    wxString toSelect;
+    track38ConfigSwitch->SetPath( "/Switch/" );
+    bool exists = track38ConfigSwitch->GetFirstGroup( out, idx );
+    if (  exists == true  )
+    {   
+        track38ConfigSwitch->SetPath( out );
+        if ( ( wxAtoi( track38ConfigSwitch->Read( "row", "") ) == row ) && ( wxAtoi( track38ConfigSwitch->Read( "col", "") ) == col ) )
+        {
+            toSelect = out;
+        }
+        track38ConfigSwitch->SetPath( "/Switch/" );
+    }
+    
+    while ( exists )
+    {
+        exists = track38ConfigSwitch->GetNextGroup( out, idx );
+        if (  exists == true  )
+        {   
+            track38ConfigSwitch->SetPath( out );
+            if ( ( wxAtoi( track38ConfigSwitch->Read( "row", "") ) == row ) && ( wxAtoi( track38ConfigSwitch->Read( "col", "") ) == col ) )
+            {
+                toSelect = out;
+            }
+            track38ConfigSwitch->SetPath( "/Switch/" );
+        }
+    }
+    
+    m_switchPicker->SetStringSelection( toSelect );
+    this->SelectSwitch();
+}
+
 void mapEditPanel::SelectSwitch()
 {
     if ( m_switchPicker->GetCount() == 0 )
@@ -547,6 +582,8 @@ void mapEditPanel::SaveMapToFile()
 
 void mapEditPanel::OnEditSwitch( wxCommandEvent& event )
 {
+    // wxMessageBox( wxString::Format( wxT( "%i" ), eventCellRow ) );
+    this->SelectSwitch( eventCellRow, eventCellCol );
 }
 
 void mapEditPanel::OnTurnCC( wxCommandEvent& event )
@@ -651,11 +688,11 @@ void mapEditPanel::RemoveMap( int row, int col)
         }
     }
 
-    // if ( m_switchPicker->GetCount() > 0 )
-    // {
-    //     m_switchPicker->SetSelection( 0 );
-    //     this->SelectSwitch();
-    // }
+    if ( m_switchPicker->GetCount() > 0 )
+    {
+        m_switchPicker->SetSelection( 0 );
+        this->SelectSwitch();
+    }
 }
 
 void mapEditPanel::OnDragMode( wxCommandEvent& event )

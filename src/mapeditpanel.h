@@ -38,6 +38,7 @@ class mapEditPanel : public wxPanel
         void OnTurnCW( wxCommandEvent& event );
         void RemoveMap( int row, int col);
         void SelectSwitch();
+        void SelectSwitch( int row, int col );
         void loadSwitches();
         void RemoveSwitch();
         void OnLClickMap( wxGridEvent& event );
