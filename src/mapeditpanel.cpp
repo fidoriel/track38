@@ -482,7 +482,8 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
         case wxDragCancel:
         case wxDragNone:
             map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( fileRot ) );
-            map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxLIGHT_GREY );
+            if ( !( fileRot.Find( "switch" ) == wxNOT_FOUND ) )
+                map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxLIGHT_GREY );
             wxMessageBox("error");
             map->ForceRefresh();
             break;
