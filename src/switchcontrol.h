@@ -7,6 +7,7 @@
 #include "wx/radiobox.h"
 #include "wx/panel.h"
 #include "wx/statbox.h"
+#include <wx/fileconf.h>
 #include <unordered_map>
 #include <algorithm>
 

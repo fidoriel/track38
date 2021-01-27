@@ -9,6 +9,7 @@
 #include "wx/statbox.h"
 #include <unordered_map>
 #include <algorithm>
+#include <wx/fileconf.h>
 
 #include "switch.h"
 #include "switchcontrol.h"
