@@ -162,6 +162,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     topSizer->SetSizeHints( this );
 
     this->loadSwitches();
+    this->SelectSwitch();
 }
 
 void mapEditPanel::OnRefreshSerial( wxCommandEvent& event )
@@ -234,7 +235,13 @@ void mapEditPanel::DragSwitchToMap( int row, int col )
 void mapEditPanel::OnUpdateSwitch( wxCommandEvent& event )
 {
     track38ConfigSwitch->SetPath( "/Switch/" );
-    track38ConfigSwitch->DeleteGroup( m_switchPicker->GetStringSelection() );
+    track38ConfigSwitch->RenameGroup( m_switchPicker->GetStringSelection(), switchName->GetValue() );
+    track38ConfigSwitch->Write( "gpio", wxString::Format( wxT( "%i" ), gpioPicker->GetValue() ) );
+    track38ConfigSwitch->Write( "dir", dirPicker->GetStringSelection() );
+    track38ConfigSwitch->Write( "port", portPicker->GetStringSelection() );
+    track38ConfigSwitch->Write( "manufacturer", manufacturerPicker->GetStringSelection() );
+    track38ConfigSwitch->Flush();
+
     m_switchPicker->Delete( m_switchPicker->GetSelection() );
     this->AddSwitch();
     m_switchPicker->AppendString( switchName->GetValue() );
