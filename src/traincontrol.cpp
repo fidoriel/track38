@@ -1,4 +1,5 @@
 #include "traincontrol.h"
+#include "track38App.h"
 
 trainControlPanel::trainControlPanel( wxPanel* parent, int id ) : wxScrolledWindow( parent, id )
 {
@@ -6,6 +7,11 @@ trainControlPanel::trainControlPanel( wxPanel* parent, int id ) : wxScrolledWind
 
     //Sizer
     topSizer = new wxFlexGridSizer( 3, 0, 0 );
+
+    //init Config
+    configTrain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "trains.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configTrain );
+    track38ConfigTrain = wxConfigBase::Get();
 }
 
 void trainControlPanel::createControlBox()
@@ -16,9 +22,9 @@ void trainControlPanel::createControlBox()
     for (train* & selTrain : this->trains)
     {
         selTrain->createControls( this );
-        topSizer->Add( selTrain->trainName, 1, wxALL, 2 );
-        topSizer->Add( selTrain->speedSlider, 1, wxALL , 2 );
-        topSizer->Add( selTrain->stopBtn, 1, wxALL , 2 );
+        topSizer->Add( selTrain->trainName, 0, wxALL, 5 );
+        topSizer->Add( selTrain->speedSlider, 0, wxALL , 5 );
+        topSizer->Add( selTrain->stopBtn, 0, wxALL , 5 );
 
         selTrain->stopBtn->Bind( wxEVT_BUTTON, &train::OnStop, selTrain );
         selTrain->speedSlider->Bind( wxEVT_SLIDER, &train::OnChangeSpeed, selTrain );
@@ -38,8 +44,6 @@ void trainControlPanel::createControlBox()
 
 void trainControlPanel::loadTrains( std::unordered_map< wxString, int > &cons )
 {
-    //init Config
-    wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
     track38ConfigTrain->SetPath( "/Train/" );
     trains.clear();
 

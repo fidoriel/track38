@@ -85,6 +85,8 @@ void cellImageRenderer::Draw( wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, cons
         // ---- renderer ----
         dc.SetClippingRegion( rect );
         // adjust y-offset of image to keep in vertical mid
+        dc.SetBackground( wxBrush( *wxWHITE, wxBRUSHSTYLE_SOLID ) );
+        dc.SetBackgroundMode( wxBRUSHSTYLE_SOLID );
         dc.DrawBitmap( *renderBmp, rect.x + border, rect.y + border + ( rect.height - edge ) / 2,0);
         dc.DestroyClippingRegion();
     }

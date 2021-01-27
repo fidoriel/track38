@@ -1,4 +1,5 @@
 #include "switchcontrol.h"
+#include "track38App.h"
 
 switchControlPanel::switchControlPanel( wxPanel* parent, int id ) : wxScrolledWindow( parent, id )
 {
@@ -6,6 +7,11 @@ switchControlPanel::switchControlPanel( wxPanel* parent, int id ) : wxScrolledWi
 
     //Sizer
     topSizer = new wxBoxSizer( wxHORIZONTAL );
+
+    // init Config
+    configSwitch = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "switches.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configSwitch );
+    track38ConfigSwitch = wxConfigBase::Get();
 }
 
 void switchControlPanel::createControlBox()
@@ -36,20 +42,19 @@ void switchControlPanel::createControlBox()
 void switchControlPanel::loadswitchs( std::unordered_map< wxString, int > &cons )
 {
     //init Config
-    wxConfigBase* track38Configswitch = wxConfigBase::Get();
-    track38Configswitch->SetPath( "/Switch/" );
+    track38ConfigSwitch->SetPath( "/Switch/" );
     switches.clear();
 
     // Read switch Names
     long idx;
     wxString out;
-    bool exists = track38Configswitch->GetFirstGroup( out, idx );
+    bool exists = track38ConfigSwitch->GetFirstGroup( out, idx );
     if (  exists == true  )
         switches.push_back( new tswitch(out) );
     
     while ( exists )
     {
-        exists = track38Configswitch->GetNextGroup( out, idx );
+        exists = track38ConfigSwitch->GetNextGroup( out, idx );
         if (  exists == true  )
             switches.push_back( new tswitch(out) );
     }
@@ -58,14 +63,14 @@ void switchControlPanel::loadswitchs( std::unordered_map< wxString, int > &cons 
     for (tswitch* & selswitch : switches)
     {
         // Access the object through iterator
-        track38Configswitch->SetPath( "/Switch/" );
-        track38Configswitch->SetPath( selswitch->name );
+        track38ConfigSwitch->SetPath( "/Switch/" );
+        track38ConfigSwitch->SetPath( selswitch->name );
 
-        wxString port = track38Configswitch->Read( "port", "" );
+        wxString port = track38ConfigSwitch->Read( "port", "" );
         selswitch->setPort( port );
-        selswitch->setGPIO( track38Configswitch->Read( "gpio", "" ) );
-        selswitch->setDir( track38Configswitch->Read( "dir", "" ) );
-        selswitch->setManufacturer( track38Configswitch->Read( "manufacturer", "" ) );
+        selswitch->setGPIO( track38ConfigSwitch->Read( "gpio", "" ) );
+        selswitch->setDir( track38ConfigSwitch->Read( "dir", "" ) );
+        selswitch->setManufacturer( track38ConfigSwitch->Read( "manufacturer", "" ) );
 
     
         if ( cons.count( port ) )

@@ -1,79 +1,7 @@
-#include "wx/wx.h"
-#include <string>
-#include "wx/fileconf.h"
-#include "wx/config.h"
-#include "wx/image.h"
-#include "wx/preferences.h"
-#include "wx/scopedptr.h"
-#include "wx/artprov.h"
-#include <wx/stdpaths.h>
-#include <wx/filefn.h> 
-#include <wx/dir.h>
+#include "track38Frame.h"
 
-#include "../icons/AppIcon.xpm"
-
-#include "traineditpanel.h"
-#include "mapeditpanel.h"
-#include "controlpanel.h"
-#include "preferences.h"
-
-//-------------------------
-// Class/Function declaration
-//-------------------------
-
-class track38App : public wxApp
-{
-public:
-    virtual bool OnInit();
-    void ShowPreferencesEditor( wxWindow* parent );
-
-private:
-    wxScopedPtr<wxPreferencesEditor> m_prefEditor;
-};
-
-
-class track38Frame : public wxFrame
-{
-public:
-    track38Frame();
-    ~track38Frame();
-
-    wxString name = "track38";
-
-    // Event handlers
-    void OnNbChangeing( wxBookCtrlEvent& event );
-    void OnNbChanged( wxBookCtrlEvent& event );
-    void OnSettings( wxCommandEvent& event );
-    void Settings();
-
-    wxMenu* fileMenu;
-    wxMenu* helpMenu;
-    wxMenu* controlMenu;
-
-    wxNotebook* m_notebook;
-
-    wxMenuBar* menuBar;
-    wxBoxSizer* topSizer;
-    controlPanel* m_controlPanel;
-    trainEditPanel* m_trainEditPanel;
-    mapEditPanel* m_mapEditPanel;
-
-    int minw = 900;
-    int minh = 650;
-
-    enum
-    {
-        ID_NbChanged,
-        ID_VisitGithub,
-        ID_Reconnect
-    };
-
-private:
-    void OnQuit( wxCommandEvent& event );
-    void OnAbout( wxCommandEvent& event );
-
-    DECLARE_EVENT_TABLE()
-};
+// user wxGetApp()
+#include "track38App.h"
 
 //-------------------------
 // Macro stuff
@@ -86,35 +14,6 @@ BEGIN_EVENT_TABLE( track38Frame, wxFrame )
     EVT_NOTEBOOK_PAGE_CHANGED( ID_NbChanged, track38Frame::OnNbChanged )
 END_EVENT_TABLE()
 
-// Implements track38& GetApp()
-wxDECLARE_APP( track38App );
-// Give wxWidgets the means to create a track38 object
-wxIMPLEMENT_APP( track38App );
-
-//-------------------------
-// function definition
-//-------------------------
-
-bool track38App::OnInit()
-{
-    //SetVendorName( "fidoriel" );
-    //SetAppName( "track38" );
-    track38Frame* m_frame = new track38Frame();
-    m_frame->Show();
-    return true;
-}
-
-void track38App::ShowPreferencesEditor( wxWindow* parent )
-{
-    if ( !m_prefEditor )
-    {
-        m_prefEditor.reset( new wxPreferencesEditor );
-        m_prefEditor->AddPage( new track38PreferencePageGeneral );
-    }
-
-    m_prefEditor->Show( parent );
-}
-
 void track38Frame::OnAbout( wxCommandEvent& event )
 {
     //Blöng sound
@@ -124,7 +23,7 @@ void track38Frame::OnAbout( wxCommandEvent& event )
     wxString msg;
     msg.Printf( "track38 is a LEGO Train Layout Control Software developed by fidoriel. It is able to control LEGO PoweredUp, PowerFunctions and Track Switches via Arduino and esp8266.", wxVERSION_STRING );
     wxString title;
-    title.Printf( "About %s", name );
+    title.Printf( "About %s", wxGetApp().GetAppName() );
     wxMessageBox( msg, title, wxOK | wxICON_INFORMATION, this );
 }
 
@@ -134,12 +33,11 @@ void track38Frame::OnQuit( wxCommandEvent& event )
     Close( true );
 }
 
-track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30, 30 ), wxSize( 200, 200 )*/ )
+track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/*, wxPoint( 30, 30 ), wxSize( 200, 200 )*/ )
 {
 
-    this->Settings();
-
     SetIcon( wxICON( AppIcon ) );
+    this->Settings();
 
     //----------------
     //Main Application
@@ -167,13 +65,15 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
     this->Layout();
 
     //-----------
-    //Status bar
+    // Status bar
     //-----------
     CreateStatusBar( 2 );
 
-    // 
-    // Configuration File
-    //
+    //--------------
+    // Load Settings
+    //--------------
+
+    wxConfigBase::Set( configMain );
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
 
     track38ConfigBase->SetPath( "/Application/" );
@@ -183,8 +83,8 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
         y = track38ConfigBase->Read( "frameY", 50 ),
         w = track38ConfigBase->Read( "frameW", minw ),
         h = track38ConfigBase->Read( "frameH", minh );
-    Move( x, y );
-    SetClientSize( w, h );
+    this->Move( x, y );
+    this->SetClientSize( w, h );
 
     track38ConfigBase->SetPath( "/" );
 
@@ -230,22 +130,33 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, "track38"/*, wxPoint( 30
 
 void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
 {
-    if ( event.GetOldSelection() == 0 )
+    switch ( event.GetOldSelection() )
     {
-        wxMessageDialog dialog( this, "By switching to the Edit Panel all trains are going to be stopped", "Stop all Trains", wxYES_NO | wxICON_INFORMATION );
-        switch ( dialog.ShowModal() )
+    case 0:
         {
-            case wxID_YES:
-                m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
-                m_controlPanel->CloseAll();
-                return;
-                break;
+            wxMessageDialog dialog( this, "By switching to the Edit Panel all trains are going to be stopped", "Stop all Trains", wxYES_NO | wxICON_INFORMATION );
+            switch ( dialog.ShowModal() )
+            {
+                case wxID_YES:
+                    m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
+                    m_controlPanel->CloseAll();
+                    return;
+                    break;
 
-            case wxID_NO:
-                event.Veto();
-                return;
-                break;
+                case wxID_NO:
+                    event.Veto();
+                    return;
+                    break;
+            }
         }
+        break;
+    
+    case 1:
+        m_mapEditPanel->SaveMapToFile();
+        break;
+    
+    default:
+        break;
     }
 }
 
@@ -259,30 +170,20 @@ void track38Frame::OnNbChanged( wxBookCtrlEvent& event )
 
 void track38Frame::Settings()
 {
-    #ifdef __APPLE__
-    wxString ini_dir = wxFileName::GetHomeDir() + "/Library/Application Support/track38/";
-    #elif __linux__
-    wxString ini_dir = wxFileName::GetHomeDir() + "/.track38/";
-    #elif __WIN32__
-    wxString ini_dir = wxFileName::GetHomeDir() + "\\AppData\\Roaming\\track38\\";
-    #endif
+    wxString ini_dir = wxGetApp().ini_dir;
 
     if ( !wxDirExists( ini_dir ) )
     {
         wxDir::Make( ini_dir );
-        wxMessageBox( ini_dir );
+        // wxMessageBox( ini_dir );
     }
 
     ini_dir += "track38.ini";
 
-    wxFileConfig *config = new wxFileConfig( "track38", "fidoriel", ini_dir, "", wxCONFIG_USE_GLOBAL_FILE );
+    configMain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), ini_dir, "", wxCONFIG_USE_GLOBAL_FILE );
 
-    wxConfigBase::Set(config);
+    wxConfigBase::Set( configMain );
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
-    if ( track38ConfigBase == NULL )
-        return;
-
-    track38ConfigBase->Write( "/ControlSettings/pfRepeatCmd", 5 );   
     track38ConfigBase->Flush();
 }
 
@@ -295,10 +196,10 @@ track38Frame::~track38Frame()
 {
     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
     m_controlPanel->CloseAll();
+    m_mapEditPanel->SaveMapToFile();
 
+    wxConfigBase::Set( configMain );
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
-    if ( track38ConfigBase == NULL )
-        return;
 
     // save the frame position
     int x, y, w, h;

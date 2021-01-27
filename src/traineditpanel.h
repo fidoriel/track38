@@ -41,6 +41,8 @@ class trainEditPanel : public wxPanel
         wxButton* m_UpdateBtn;
         wxButton* m_RemoveBtn;
         wxNotebook* panelParent;
+        wxConfigBase* configTrain;
+        wxConfigBase* track38ConfigTrain;
 
     private:
         DECLARE_EVENT_TABLE();

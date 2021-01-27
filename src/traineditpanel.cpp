@@ -1,4 +1,5 @@
 #include "traineditpanel.h"
+#include "track38App.h"
 
 wxBEGIN_EVENT_TABLE( trainEditPanel, wxPanel )
     EVT_RADIOBOX( ID_ChangeControl, trainEditPanel::OnChangeControler )
@@ -13,6 +14,11 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     panelParent = parent;
 
     topSizer = new wxBoxSizer( wxHORIZONTAL );
+
+    // init Config
+    configTrain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "trains.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configTrain );
+    track38ConfigTrain = wxConfigBase::Get();
 
     //
     // Left Picker/Listbox
@@ -63,8 +69,6 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     parent->Layout();
 	topSizer->Fit( this );
     topSizer->SetSizeHints( this );
-
-    wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
 
     track38ConfigTrain->SetPath( "/Train/" );
     int count = track38ConfigTrain->GetNumberOfGroups( false );
@@ -144,7 +148,6 @@ void trainEditPanel::RefreshPanel()
 
 void trainEditPanel::SaveTrain()
 {
-    wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
     track38ConfigTrain->SetPath( "/Train/" );
 
     if ( trainKindPicker )
@@ -203,11 +206,8 @@ void trainEditPanel::SaveTrain()
 
 void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
 {
-    this->SelectTrain();
-
     wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
 
-    wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
     track38ConfigTrain->SetPath( "/Train/" );
     track38ConfigTrain->SetPath( trainSel );
     wxString control = track38ConfigTrain->Read( "control", "pf" );
@@ -219,10 +219,12 @@ void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
     else if ( control.IsSameAs( "pf" ) )
         tPort = ( wxChoice* ) FindWindow( "pfPort" );
 
-    if ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND )
-        wxMessageBox( "The saved Port was not found. Please plug in the device.", "Port Error" );
-    
     tPort->Refresh();
+
+    // if ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND )
+    //     wxMessageBox( "The saved Port was not found. Please plug in the device.", "Port Error" );
+
+    this->SelectTrain();
 }
 
 void trainEditPanel::SelectTrain()
@@ -232,7 +234,6 @@ void trainEditPanel::SelectTrain()
     
     wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
 
-    wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
     track38ConfigTrain->SetPath( "/Train/" );
     track38ConfigTrain->SetPath( trainSel );
     wxString control = track38ConfigTrain->Read( "control", "pf" );
@@ -300,8 +301,8 @@ void trainEditPanel::SelectTrain()
 
     if ( ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND ) && ( tPort->FindString( "Please select a new Port" ) == wxNOT_FOUND ) )
     { 
-        tPort->AppendString( "Please select a new Port" );
-        tPort->SetStringSelection( "Please select a new Port" );
+        // tPort->AppendString( "Please select a new Port" );
+        // tPort->SetStringSelection( "Please select a new Port" );
     }
 
     else
@@ -413,7 +414,6 @@ void trainEditPanel::RemoveTrain()
             break;          
     }
 
-    wxConfigBase* track38ConfigTrain = wxConfigBase::Get();
     track38ConfigTrain->SetPath( "/Train/" );
     track38ConfigTrain->DeleteGroup( tName->GetValue() );
     track38ConfigTrain->DeleteGroup( m_trainPicker->GetString( m_trainPicker->GetSelection() ) );

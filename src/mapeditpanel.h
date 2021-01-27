@@ -14,6 +14,7 @@
 #include "wx/string.h"
 #include "wx/menu.h"
 #include <wx/arrstr.h>
+#include "wx/app.h"
 
 #include "editBox.h"
 #include "cellImageRenderer.h"
@@ -35,23 +36,36 @@ class mapEditPanel : public wxPanel
         void turn( int row, int col, bool clockwise = true);
         void OnTurnCC( wxCommandEvent& event );
         void OnTurnCW( wxCommandEvent& event );
+        void RemoveMap( int row, int col);
         void SelectSwitch();
+        void SelectSwitch( int row, int col );
         void loadSwitches();
+        void RemoveSwitch();
         void OnLClickMap( wxGridEvent& event );
         void OnRClickMap( wxGridEvent& event );
+        void LoadMapFromFile();
+        void SaveMapToFile();
+        void DragSwitchToMap( int row, int col );
 
         // Topsizer
         wxBoxSizer* topSizer;
         wxBoxSizer* bottomSizer;
 
         // Map
+        int mapRows;
+        int mapCols;
         wxGrid* map;
         bool clickToDrag;
         wxMenu* mapMenu;
         int eventCellRow;
         int eventCellCol;
+        wxFileConfig* configMap;
+        wxConfigBase* track38ConfigMap;
 
         // switch
+        wxFileConfig* configSwitch;
+        wxConfigBase* track38ConfigSwitch;
+
         editBox* switchPickerBox;
         wxStaticBoxSizer* switchPickerBoxSizer;
         wxListBox* m_switchPicker;
