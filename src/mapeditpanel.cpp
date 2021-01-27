@@ -318,7 +318,15 @@ void mapEditPanel::SelectSwitch()
             manufacturerPicker->SetSelection( idx );         
     }
 
-    // map->SetCellBackgroundColour( wxAtoi( track38ConfigSwitch->Read( "row", "" ) ), wxAtoi( track38ConfigSwitch->Read( "col", "" ) ), *wxLIGHT_GREY );
+    for ( int col = 0; col < map->GetNumberCols(); col++ )
+    {
+        for ( int  row = 0; row < map->GetNumberRows(); row++ )
+        {
+            map->SetCellBackgroundColour( row, col, *wxWHITE );
+        }
+    }
+    map->SetCellBackgroundColour( wxAtoi( track38ConfigSwitch->Read( "row", "" ) ), wxAtoi( track38ConfigSwitch->Read( "col", "" ) ), *wxLIGHT_GREY );
+    map->Refresh();
 }
 
 void mapEditPanel::loadSwitches()
