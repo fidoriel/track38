@@ -702,6 +702,7 @@ void mapEditPanel::RemoveMap( int row, int col)
         m_switchPicker->SetSelection( 0 );
         this->SelectSwitch();
     }
+    map->ForceRefresh();
 }
 
 void mapEditPanel::OnDragMode( wxCommandEvent& event )
@@ -750,9 +751,6 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
             
             case wxID_YES:
                 parent->RemoveMap( row, col );
-                m_grid->SetCellRenderer( row, col, new cellImageRenderer( send ) );
-                m_grid->ForceRefresh();
-                return true;
                 break;
         }
     }
