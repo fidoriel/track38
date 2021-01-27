@@ -48,7 +48,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // Picker
     switchPickerBox = new editBox( this, wxID_ANY, "Pick Switch to edit" );
     switchPickerBoxSizer = new wxStaticBoxSizer( switchPickerBox, wxHORIZONTAL );
-    m_switchPicker = new wxListBox( this, ID_SelectSwitch, wxDefaultPosition, wxDefaultSize, 0, NULL );
+    m_switchPicker = new wxListBox( this, ID_SelectSwitch, wxDefaultPosition, wxSize( 100, -1 ), 0, NULL );
 
     // Edit Controls
     editSizer = new wxFlexGridSizer( 2, 0, 0 );
