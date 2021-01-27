@@ -16,11 +16,13 @@ void tswitch::createControls( wxPanel* parent )
 void tswitch::Turn()
 {
     this->ChangePos( 'T' );
+    this->currentPos = 'T';
 }
 
 void tswitch::Straight()
 {
     this->ChangePos( 'S' );
+    this->currentPos = 'S';
 }
 
 void tswitch::ChangePos( char newPos )
@@ -83,11 +85,11 @@ void tswitch::setManufacturer( wxString manufacturer )
 
 void tswitch::OnToggle( wxCommandEvent& event )
 {
-    if ( currentPos == 'T' )
-        this->ChangePos( 'S' );
+    if ( this->currentPos == 'T' )
+        this->Straight();
 
     else if ( this->currentPos == 'S' )
-        this->ChangePos( 'T' );
+        this->Turn();
 }
 
 void tswitch::OnStraight( wxCommandEvent& event )
