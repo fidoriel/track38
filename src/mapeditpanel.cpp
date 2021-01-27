@@ -233,6 +233,8 @@ void mapEditPanel::DragSwitchToMap( int row, int col )
 
 void mapEditPanel::OnUpdateSwitch( wxCommandEvent& event )
 {
+    track38ConfigSwitch->SetPath( "/Switch/" );
+    track38ConfigSwitch->DeleteGroup( m_switchPicker->GetStringSelection() );
     m_switchPicker->Delete( m_switchPicker->GetSelection() );
     this->AddSwitch();
     m_switchPicker->AppendString( switchName->GetValue() );
@@ -325,7 +327,7 @@ void mapEditPanel::SelectSwitch( int row, int col )
             track38ConfigSwitch->SetPath( "/Switch/" );
         }
     }
-    
+
     m_switchPicker->SetStringSelection( toSelect );
     this->SelectSwitch();
 }
