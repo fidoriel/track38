@@ -475,6 +475,21 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
         wxDropSource dragSource( this );
         dragSource.SetData( myData );
         wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
+
+        switch ( result )
+        {
+        case wxDragError:
+        case wxDragCancel:
+        case wxDragNone:
+            map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( fileRot ) );
+            map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxLIGHT_GREY );
+            wxMessageBox("error");
+            map->ForceRefresh();
+            break;
+        
+        default:
+            break;
+        }
     }
 
     else
