@@ -317,7 +317,6 @@ void trainEditPanel::SelectTrain()
 
 void trainEditPanel::OnAddTrain( wxCommandEvent& event )
 {
-
     int sel = trainKindPicker->GetSelection();
     wxTextCtrl* tName;
     switch ( sel )
@@ -357,6 +356,9 @@ void trainEditPanel::OnAddTrain( wxCommandEvent& event )
 
 void trainEditPanel::OnUpdateTrain( wxCommandEvent& event )
 {
+    if ( m_trainPicker->GetCount() == 0 )
+        return; 
+
     m_trainPicker->Delete( m_trainPicker->GetSelection() );
     SaveTrain();
 

@@ -176,7 +176,7 @@ void mapEditPanel::OnRefreshSerial( wxCommandEvent& event )
 }
 
 void mapEditPanel::OnAddSwitch( wxCommandEvent& event )
-{
+{   
     if ( m_switchPicker->FindString( switchName->GetValue() ) != wxNOT_FOUND )
     {
         wxMessageDialog dialog( this, "The Switch does already Exists. Do you want to Overwrite?", "Overwrite?", wxYES_NO | wxICON_INFORMATION );
@@ -234,8 +234,12 @@ void mapEditPanel::DragSwitchToMap( int row, int col )
 
 void mapEditPanel::OnUpdateSwitch( wxCommandEvent& event )
 {
+    if ( m_switchPicker->GetCount() == 0 )
+        return; 
+
     track38ConfigSwitch->SetPath( "/Switch/" );
     track38ConfigSwitch->RenameGroup( m_switchPicker->GetStringSelection(), switchName->GetValue() );
+    track38ConfigSwitch->SetPath( switchName->GetValue() );
     track38ConfigSwitch->Write( "gpio", wxString::Format( wxT( "%i" ), gpioPicker->GetValue() ) );
     track38ConfigSwitch->Write( "dir", dirPicker->GetStringSelection() );
     track38ConfigSwitch->Write( "port", portPicker->GetStringSelection() );
@@ -243,7 +247,6 @@ void mapEditPanel::OnUpdateSwitch( wxCommandEvent& event )
     track38ConfigSwitch->Flush();
 
     m_switchPicker->Delete( m_switchPicker->GetSelection() );
-    this->AddSwitch();
     m_switchPicker->AppendString( switchName->GetValue() );
     m_switchPicker->SetStringSelection( switchName->GetValue() );
 }
