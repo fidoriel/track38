@@ -36,8 +36,10 @@ class mapEditPanel : public wxPanel
         void turn( int row, int col, bool clockwise = true);
         void OnTurnCC( wxCommandEvent& event );
         void OnTurnCW( wxCommandEvent& event );
+        void RemoveMap( int row, int col);
         void SelectSwitch();
         void loadSwitches();
+        void RemoveSwitch();
         void OnLClickMap( wxGridEvent& event );
         void OnRClickMap( wxGridEvent& event );
         void LoadMapFromFile();

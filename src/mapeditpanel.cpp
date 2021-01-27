@@ -241,7 +241,12 @@ void mapEditPanel::OnUpdateSwitch( wxCommandEvent& event )
 
 void mapEditPanel::OnRemoveSwitch( wxCommandEvent& event )
 {
-    wxMessageDialog dialog( this, "Do you want to remove the Train?", "Remove?", wxYES_NO | wxICON_INFORMATION );
+    this->RemoveSwitch();
+}
+
+void mapEditPanel::RemoveSwitch()
+{
+        wxMessageDialog dialog( this, "Do you want to remove the Train?", "Remove?", wxYES_NO | wxICON_INFORMATION );
     switch ( dialog.ShowModal() )
     {
         case wxID_YES:
@@ -256,6 +261,16 @@ void mapEditPanel::OnRemoveSwitch( wxCommandEvent& event )
                 track38ConfigSwitch->DeleteGroup( m_switchPicker->GetStringSelection() );
                 track38ConfigSwitch->Flush();
                 m_switchPicker->Delete( m_switchPicker->GetSelection() );
+
+                // Deselect all
+                for ( int col = 0; col < map->GetNumberCols(); col++ )
+                {
+                    for ( int  row = 0; row < map->GetNumberRows(); row++ )
+                    {
+                        map->SetCellBackgroundColour( row, col, *wxWHITE );
+                    }
+                }
+
                 map->Refresh();
 
                 if ( m_switchPicker->GetCount() )
@@ -318,6 +333,7 @@ void mapEditPanel::SelectSwitch()
             manufacturerPicker->SetSelection( idx );         
     }
 
+    // Deselect all
     for ( int col = 0; col < map->GetNumberCols(); col++ )
     {
         for ( int  row = 0; row < map->GetNumberRows(); row++ )
@@ -411,6 +427,7 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
         dragSource.SetData( myData );
         wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
 
+        
         map->ForceRefresh();
     }
 
@@ -571,9 +588,74 @@ void mapEditPanel::OnMapRemove( wxCommandEvent& event )
     cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( eventCellRow, eventCellCol );
 
     cellRenderer->DecRef();
-
     map->SetCellRenderer( eventCellRow, eventCellCol, new cellImageRenderer() );
+
+    if ( !cellRenderer->isEmptyCell && !( cellRenderer->file.Find( "switch" ) == wxNOT_FOUND ) )
+    {
+        this->RemoveMap( eventCellRow, eventCellCol );
+    }
+
     map->ForceRefresh();
+}
+
+void mapEditPanel::RemoveMap( int row, int col)
+{
+    // Remove Switch
+
+    long idx;
+    wxString out;
+    wxString toRemove;
+    bool exists = track38ConfigSwitch->GetFirstGroup( out, idx );
+    if (  exists == true  )
+    {   
+        track38ConfigSwitch->SetPath( out );
+        if ( ( wxAtoi( track38ConfigSwitch->Read( "row", "") ) == row ) && ( wxAtoi( track38ConfigSwitch->Read( "col", "") ) == col ) )
+        {
+            toRemove = out;
+        }
+        track38ConfigSwitch->SetPath( "/Switch/" );
+    }
+    
+    while ( exists )
+    {
+        exists = track38ConfigSwitch->GetNextGroup( out, idx );
+        if (  exists == true  )
+        {   
+            track38ConfigSwitch->SetPath( out );
+            if ( ( wxAtoi( track38ConfigSwitch->Read( "row", "") ) == row ) && ( wxAtoi( track38ConfigSwitch->Read( "col", "") ) == col ) )
+            {
+                toRemove = out;
+            }
+            track38ConfigSwitch->SetPath( "/Switch/" );
+        }
+    }
+    
+    track38ConfigSwitch->SetPath( "/Switch/" );
+    track38ConfigSwitch->SetPath( toRemove );
+    map->SetCellRenderer( wxAtoi ( track38ConfigSwitch->Read( "row", "" ) ), wxAtoi( track38ConfigSwitch->Read( "col", "" ) ), new cellImageRenderer() );
+    track38ConfigMap->SetPath( "/map/" );
+    track38ConfigMap->DeleteEntry( "cell" + track38ConfigSwitch->Read( "row", "" ) + "_" + track38ConfigSwitch->Read( "col", "" ) );
+    track38ConfigSwitch->SetPath( "/Switch/" );
+    track38ConfigSwitch->DeleteGroup( switchName->GetValue() );
+    track38ConfigSwitch->DeleteGroup( toRemove );
+    track38ConfigSwitch->Flush();
+    // m_switchPicker->Delete( m_switchPicker->FindString( toRemove ) );
+    m_switchPicker->Delete( m_switchPicker->GetSelection() );
+
+    // Deselect all
+    for ( int col = 0; col < map->GetNumberCols(); col++ )
+    {
+        for ( int  row = 0; row < map->GetNumberRows(); row++ )
+        {
+            map->SetCellBackgroundColour( row, col, *wxWHITE );
+        }
+    }
+
+    // if ( m_switchPicker->GetCount() > 0 )
+    // {
+    //     m_switchPicker->SetSelection( 0 );
+    //     this->SelectSwitch();
+    // }
 }
 
 void mapEditPanel::OnDragMode( wxCommandEvent& event )
@@ -607,15 +689,32 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
     }
     else
         send = text;
+    // wxMessageBox( wxString::Format( wxT( "R %i \n C %i"), row, col ) );
+
+    mapEditPanel* parent = ( mapEditPanel* ) m_grid->GetParent();
+    cellImageRenderer* cellRenderer = ( cellImageRenderer* ) m_grid->GetCellRenderer( row, col );
+    if ( !cellRenderer->isEmptyCell && !( cellRenderer->file.Find( "switch" ) == wxNOT_FOUND ) )
+    {
+        wxMessageDialog dialog( parent, "The Switch does already Exists. Do you want to Overwrite?", "Overwrite?", wxYES_NO | wxICON_INFORMATION );
+        switch ( dialog.ShowModal() )
+        {
+            case wxID_NO:
+                return false;
+                break;
+            
+            case wxID_YES:
+                parent->RemoveMap( row, col );
+                m_grid->SetCellRenderer( row, col, new cellImageRenderer( send ) );
+                m_grid->ForceRefresh();
+                return true;
+                break;
+        }
+    }
 
     m_grid->SetCellRenderer( row, col, new cellImageRenderer( send ) );
 
-    m_grid->ForceRefresh();
-    // wxMessageBox( wxString::Format( wxT( "R %i \n C %i"), row, col ) );
-
     if ( ary.GetCount() == 3 )
     {
-        mapEditPanel* parent = (mapEditPanel*) m_grid->GetParent();
         wxConfigBase::Set( parent->configSwitch );
         wxConfigBase* track38ConfigSwitch = wxConfigBase::Get();
         track38ConfigSwitch->SetPath( "/Switch/" );
@@ -623,7 +722,19 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
         track38ConfigSwitch->Write( "row", row );
         track38ConfigSwitch->Write( "col", col );
         track38ConfigSwitch->Flush();
+
+        // Deselect all
+        for ( int col = 0; col < m_grid->GetNumberCols(); col++ )
+        {
+            for ( int  row = 0; row < m_grid->GetNumberRows(); row++ )
+            {
+                m_grid->SetCellBackgroundColour( row, col, *wxWHITE );
+            }
+        }
+        m_grid->SetCellBackgroundColour( wxAtoi( track38ConfigSwitch->Read( "row", "" ) ), wxAtoi( track38ConfigSwitch->Read( "col", "" ) ), *wxLIGHT_GREY );
+        parent->m_switchPicker->SetStringSelection( ary.Item( 2 ) );
     }
+
 
     else if ( !( text.Find( "switch" ) == wxNOT_FOUND ) )
     {
@@ -631,5 +742,6 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
         parent->DragSwitchToMap( row, col );
     }
 
+    m_grid->ForceRefresh();
     return true;
 }
