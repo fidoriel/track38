@@ -128,6 +128,7 @@ void controlPanel::LoadMapFromFile()
         }
     }
     this->RefreshMap();
+    this->updateSwitchStatus();
 }
 
 void controlPanel::OnRefreshPanel( wxCommandEvent& event )
@@ -155,45 +156,43 @@ void controlPanel::OnLClickMap( wxGridEvent& event )
         {
             if( ( selswitch->col == event.GetCol() ) && ( selswitch->row == event.GetRow() ) )
             {
-                // if ( ( selswitch->currentPos == 'n' ) || ( selswitch->currentPos == 'T' ) )
-                // {
-                //     selswitch->Straight();
-                //     wxString newfile ;
-
-                //     if ( selswitch->dir == 'L')
-                //     {
-                //         newfile = "tracks/switchLs.png";
-                //     }
-                //     else if ( selswitch->dir == 'R')
-                //     {
-                //         newfile = "tracks/switchRs.png";
-                //     }
-
-                //     map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( newfile, cellRenderer->rotation ) );
-                // }
-
-                // else if ( selswitch->currentPos == 'S' )
-                // {
-                //     selswitch->Turn();
-                //     wxString newfile;
-
-                //     if ( selswitch->dir == 'L')
-                //     {
-                //         newfile = "tracks/switchLt.png";
-                //     }
-                //     else if ( selswitch->dir == 'R')
-                //     {
-                //         newfile = "tracks/switchRt.png";
-                //     }
-
-                //     map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( newfile, cellRenderer->rotation ) );
-                // }
-
                 selswitch->Toggle();
             }
         }
-        map->Refresh();
     }
+
+    this->updateSwitchStatus();
+}
+
+void controlPanel::updateSwitchStatus()
+{
+    for ( tswitch* & selswitch : this->m_switchHandler->switches)
+    {
+        cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( selswitch->row, selswitch->col );
+        wxString newPNG = cellRenderer->file;
+        int dot = newPNG.find( ".png" );
+        if ( selswitch->currentPos == 'n' )
+        {
+            newPNG.replace( dot -1, dot -1, 's' );
+        }
+
+        else if ( selswitch->currentPos == 'S' )
+        {
+            newPNG.replace( dot -1, dot -1, 's' );
+        }
+
+        else if ( selswitch->currentPos == 'T' )
+        {
+            newPNG.replace( dot -1, dot -1, 't' );
+        }
+
+        newPNG += ".png";
+
+        map->SetCellRenderer( selswitch->row, selswitch->col, new cellImageRenderer( newPNG, 0, cellRenderer->rotation) );
+        wxMessageBox(newPNG + wxString(selswitch->currentPos) );
+    }
+
+    map->Refresh();
 }
 
 void controlPanel::RefreshMap()
