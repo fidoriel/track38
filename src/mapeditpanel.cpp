@@ -44,12 +44,12 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     editSizer = new wxFlexGridSizer( 2, 0, 0 );
 
     labelName = new wxStaticText( this, wxID_ANY, "Switch Name" );
-    switchName = new wxTextCtrl( this, wxID_ANY, "", wxDefaultPosition, wxSize( 300, -1 ) );
+    switchName = new wxTextCtrl( this, wxID_ANY, "", wxDefaultPosition, wxSize( 200, -1 ) );
 
     refreshSizer = new wxBoxSizer( wxHORIZONTAL );
     labelPort = new wxStaticText( this, wxID_ANY, "Arduino ComPort:" );
     this->switchPickerBox->refreshSerial();
-    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), switchPickerBox->serialArray, 0L, wxDefaultValidator, "switchPort" );
+    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 200, -1 ), switchPickerBox->serialArray, 0L, wxDefaultValidator, "switchPort" );
     m_RefreshBtn = new wxButton( this, ID_RefreshSerial, "Refresh", wxDefaultPosition, wxDefaultSize );
     refreshSizer->Add( portPicker, 0, wxALL, 5 );
     refreshSizer->Add( m_RefreshBtn, 0, wxALL, 5 );
@@ -160,7 +160,7 @@ void mapEditPanel::OnRefreshSerial( wxCommandEvent& event )
     refreshSizer->Detach( 0 );
     delete portPicker;
     this->switchPickerBox->refreshSerial();
-    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), switchPickerBox->serialArray, 0L, wxDefaultValidator, "switchPort" );
+    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 200, -1 ), switchPickerBox->serialArray, 0L, wxDefaultValidator, "switchPort" );
     refreshSizer->Insert( 0, portPicker, 0, wxALL, 5 );
     refreshSizer->Layout();
 }
