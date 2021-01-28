@@ -68,7 +68,7 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     parent->SetSizer( topSizer );
     parent->Layout();
 	topSizer->Fit( this );
-    topSizer->SetSizeHints( this );
+    //topSizer->SetSizeHints( this );
 
     track38ConfigTrain->SetPath( "/Train/" );
     int count = track38ConfigTrain->GetNumberOfGroups( false );
@@ -96,16 +96,12 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
 
 void trainEditPanel::OnChangeControler( wxCommandEvent& event )
 {
-    RefreshPanel();
-    panelParent->SetSizerAndFit( topSizer );
-    panelParent->Layout();
-    panelParent->SendSizeEventToParent();
+    this->RefreshPanel();
+    //panelParent->SendSizeEventToParent();
 
     int sel = trainKindPicker->GetSelection();
 
     wxTextCtrl* tName;
-    wxChoice* tPort;
-    wxSpinCtrl* tSpeed;
 
     switch ( sel )
     {
@@ -144,6 +140,7 @@ void trainEditPanel::RefreshPanel()
 
         rightSizer->Insert( 1, m_trainEditBox, 0, wxALL | wxGROW, 5 );
     }
+    panelParent->Layout();
 }
 
 void trainEditPanel::SaveTrain()
@@ -206,20 +203,18 @@ void trainEditPanel::SaveTrain()
 
 void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
 {
-    wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
+    //wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
 
-    track38ConfigTrain->SetPath( "/Train/" );
-    track38ConfigTrain->SetPath( trainSel );
-    wxString control = track38ConfigTrain->Read( "control", "pf" );
-    wxChoice* tPort;
+    //track38ConfigTrain->SetPath( "/Train/" );
+    //track38ConfigTrain->SetPath( trainSel );
+    //wxString control = track38ConfigTrain->Read( "control", "pf" );
+    //wxChoice* tPort;
 
-    if ( control.IsSameAs( "pf" ) )
-        tPort = ( wxChoice* ) FindWindow( "pfPort" );
+    // if ( control.IsSameAs( "pf" ) )
+    //    tPort = ( wxChoice* ) FindWindow( "pfPort" );
 
-    else if ( control.IsSameAs( "pf" ) )
-        tPort = ( wxChoice* ) FindWindow( "pfPort" );
-
-    tPort->Refresh();
+    // else if ( control.IsSameAs( "pf" ) )
+    //    tPort = ( wxChoice* ) FindWindow( "pfPort" );
 
     // if ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND )
     //     wxMessageBox( "The saved Port was not found. Please plug in the device.", "Port Error" );
@@ -267,6 +262,8 @@ void trainEditPanel::SelectTrain()
             if ( track38ConfigTrain->Read( "subChannel", "R" ).IsSameAs( tSubChannel->GetString( idx ) ) )
                 tSubChannel->SetSelection( idx );            
         }
+        tChannel->Refresh();
+        tSubChannel->Refresh();
     }
 
     else if ( control.IsSameAs( "up" ) )
@@ -289,15 +286,16 @@ void trainEditPanel::SelectTrain()
                 tChannel->SetSelection( idx );         
         }
         tAreTwoMotorsUsed->SetValue( track38ConfigTrain->Read( "twoMotorsUsed", false ) );
+        tChannel->Refresh();
     }
 
     tName->ChangeValue( trainSel );
 
     tSpeed->SetValue( track38ConfigTrain->Read( "maxSpeed", "7" ) );
 
-    panelParent->SetSizerAndFit( topSizer );
-    panelParent->Layout();
-    panelParent->SendSizeEventToParent();
+    //panelParent->SetSizerAndFit( topSizer );
+    //panelParent->Layout();
+    //panelParent->SendSizeEventToParent();
 
     if ( ( tPort->FindString( track38ConfigTrain->Read( "port", "" ) ) == wxNOT_FOUND ) && ( tPort->FindString( "Please select a new Port" ) == wxNOT_FOUND ) )
     { 
@@ -313,6 +311,8 @@ void trainEditPanel::SelectTrain()
                 tPort->SetSelection( idx );   
         }
     }
+
+    tPort->Refresh();
 }
 
 void trainEditPanel::OnAddTrain( wxCommandEvent& event )

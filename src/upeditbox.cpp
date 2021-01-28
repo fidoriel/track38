@@ -67,10 +67,10 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 
 void upEditBox::OnRefreshSerial( wxCommandEvent& event )
 {
-    refreshSizer->Detach( 0 );
-    delete portPicker;
     this->refreshSerial();
-    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), serialArray, 0L, wxDefaultValidator, "upPort" );
-    refreshSizer->Insert( 0, portPicker, 0, wxALL, 5 );
-    refreshSizer->Layout();
+    portPicker->Clear();
+    for (size_t i = 0; i < serialArray.GetCount(); i++)
+    {
+        portPicker->Append( serialArray.Item( i ) );
+    }
 }
