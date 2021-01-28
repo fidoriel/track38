@@ -1,5 +1,4 @@
 #include "switch.h"
-#include "track38App.h"
 
 tswitch::tswitch( wxString wxName )
 {
@@ -137,6 +136,10 @@ void tswitch::SetMapRowCol( int row, int col)
 {
     this->row = row;
     this->col = col;
+}
+
+void tswitch::MapEvent()
+{
 }
 
 tswitch::~tswitch()

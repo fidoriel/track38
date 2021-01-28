@@ -10,6 +10,7 @@
 #include "switchcontrolbox.h"
 #include "cellImageRenderer.h"
 #include "switch.h"
+#include "switchhandler.h"
 
 class controlPanel : public wxPanel
 { 
@@ -28,6 +29,7 @@ class controlPanel : public wxPanel
         switchControlBox* m_switchControlBox;
         wxBoxSizer* topSizer;
         wxBoxSizer* mapSizer;
+        switchHandler* m_switchHandler;
         void initConf();
 
         // Map

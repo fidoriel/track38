@@ -8,13 +8,16 @@ controlPanel::controlPanel( wxNotebook* parent ) : wxPanel( parent )
     mapSizer = new wxBoxSizer( wxVERTICAL );
 
     m_trainControlBox = new trainControlBox( this, wxID_ANY, "Train Control", "trainControlBox", cons );
-    m_switchControlBox = new switchControlBox( this, ID_SwitchChange, "Switch Control", "switchControlBox", cons );
+    // m_switchControlBox = new switchControlBox( this, ID_SwitchChange, "Switch Control", "switchControlBox", cons );
+
+    m_switchHandler = new switchHandler();
+    m_switchHandler->loadswitchs( cons );
 
     this->initConf();
     this->LoadMapFromFile();
 
     mapSizer->Add( map, 1, wxGROW | wxALL, 5 );
-    mapSizer->Add( m_switchControlBox->sizer, 0, wxGROW | wxALL, 5 );
+    // mapSizer->Add( m_switchControlBox->sizer, 0, wxGROW | wxALL, 5 );
     topSizer->Add( m_trainControlBox->sizer, 0, wxGROW | wxALL, 5 );  
     topSizer->Add( mapSizer, 1, wxGROW | wxALL, 5 ); 
 
@@ -45,16 +48,20 @@ void controlPanel::RefreshPanel()
 
     delete map;
     delete m_trainControlBox;
-    delete m_switchControlBox;
+    // delete m_switchControlBox;
+    delete m_switchHandler;
+
+    m_switchHandler = new switchHandler();
+    m_switchHandler->loadswitchs( cons );
 
     this->initConf();
     this->LoadMapFromFile();
 
     m_trainControlBox = new trainControlBox( this, wxID_ANY, "Train Control", "trainControlBox", cons );
-    m_switchControlBox = new switchControlBox( this, wxID_ANY, "Switch Control", "switchControlBox", cons );
+    // m_switchControlBox = new switchControlBox( this, wxID_ANY, "Switch Control", "switchControlBox", cons );
     
     mapSizer->Add( map, 1, wxGROW | wxALL, 5 );
-    mapSizer->Add( m_switchControlBox->sizer, 0, wxGROW | wxALL, 5 );
+    // mapSizer->Add( m_switchControlBox->sizer, 0, wxGROW | wxALL, 5 );
     topSizer->Add( m_trainControlBox->sizer, 0, wxGROW | wxALL, 5 );
     topSizer->Add( mapSizer, 1, wxGROW | wxALL, 5 ); 
 
@@ -120,6 +127,7 @@ void controlPanel::LoadMapFromFile()
                 map->SetCellRenderer( row, col, new cellImageRenderer() );
         }
     }
+    this->RefreshMap();
 }
 
 void controlPanel::OnRefreshPanel( wxCommandEvent& event )
@@ -143,19 +151,53 @@ void controlPanel::OnLClickMap( wxGridEvent& event )
 
     if ( !( cellRenderer->file.Find( "switch" ) == wxNOT_FOUND ) )
     {
-        for ( tswitch* & selswitch : this->m_switchControlBox->m_switchControlPanel->switches)
+        for ( tswitch* & selswitch : this->m_switchHandler->switches)
         {
             if( ( selswitch->col == event.GetCol() ) && ( selswitch->row == event.GetRow() ) )
             {
+                // if ( ( selswitch->currentPos == 'n' ) || ( selswitch->currentPos == 'T' ) )
+                // {
+                //     selswitch->Straight();
+                //     wxString newfile ;
+
+                //     if ( selswitch->dir == 'L')
+                //     {
+                //         newfile = "tracks/switchLs.png";
+                //     }
+                //     else if ( selswitch->dir == 'R')
+                //     {
+                //         newfile = "tracks/switchRs.png";
+                //     }
+
+                //     map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( newfile, cellRenderer->rotation ) );
+                // }
+
+                // else if ( selswitch->currentPos == 'S' )
+                // {
+                //     selswitch->Turn();
+                //     wxString newfile;
+
+                //     if ( selswitch->dir == 'L')
+                //     {
+                //         newfile = "tracks/switchLt.png";
+                //     }
+                //     else if ( selswitch->dir == 'R')
+                //     {
+                //         newfile = "tracks/switchRt.png";
+                //     }
+
+                //     map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( newfile, cellRenderer->rotation ) );
+                // }
+
                 selswitch->Toggle();
             }
         }
+        map->Refresh();
     }
 }
 
 void controlPanel::RefreshMap()
 {
-    wxMessageBox("refresh");
 }
 
 controlPanel::~controlPanel()

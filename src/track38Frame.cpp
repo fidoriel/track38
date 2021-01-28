@@ -197,6 +197,7 @@ track38Frame::~track38Frame()
     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
     m_controlPanel->CloseAll();
     m_mapEditPanel->SaveMapToFile();
+    m_controlPanel->m_switchHandler->~switchHandler();
 
     wxConfigBase::Set( configMain );
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();

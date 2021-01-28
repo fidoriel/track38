@@ -12,6 +12,7 @@
 #include "wx/sizer.h"
 #include "wx/msgdlg.h"
 #include <wx/stattext.h>
+#include <wx/toplevel.h>
 
 #include "traincontrol.h"
 
@@ -47,6 +48,7 @@ class tswitch
         void ChangePos( char dir );
         void CloseCon();
         void OpenCon();
+        void MapEvent();
         wxString getName();
 
         char currentPos;
