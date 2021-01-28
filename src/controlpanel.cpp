@@ -173,23 +173,24 @@ void controlPanel::updateSwitchStatus()
         int dot = newPNG.find( ".png" );
         if ( selswitch->currentPos == 'n' )
         {
-            newPNG.replace( dot -1, dot -1, 's' );
+            newPNG.replace( dot -1, dot -1, 'n' );
+            newPNG += ".png";
         }
 
         else if ( selswitch->currentPos == 'S' )
         {
             newPNG.replace( dot -1, dot -1, 's' );
+            newPNG += ".png";
         }
 
         else if ( selswitch->currentPos == 'T' )
         {
             newPNG.replace( dot -1, dot -1, 't' );
+            newPNG += ".png";
         }
 
-        newPNG += ".png";
-
         map->SetCellRenderer( selswitch->row, selswitch->col, new cellImageRenderer( newPNG, 0, cellRenderer->rotation) );
-        wxMessageBox(newPNG + wxString(selswitch->currentPos) );
+        // wxMessageBox(newPNG + wxString(selswitch->currentPos) );
     }
 
     map->Refresh();

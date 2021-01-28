@@ -95,6 +95,9 @@ void tswitch::Toggle()
 
     else if ( this->currentPos == 'S' )
         this->Turn();
+
+    else
+        this->Straight();
 }
 
 void tswitch::OnStraight( wxCommandEvent& event )
