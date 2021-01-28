@@ -134,7 +134,7 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
     {
     case 0:
         {
-            wxMessageDialog dialog( this, "By switching to the Edit Panel all trains are going to be stopped", "Stop all Trains", wxYES_NO | wxICON_INFORMATION );
+            wxMessageDialog dialog( this, "By switching to the Edit Panels all trains are going to be stopped", "Stop all Trains", wxYES_NO | wxICON_INFORMATION );
             switch ( dialog.ShowModal() )
             {
                 case wxID_YES:

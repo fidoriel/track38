@@ -1,4 +1,5 @@
 #include "controlpanel.h"
+#include "track38App.h"
 
 controlPanel::controlPanel( wxNotebook* parent ) : wxPanel( parent )
 {
@@ -7,9 +8,10 @@ controlPanel::controlPanel( wxNotebook* parent ) : wxPanel( parent )
     mapSizer = new wxBoxSizer( wxVERTICAL );
 
     m_trainControlBox = new trainControlBox( this, wxID_ANY, "Train Control", "trainControlBox", cons );
-    m_switchControlBox = new switchControlBox( this, wxID_ANY, "Switch Control", "switchControlBox", cons );
+    m_switchControlBox = new switchControlBox( this, ID_SwitchChange, "Switch Control", "switchControlBox", cons );
 
-    this->CreateMap();
+    this->initConf();
+    this->LoadMapFromFile();
 
     mapSizer->Add( map, 1, wxGROW | wxALL, 5 );
     mapSizer->Add( m_switchControlBox->sizer, 0, wxGROW | wxALL, 5 );
@@ -45,13 +47,15 @@ void controlPanel::RefreshPanel()
     delete m_trainControlBox;
     delete m_switchControlBox;
 
-    this->CreateMap();
+    this->initConf();
+    this->LoadMapFromFile();
+
     m_trainControlBox = new trainControlBox( this, wxID_ANY, "Train Control", "trainControlBox", cons );
     m_switchControlBox = new switchControlBox( this, wxID_ANY, "Switch Control", "switchControlBox", cons );
     
     mapSizer->Add( map, 1, wxGROW | wxALL, 5 );
     mapSizer->Add( m_switchControlBox->sizer, 0, wxGROW | wxALL, 5 );
-    topSizer->Add( m_trainControlBox->sizer, 0, wxGROW | wxALL, 5 );  
+    topSizer->Add( m_trainControlBox->sizer, 0, wxGROW | wxALL, 5 );
     topSizer->Add( mapSizer, 1, wxGROW | wxALL, 5 ); 
 
     this->SetSizerAndFit( topSizer );
@@ -61,11 +65,24 @@ void controlPanel::RefreshPanel()
     this->SendSizeEventToParent();
 }
 
-void controlPanel::CreateMap()
+void controlPanel::initConf()
 {
-    map = new wxGrid( this, wxID_ANY, wxPoint( 0, 0 ), wxSize( 40, 40) );
+    // Init config
+    configMap = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "map.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configMap );
+    track38ConfigMap = wxConfigBase::Get();
+}
 
-    map->CreateGrid( 25, 50);
+void controlPanel::LoadMapFromFile()
+{
+    this->initConf();
+
+    map = new wxGrid( this, ID_MapLClick, wxPoint( 0, 0 ), wxSize( 40, 40) );
+
+    map->Bind( wxEVT_GRID_CELL_LEFT_CLICK, &controlPanel::OnLClickMap, this, ID_MapLClick );
+
+    track38ConfigMap->SetPath( "/map/" );
+    map->CreateGrid( track38ConfigMap->Read( "rows", 25 ), track38ConfigMap->Read( "cols", 50 ) );
     map->HideColLabels();
     map->HideRowLabels();
     map->EnableEditing( false );
@@ -93,7 +110,14 @@ void controlPanel::CreateMap()
             map->SetReadOnly( row, col );
             map->SetCellBackgroundColour( row, col, *wxWHITE );
             map->SetCellTextColour( row, col, *wxBLACK );
-            map->SetCellRenderer( row, col, new cellImageRenderer() );
+            wxString selCell = "cell";
+            selCell << row;
+            selCell += "_";
+            selCell << col;
+            if ( track38ConfigMap->Exists( selCell ) )
+                map->SetCellRenderer( row, col, new cellImageRenderer( track38ConfigMap->Read( selCell, "") ) );
+            else
+                map->SetCellRenderer( row, col, new cellImageRenderer() );
         }
     }
 }
@@ -111,6 +135,27 @@ void controlPanel::CloseAll()
         close_port( element.second );
     }
     cons.clear();
+}
+
+void controlPanel::OnLClickMap( wxGridEvent& event )
+{
+    cellImageRenderer* cellRenderer = (cellImageRenderer*) map->GetCellRenderer( event.GetRow(), event.GetCol() );
+
+    if ( !( cellRenderer->file.Find( "switch" ) == wxNOT_FOUND ) )
+    {
+        for ( tswitch* & selswitch : this->m_switchControlBox->m_switchControlPanel->switches)
+        {
+            if( ( selswitch->col == event.GetCol() ) && ( selswitch->row == event.GetRow() ) )
+            {
+                selswitch->Toggle();
+            }
+        }
+    }
+}
+
+void controlPanel::RefreshMap()
+{
+    wxMessageBox("refresh");
 }
 
 controlPanel::~controlPanel()

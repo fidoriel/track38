@@ -7,11 +7,6 @@ trainControlPanel::trainControlPanel( wxPanel* parent, int id ) : wxScrolledWind
 
     //Sizer
     topSizer = new wxFlexGridSizer( 3, 0, 0 );
-
-    //init Config
-    configTrain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "trains.ini", "", wxCONFIG_USE_GLOBAL_FILE );
-    wxConfigBase::Set( configTrain );
-    track38ConfigTrain = wxConfigBase::Get();
 }
 
 void trainControlPanel::createControlBox()
@@ -44,6 +39,11 @@ void trainControlPanel::createControlBox()
 
 void trainControlPanel::loadTrains( std::unordered_map< wxString, int > &cons )
 {
+    //init Config
+    configTrain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "trains.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configTrain );
+    track38ConfigTrain = wxConfigBase::Get();
+    
     track38ConfigTrain->SetPath( "/Train/" );
     trains.clear();
 

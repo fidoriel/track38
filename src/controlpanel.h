@@ -9,6 +9,7 @@
 #include "traincontrolbox.h"
 #include "switchcontrolbox.h"
 #include "cellImageRenderer.h"
+#include "switch.h"
 
 class controlPanel : public wxPanel
 { 
@@ -18,18 +19,30 @@ class controlPanel : public wxPanel
 
         void CloseAll();
         void RefreshPanel();
-        void CreateMap();
         void OnRefreshPanel( wxCommandEvent& event );
+        
 
         std::unordered_map< wxString, int > cons;
-
+        wxNotebook* parent;
         trainControlBox* m_trainControlBox;
         switchControlBox* m_switchControlBox;
         wxBoxSizer* topSizer;
         wxBoxSizer* mapSizer;
-        wxGrid* map;
+        void initConf();
 
-        wxNotebook* parent;
+        // Map
+        wxGrid* map;
+        wxFileConfig* configMap;
+        wxConfigBase* track38ConfigMap;
+        void LoadMapFromFile();
+        void OnLClickMap( wxGridEvent& event );
+        void RefreshMap();
+
+        enum
+        {
+            ID_MapLClick,
+            ID_SwitchChange
+        };
 };
 
 #endif

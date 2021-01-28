@@ -13,6 +13,8 @@
 #include "wx/msgdlg.h"
 #include <wx/stattext.h>
 
+#include "traincontrol.h"
+
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
 #include "serial/serial_unix.h"
 #endif
@@ -34,14 +36,17 @@ class tswitch
         void setDir( wxString dir );
         void setGPIO( wxString wxGPIO );
         void setManufacturer( wxString manufacturer );
+        void SetMapRowCol( int row, int col );
+        void setCurrentPos( wxString cPos );
 
-        void OnToggle( wxCommandEvent& event );
+        void Toggle();
         void OnTurn( wxCommandEvent& event );
         void OnStraight( wxCommandEvent& event );
         void Straight();
         void Turn();
         void ChangePos( char dir );
         void CloseCon();
+        void OpenCon();
         wxString getName();
 
         char currentPos;
@@ -67,6 +72,9 @@ class tswitch
 
         int sGPIO;
         char dir;
+
+        int row;
+        int col;
 
         enum
         {

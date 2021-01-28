@@ -1,4 +1,5 @@
 #include "switch.h"
+#include "track38App.h"
 
 tswitch::tswitch( wxString wxName )
 {
@@ -78,12 +79,17 @@ void tswitch::setDir( wxString wxDir )
     this->dir = string(wxDir.mb_str())[0];
 }
 
+void tswitch::setCurrentPos( wxString cPos )
+{
+    this->currentPos = string(cPos.mb_str())[0];
+}
+
 void tswitch::setManufacturer( wxString manufacturer )
 {
     this->manufacturer = manufacturer;
 }
 
-void tswitch::OnToggle( wxCommandEvent& event )
+void tswitch::Toggle()
 {
     if ( this->currentPos == 'T' )
         this->Straight();
@@ -117,9 +123,20 @@ bool tswitch::isStraight()
     return ( this->currentPos == 'S' );
 }
 
+void tswitch::OpenCon()
+{
+    this->con  = connect_port( this->portPoint );
+}
+
 void tswitch::CloseCon()
 {
     close_port( this->con );
+}
+
+void tswitch::SetMapRowCol( int row, int col)
+{
+    this->row = row;
+    this->col = col;
 }
 
 tswitch::~tswitch()

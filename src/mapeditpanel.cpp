@@ -20,17 +20,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     topSizer = new wxBoxSizer( wxVERTICAL );
     bottomSizer = new wxBoxSizer( wxHORIZONTAL );
 
-    // init Config
-    configSwitch = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "switches.ini", "", wxCONFIG_USE_GLOBAL_FILE );
-    wxConfigBase::Set( configSwitch );
-    track38ConfigSwitch = wxConfigBase::Get();
-    track38ConfigSwitch->Flush();
-
-    configMap = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "map.ini", "", wxCONFIG_USE_GLOBAL_FILE );
-    wxConfigBase::Set( configMap );
-    track38ConfigMap = wxConfigBase::Get();
-    track38ConfigMap->Flush();
-
+    this->initConfig();
     //
     // Map
     //
@@ -175,6 +165,20 @@ void mapEditPanel::OnRefreshSerial( wxCommandEvent& event )
     refreshSizer->Layout();
 }
 
+void mapEditPanel::initConfig()
+{
+    // init Config
+    configSwitch = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "switches.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configSwitch );
+    track38ConfigSwitch = wxConfigBase::Get();
+    track38ConfigSwitch->Flush();
+
+    configMap = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "map.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configMap );
+    track38ConfigMap = wxConfigBase::Get();
+    track38ConfigMap->Flush();
+}
+
 void mapEditPanel::OnAddSwitch( wxCommandEvent& event )
 {   
     if ( m_switchPicker->FindString( switchName->GetValue() ) != wxNOT_FOUND )
@@ -201,6 +205,7 @@ void mapEditPanel::OnAddSwitch( wxCommandEvent& event )
 
 void mapEditPanel::AddSwitch()
 {
+    this->initConfig();
     track38ConfigSwitch->SetPath( "/Switch/" );
     track38ConfigSwitch->SetPath( switchName->GetValue() );
     track38ConfigSwitch->Write( "gpio", wxString::Format( wxT( "%i" ), gpioPicker->GetValue() ) );
@@ -213,6 +218,7 @@ void mapEditPanel::AddSwitch()
 
 void mapEditPanel::DragSwitchToMap( int row, int col )
 {
+    this->initConfig();
     wxString name = "Switch ";
     int i = 1;
     while ( !( m_switchPicker->FindString( name + wxString::Format( wxT( "%i" ), i ) ) == wxNOT_FOUND ) )
@@ -235,7 +241,9 @@ void mapEditPanel::DragSwitchToMap( int row, int col )
 void mapEditPanel::OnUpdateSwitch( wxCommandEvent& event )
 {
     if ( m_switchPicker->GetCount() == 0 )
-        return; 
+        return;
+
+    this->initConfig();
 
     track38ConfigSwitch->SetPath( "/Switch/" );
     track38ConfigSwitch->RenameGroup( m_switchPicker->GetStringSelection(), switchName->GetValue() );
@@ -258,7 +266,9 @@ void mapEditPanel::OnRemoveSwitch( wxCommandEvent& event )
 
 void mapEditPanel::RemoveSwitch()
 {
-        wxMessageDialog dialog( this, "Do you want to remove the Train?", "Remove?", wxYES_NO | wxICON_INFORMATION );
+    this->initConfig();
+
+    wxMessageDialog dialog( this, "Do you want to remove the Switch?", "Remove?", wxYES_NO | wxICON_INFORMATION );
     switch ( dialog.ShowModal() )
     {
         case wxID_YES:
@@ -270,7 +280,6 @@ void mapEditPanel::RemoveSwitch()
                 track38ConfigMap->DeleteEntry( "cell" + track38ConfigSwitch->Read( "row", "" ) + "_" + track38ConfigSwitch->Read( "col", "" ) );
                 track38ConfigSwitch->SetPath( "/Switch/" );
                 track38ConfigSwitch->DeleteGroup( switchName->GetValue() );
-                track38ConfigSwitch->DeleteGroup( m_switchPicker->GetStringSelection() );
                 track38ConfigSwitch->Flush();
                 m_switchPicker->Delete( m_switchPicker->GetSelection() );
 
@@ -309,6 +318,8 @@ void mapEditPanel::OnSelectSwitch( wxCommandEvent& event )
 
 void mapEditPanel::SelectSwitch( int row, int col )
 {
+    this->initConfig();
+
     long idx;
     wxString out;
     wxString toSelect;
@@ -344,6 +355,8 @@ void mapEditPanel::SelectSwitch( int row, int col )
 
 void mapEditPanel::SelectSwitch()
 {
+    this->initConfig();
+
     if ( m_switchPicker->GetCount() == 0 )
         return; 
     
@@ -394,6 +407,8 @@ void mapEditPanel::SelectSwitch()
 
 void mapEditPanel::loadSwitches()
 {
+    this->initConfig();
+
     track38ConfigSwitch->SetPath( "/Switch/" );
     int count = track38ConfigSwitch->GetNumberOfGroups( false );
 
@@ -428,6 +443,8 @@ void mapEditPanel::OnDragCellPicker( wxGridEvent& event )
 
 void mapEditPanel::OnLClickMap( wxGridEvent& event )
 {
+    this->initConfig();
+
     cellImageRenderer* cellRenderer = ( cellImageRenderer* ) map->GetCellRenderer( event.GetRow(), event.GetCol() );
     if ( this->clickToDrag && !cellRenderer->isEmptyCell)
     {
@@ -484,7 +501,7 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
             map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( fileRot ) );
             if ( !( fileRot.Find( "switch" ) == wxNOT_FOUND ) )
                 map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxLIGHT_GREY );
-            wxMessageBox("error");
+            // wxMessageBox("error");
             map->ForceRefresh();
             break;
         
@@ -574,6 +591,8 @@ void mapEditPanel::LoadMapFromFile()
 
 void mapEditPanel::SaveMapToFile()
 {
+    this->initConfig();
+
     track38ConfigMap->DeleteGroup( "/map/" );
     track38ConfigMap->SetPath( "/map/" );
     track38ConfigMap->Write( "rows", map->GetNumberRows() );
@@ -664,6 +683,8 @@ void mapEditPanel::OnMapRemove( wxCommandEvent& event )
 
 void mapEditPanel::RemoveMap( int row, int col)
 {
+    this->initConfig();
+    
     // Remove Switch
 
     long idx;
@@ -696,7 +717,7 @@ void mapEditPanel::RemoveMap( int row, int col)
     
     track38ConfigSwitch->SetPath( "/Switch/" );
     track38ConfigSwitch->SetPath( toRemove );
-    map->SetCellRenderer( wxAtoi ( track38ConfigSwitch->Read( "row", "" ) ), wxAtoi( track38ConfigSwitch->Read( "col", "" ) ), new cellImageRenderer() );
+    map->SetCellRenderer( row, col, new cellImageRenderer() );
     track38ConfigMap->SetPath( "/map/" );
     track38ConfigMap->DeleteEntry( "cell" + track38ConfigSwitch->Read( "row", "" ) + "_" + track38ConfigSwitch->Read( "col", "" ) );
     track38ConfigSwitch->SetPath( "/Switch/" );
@@ -769,6 +790,11 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
             
             case wxID_YES:
                 parent->RemoveMap( row, col );
+                if ( text.Find( "switch" ) == wxNOT_FOUND )
+                {
+                    m_grid->SetCellRenderer( row, col, new cellImageRenderer( send ) );
+                    return true;
+                }
                 break;
         }
     }

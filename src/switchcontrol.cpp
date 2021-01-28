@@ -7,11 +7,6 @@ switchControlPanel::switchControlPanel( wxPanel* parent, int id ) : wxScrolledWi
 
     //Sizer
     topSizer = new wxBoxSizer( wxHORIZONTAL );
-
-    // init Config
-    configSwitch = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "switches.ini", "", wxCONFIG_USE_GLOBAL_FILE );
-    wxConfigBase::Set( configSwitch );
-    track38ConfigSwitch = wxConfigBase::Get();
 }
 
 void switchControlPanel::createControlBox()
@@ -24,7 +19,7 @@ void switchControlPanel::createControlBox()
         selswitch->sizer->Add( selswitch->straightBtn, 0, wxALL , 5 );
         selswitch->sizer->Add( selswitch->turnBtn, 0, wxALL , 5 );
 
-        topSizer->Add(selswitch->sizer);
+        topSizer->Add( selswitch->sizer );
 
         selswitch->straightBtn->Bind( wxEVT_BUTTON, &tswitch::OnStraight, selswitch );
         selswitch->turnBtn->Bind( wxEVT_BUTTON, &tswitch::OnTurn, selswitch );
@@ -41,6 +36,11 @@ void switchControlPanel::createControlBox()
 
 void switchControlPanel::loadswitchs( std::unordered_map< wxString, int > &cons )
 {
+    // init Config
+    configSwitch = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "switches.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configSwitch );
+    track38ConfigSwitch = wxConfigBase::Get();
+
     //init Config
     track38ConfigSwitch->SetPath( "/Switch/" );
     switches.clear();
@@ -71,6 +71,8 @@ void switchControlPanel::loadswitchs( std::unordered_map< wxString, int > &cons 
         selswitch->setGPIO( track38ConfigSwitch->Read( "gpio", "" ) );
         selswitch->setDir( track38ConfigSwitch->Read( "dir", "" ) );
         selswitch->setManufacturer( track38ConfigSwitch->Read( "manufacturer", "" ) );
+        selswitch->SetMapRowCol( wxAtoi( track38ConfigSwitch->Read( "row", "" ) ), wxAtoi( track38ConfigSwitch->Read( "col", "" ) ) );
+        selswitch->setCurrentPos( track38ConfigSwitch->Read( "currentPos", "n" ) );
 
     
         if ( cons.count( port ) )
@@ -104,4 +106,20 @@ void switchControlPanel::loadswitchs( std::unordered_map< wxString, int > &cons 
 
 switchControlPanel::~switchControlPanel()
 {
+    // init Config
+    configSwitch = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "switches.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configSwitch );
+    track38ConfigSwitch = wxConfigBase::Get();
+
+    for (tswitch* & selswitch : switches)
+    {
+        // Access the object through iterator
+        track38ConfigSwitch->SetPath( "/Switch/" );
+        if ( track38ConfigSwitch->HasGroup( selswitch->name ) )
+        {
+            track38ConfigSwitch->SetPath( selswitch->name );
+            track38ConfigSwitch->Write( "currentPos", wxString( selswitch->currentPos ) );
+        }
+    }
+    track38ConfigSwitch->Flush();
 }
