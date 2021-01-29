@@ -23,9 +23,9 @@ public:
     // wxString ini_dir = wxFileName::GetHomeDir() + "/Library/Application Support/" + appName + "/";
     wxString ini_dir = stdp.GetUserDataDir() + "/";
     #elif __linux__
-    wxString ini_dir = stdp.GetUserDataDir() "/";
+    wxString ini_dir = stdp.GetUserDataDir() + "/";
     #elif __WIN32__
-    wxString ini_dir = stdp.GetUserDataDir() "\\";
+    wxString ini_dir = stdp.GetUserDataDir() + "\\";
     #endif
 
     virtual bool OnInit();
