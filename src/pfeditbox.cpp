@@ -10,7 +10,7 @@ pfEditBox::pfEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 
 
     nameTxt = new wxStaticText( this, wxID_ANY, "Train Name:" );
-    trainName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 300, -1 ), 0L, wxDefaultValidator, "pfName" );
+    trainName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 300, -1 ), 0L, wxDefaultValidator, "tName" );
 
     refreshSizer = new wxBoxSizer( wxHORIZONTAL );
     portTxt = new wxStaticText( this, wxID_ANY, "Arduino ComPort:" );

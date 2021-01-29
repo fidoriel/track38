@@ -205,6 +205,9 @@ void mapEditPanel::OnAddSwitch( wxCommandEvent& event )
 
 void mapEditPanel::AddSwitch()
 {
+    if ( m_switchPicker->GetCount() == 0 )
+        return; 
+
     this->initConfig();
     track38ConfigSwitch->SetPath( "/Switch/" );
     track38ConfigSwitch->SetPath( switchName->GetValue() );
@@ -266,6 +269,9 @@ void mapEditPanel::OnRemoveSwitch( wxCommandEvent& event )
 
 void mapEditPanel::RemoveSwitch()
 {
+    if ( m_switchPicker->GetCount() == 0 )
+        return; 
+
     this->initConfig();
 
     wxMessageDialog dialog( this, "Do you want to remove the Switch?", "Remove?", wxYES_NO | wxICON_INFORMATION );
@@ -282,6 +288,7 @@ void mapEditPanel::RemoveSwitch()
                 track38ConfigSwitch->DeleteGroup( switchName->GetValue() );
                 track38ConfigSwitch->Flush();
                 m_switchPicker->Delete( m_switchPicker->GetSelection() );
+                switchName->SetValue( "" );
 
                 // Deselect all
                 for ( int col = 0; col < map->GetNumberCols(); col++ )

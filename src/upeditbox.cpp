@@ -9,7 +9,7 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     topSizerUpEdit = new wxFlexGridSizer( 2, 0, 0 );
 
     nameTxt = new wxStaticText( this, wxID_ANY, "Train Name:" );
-    trainName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 300, -1 ), 0L, wxDefaultValidator, "upName" );
+    trainName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 300, -1 ), 0L, wxDefaultValidator, "tName" );
 
     refreshSizer = new wxBoxSizer( wxHORIZONTAL );
     portTxt = new wxStaticText( this, wxID_ANY, "Arduino ComPort:" );
