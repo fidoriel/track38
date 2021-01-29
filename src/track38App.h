@@ -8,6 +8,7 @@
 #include "wx/image.h"
 #include "wx/preferences.h"
 #include "wx/scopedptr.h"
+#include <wx/stdpaths.h>
 
 #include "preferences.h"
 
@@ -17,12 +18,14 @@ public:
     wxString appName = "track38";
     wxString vendorName = "fidoriel";
 
+    wxStandardPathsBase& stdp = wxStandardPaths::Get();
     #ifdef __APPLE__
-    wxString ini_dir = wxFileName::GetHomeDir() + "/Library/Application Support/" + appName + "/";
+    // wxString ini_dir = wxFileName::GetHomeDir() + "/Library/Application Support/" + appName + "/";
+    wxString ini_dir = stdp.GetUserDataDir() + "/";
     #elif __linux__
-    wxString ini_dir = wxFileName::GetHomeDir() + "/." + appName + "/";
+    wxString ini_dir = stdp.GetUserDataDir() "/";
     #elif __WIN32__
-    wxString ini_dir = wxFileName::GetHomeDir() + "\\AppData\\Roaming\\" + appName + "\\";
+    wxString ini_dir = stdp.GetUserDataDir() "\\";
     #endif
 
     virtual bool OnInit();
