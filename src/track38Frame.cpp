@@ -35,7 +35,9 @@ void track38Frame::OnQuit( wxCommandEvent& event )
 
 track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/*, wxPoint( 30, 30 ), wxSize( 200, 200 )*/ )
 {
-
+    //Image renderers
+    ::wxInitAllImageHandlers();
+    
     SetIcon( wxICON( AppIcon ) );
     this->Settings();
 

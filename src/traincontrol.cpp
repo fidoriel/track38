@@ -130,5 +130,6 @@ void trainControlPanel::StopAll()
 
 trainControlPanel::~trainControlPanel()
 {
+    this->StopAll();
     delete stopAllBtn;
 }

@@ -25,7 +25,7 @@ void train::Stop()
 
 void train::OnChangeSpeed( wxCommandEvent& event ) 
 {
-    this->ChangeSpeed( speedSlider->GetValue() );
+    this->ChangeSpeed( this->speedSlider->GetValue() );
 }
 
 void train::ChangeSpeed( int newSpeed )
