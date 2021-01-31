@@ -35,8 +35,9 @@ void track38Frame::OnQuit( wxCommandEvent& event )
 
 track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/*, wxPoint( 30, 30 ), wxSize( 200, 200 )*/ )
 {
-    //Image renderers
-    ::wxInitAllImageHandlers();
+    // Image renderers
+    // ::wxInitAllImageHandlers();
+    wxImage::AddHandler( new wxPNGHandler );
     
     SetIcon( wxICON( AppIcon ) );
     this->Settings();
@@ -106,8 +107,7 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/
 
     controlMenu = new wxMenu;
     controlMenu->Append( ID_Reconnect, "Reload Connections\tCtrl-R", "Reconnect all Clients" );
-    
-    
+
     Bind( wxEVT_COMMAND_MENU_SELECTED, &controlPanel::OnRefreshPanel, m_controlPanel, ID_Reconnect );
     Bind( wxEVT_COMMAND_MENU_SELECTED,
         []( wxCommandEvent& ) {
@@ -140,7 +140,9 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
             switch ( dialog.ShowModal() )
             {
                 case wxID_YES:
+		    wxMessageBox( "stop" );
                     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
+		    usleep(50000);
                     m_controlPanel->CloseAll();
                     return;
                     break;
@@ -197,6 +199,7 @@ void track38Frame::OnSettings( wxCommandEvent& event )
 track38Frame::~track38Frame()
 {
     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
+    usleep( 50000 );
     m_controlPanel->CloseAll();
     m_mapEditPanel->SaveMapToFile();
     m_controlPanel->m_switchHandler->~switchHandler();

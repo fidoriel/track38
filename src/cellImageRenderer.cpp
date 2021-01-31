@@ -12,9 +12,6 @@ cellImageRenderer::cellImageRenderer()
 
 cellImageRenderer::cellImageRenderer( wxString filename, int border, int degree )
 {
-    // -- find --
-
-    ::wxInitAllImageHandlers();
 
     #ifdef __APPLE__
     wxString path = wxString( "track38.app/Contents/Resources/" );

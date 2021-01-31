@@ -24,7 +24,7 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // Left Picker/Listbox
     //
 
-    leftBox = new wxStaticBox( this, wxID_ANY, "&Pick Train to edit" );
+    leftBox = new wxStaticBox( this, wxID_ANY, "Pick Train to edit" );
     leftSizer = new wxStaticBoxSizer( leftBox, wxHORIZONTAL );
     m_trainPicker = new wxListBox( this, ID_SelectTrain, wxDefaultPosition, wxSize( -1, 500 ), 0, NULL );
 
@@ -35,7 +35,7 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // Right Edit and Buttons
     //
 
-    rightBox = new wxStaticBox( this, wxID_ANY, "&Train Properties" );
+    rightBox = new wxStaticBox( this, wxID_ANY, "Train Properties" );
     rightSizer = new wxStaticBoxSizer( rightBox, wxVERTICAL );
 
     //Control kind picker
@@ -52,10 +52,10 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     trainKindPicker->Enable( 4, false );
 
     //PF edit Panel 
-    m_trainEditBox = new pfEditBox( this, wxID_ANY, "&Edit PowerFunctions Settings" );
+    m_trainEditBox = new pfEditBox( this, wxID_ANY, "Edit PowerFunctions Settings" );
 
     // Save Panel
-    saveBox = new wxStaticBox( this, wxID_ANY, "&" );
+    saveBox = new wxStaticBox( this, wxID_ANY, "" );
     saveSizer = new wxStaticBoxSizer( saveBox, wxHORIZONTAL );
     m_AddBtn = new wxButton( this, ID_AddTrain, "Add", wxDefaultPosition, wxDefaultSize );
     m_UpdateBtn = new wxButton( this, ID_UpdateTrain, "Update", wxDefaultPosition, wxDefaultSize );
@@ -140,11 +140,11 @@ void trainEditPanel::RefreshPanel()
         switch ( sel )
         {
         case 0:
-            m_trainEditBox = new pfEditBox( this, wxID_ANY, "&Edit PowerFunctions Settings" );
+            m_trainEditBox = new pfEditBox( this, wxID_ANY, "Edit PowerFunctions Settings" );
             break;
         
         case 1:
-            m_trainEditBox = new upEditBox( this, wxID_ANY, "&Edit PoweredUP Settings" );
+            m_trainEditBox = new upEditBox( this, wxID_ANY, "Edit PoweredUP Settings" );
             break;
         }
 
