@@ -39,6 +39,9 @@ public:
     virtual bool OnInit();
     void ShowPreferencesEditor( wxWindow* parent );
 
+    // Dnd veto workaround
+    bool vetoDND;
+
 private:
     wxScopedPtr<wxPreferencesEditor> m_prefEditor;
 };

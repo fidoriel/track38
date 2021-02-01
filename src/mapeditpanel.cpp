@@ -435,6 +435,9 @@ void mapEditPanel::OnDragCellPicker( wxGridEvent& event )
 void mapEditPanel::OnLClickMap( wxGridEvent& event )
 {
     this->initConfig();
+    bool wasSelected = false;
+    if ( map->GetCellBackgroundColour( event.GetRow(), event.GetCol() ) == *wxLIGHT_GREY )
+        wasSelected = true;
 
     cellImageRenderer* cellRenderer = ( cellImageRenderer* ) map->GetCellRenderer( event.GetRow(), event.GetCol() );
     if ( this->clickToDrag && !cellRenderer->isEmptyCell)
@@ -484,20 +487,18 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
         dragSource.SetData( myData );
         wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
 
-        switch ( result )
+        // wxMessageBox( wxString::Format( wxT( "%i" ), result ) );
+
+        if ( ( result == wxDragError ) || ( result == wxDragCancel ) || ( result == wxDragNone ) || wxGetApp().vetoDND )
         {
-        case wxDragError:
-        case wxDragCancel:
-        case wxDragNone:
             map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( fileRot ) );
             if ( !( fileRot.Find( "switch" ) == wxNOT_FOUND ) )
-                map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxLIGHT_GREY );
+                if ( wasSelected )
+                    map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxLIGHT_GREY ); 
             // wxMessageBox("error");
             map->ForceRefresh();
-            break;
-        
-        default:
-            break;
+
+            wxGetApp().vetoDND = false;
         }
     }
 
@@ -816,6 +817,7 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
         switch ( dialog.ShowModal() )
         {
             case wxID_NO:
+                wxGetApp().vetoDND = true;
                 return false;
                 break;
             
