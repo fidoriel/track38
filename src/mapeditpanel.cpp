@@ -332,15 +332,18 @@ void mapEditPanel::SelectSwitch( int row, int col )
     }
 
     m_switchPicker->SetStringSelection( toSelect );
-    selectedSwitch = m_switchPicker->GetStringSelection();
     this->SelectSwitch();
+}
+
+void mapEditPanel::OnEditSwitch( wxCommandEvent& event )
+{
+    this->SelectSwitch( eventCellRow, eventCellCol );
 }
 
 void mapEditPanel::SelectSwitch()
 {
     if ( !selectedSwitch.IsEmpty() )
         this->saveSwitch( selectedSwitch );
-    selectedSwitch = m_switchPicker->GetStringSelection();
 
     this->initConfig();
 
@@ -390,6 +393,7 @@ void mapEditPanel::SelectSwitch()
     }
     map->SetCellBackgroundColour( wxAtoi( track38ConfigSwitch->Read( "row", "" ) ), wxAtoi( track38ConfigSwitch->Read( "col", "" ) ), *wxLIGHT_GREY );
     map->Refresh();
+    selectedSwitch = m_switchPicker->GetStringSelection();
 }
 
 void mapEditPanel::loadSwitches()
@@ -611,12 +615,6 @@ void mapEditPanel::SaveMapToFile()
         }
     }
     track38ConfigMap->Flush();
-}
-
-void mapEditPanel::OnEditSwitch( wxCommandEvent& event )
-{
-    // wxMessageBox( wxString::Format( wxT( "%i" ), eventCellRow ) );
-    this->SelectSwitch( eventCellRow, eventCellCol );
 }
 
 void mapEditPanel::OnTurnCC( wxCommandEvent& event )
