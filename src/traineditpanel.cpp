@@ -43,13 +43,13 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     options.Add( "Lego PowerFunctions" );
     options.Add( "Lego PoweredUp" );
     options.Add( "Lego 9V RC" );
-    options.Add( "Buwizz" );
-    options.Add( "SBrick" );
+    // options.Add( "Buwizz" );
+    // options.Add( "SBrick" );
     trainKindPicker = new wxRadioBox( this, ID_ChangeControl, "Train Controller", wxDefaultPosition, wxDefaultSize, options, 3, wxRA_HORIZONTAL );
     trainKindPicker->Enable( 1, false );
     trainKindPicker->Enable( 2, false );
-    trainKindPicker->Enable( 3, false );
-    trainKindPicker->Enable( 4, false );
+    // trainKindPicker->Enable( 3, false );
+    // trainKindPicker->Enable( 4, false );
 
     //PF edit Panel 
     m_trainEditBox = new pfEditBox( this, wxID_ANY, "Edit PowerFunctions Settings" );
