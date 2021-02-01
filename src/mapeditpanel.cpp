@@ -185,6 +185,7 @@ void mapEditPanel::initConfig()
 
 void mapEditPanel::DragSwitchToMap( int row, int col )
 {
+    this->saveSwitch();
     this->initConfig();
     wxString name = "Switch ";
     int i = 1;
@@ -296,6 +297,9 @@ void mapEditPanel::OnSelectSwitch( wxCommandEvent& event )
 
 void mapEditPanel::SelectSwitch( int row, int col )
 {
+    if ( !selectedSwitch.IsEmpty() )
+        this->saveSwitch( selectedSwitch );
+
     this->initConfig();
 
     long idx;
@@ -328,11 +332,16 @@ void mapEditPanel::SelectSwitch( int row, int col )
     }
 
     m_switchPicker->SetStringSelection( toSelect );
+    selectedSwitch = m_switchPicker->GetStringSelection();
     this->SelectSwitch();
 }
 
 void mapEditPanel::SelectSwitch()
 {
+    if ( !selectedSwitch.IsEmpty() )
+        this->saveSwitch( selectedSwitch );
+    selectedSwitch = m_switchPicker->GetStringSelection();
+
     this->initConfig();
 
     if ( m_switchPicker->GetCount() == 0 )
@@ -825,6 +834,7 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
 
     m_grid->SetCellRenderer( row, col, new cellImageRenderer( send ) );
 
+    // with rotation
     if ( ary.GetCount() == 3 )
     {
         wxConfigBase::Set( parent->configSwitch );
@@ -845,12 +855,13 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
         }
         m_grid->SetCellBackgroundColour( wxAtoi( track38ConfigSwitch->Read( "row", "" ) ), wxAtoi( track38ConfigSwitch->Read( "col", "" ) ), *wxLIGHT_GREY );
         parent->m_switchPicker->SetStringSelection( ary.Item( 2 ) );
+        parent->SelectSwitch();
     }
 
-
+    // 
     else if ( !( text.Find( "switch" ) == wxNOT_FOUND ) )
     {
-        mapEditPanel* parent = (mapEditPanel*) m_grid->GetParent();
+        mapEditPanel* parent = ( mapEditPanel* ) m_grid->GetParent();
         parent->DragSwitchToMap( row, col );
     }
 

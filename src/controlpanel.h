@@ -5,9 +5,7 @@
 #include "wx/notebook.h"
 #include "wx/grid.h"
 #include "traincontrol.h"
-#include "switchcontrol.h"
 #include "traincontrolbox.h"
-#include "switchcontrolbox.h"
 #include "cellImageRenderer.h"
 #include "switch.h"
 #include "switchhandler.h"
@@ -27,7 +25,7 @@ class controlPanel : public wxPanel
         std::unordered_map< wxString, int > cons;
         wxNotebook* parent;
         trainControlBox* m_trainControlBox;
-        switchControlBox* m_switchControlBox;
+        // switchControlBox* m_switchControlBox;
         wxBoxSizer* topSizer;
         wxBoxSizer* mapSizer;
         switchHandler* m_switchHandler;
