@@ -18,12 +18,11 @@ class trainEditPanel : public wxPanel
     public:
         trainEditPanel( wxNotebook* parent );
         void OnChangeControler( wxCommandEvent& event );
-        void OnAddTrain( wxCommandEvent& event );
-        void OnUpdateTrain( wxCommandEvent& event );
+        wxString GetTrainControl( wxString trainSel );
         void OnSelectTrain( wxCommandEvent& event );
         void SelectTrain();
-        void OnRemoveTrain( wxCommandEvent& event );
         void SaveTrain();
+        void initConf();
         void RefreshPanel();
         void RemoveTrain();
 
@@ -35,11 +34,11 @@ class trainEditPanel : public wxPanel
         wxSizer* rightSizer;
         wxRadioBox* trainKindPicker;
         wxStaticBox* m_trainEditBox;
-        wxStaticBox* saveBox;
-        wxSizer* saveSizer;
-        wxButton* m_AddBtn;
-        wxButton* m_UpdateBtn;
+
+        wxBoxSizer* saveSizer;
+        wxButton* m_NewBtn;
         wxButton* m_RemoveBtn;
+
         wxNotebook* panelParent;
         wxConfigBase* configTrain;
         wxConfigBase* track38ConfigTrain;

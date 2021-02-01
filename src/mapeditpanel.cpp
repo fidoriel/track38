@@ -82,19 +82,18 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     editSizer->Add( manufacturerPicker, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
     // Save Sizer
-    wxStaticBox* saveBox = new wxStaticBox( this, wxID_ANY, "" );
-    wxStaticBoxSizer* saveSizer = new wxStaticBoxSizer( saveBox, wxVERTICAL );
-    // wxButton* m_AddBtn = new wxButton( this, ID_AddSwitch, "Add", wxDefaultPosition, wxDefaultSize );
+    wxBoxSizer* saveSizer = new wxBoxSizer( wxHORIZONTAL );
     wxButton* m_UpdateBtn = new wxButton( this, ID_UpdateSwitch, "Update", wxDefaultPosition, wxDefaultSize );
     wxButton* m_RemoveBtn = new wxButton( this, ID_RemoveSwitch, "Remove", wxDefaultPosition, wxDefaultSize );
-    // saveSizer->Add( m_AddBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Add( m_UpdateBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Add( m_RemoveBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
-    saveSizer->Layout();
 
-    switchPickerBoxSizer->Add( m_switchPicker, 0, wxEXPAND | wxALL, 5 );
+    pickerSizer = new wxBoxSizer( wxVERTICAL );
+    pickerSizer->Add( m_switchPicker, 1, wxALL | wxEXPAND, 0 );
+    pickerSizer->Add( saveSizer, 0, wxALL, 0 );
+
+    switchPickerBoxSizer->Add( pickerSizer, 0, wxEXPAND | wxALL, 5 );
     switchPickerBoxSizer->Add( editSizer, 0, wxEXPAND | wxALL, 5 );
-    switchPickerBoxSizer->Add( saveSizer, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
 
     //
     // Map Picker
@@ -152,17 +151,22 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     topSizer->SetSizeHints( this );
 
     this->loadSwitches();
+    if ( m_switchPicker->GetSelection() > 0 )
+        m_switchPicker->SetSelection( 0 );
     this->SelectSwitch();
 }
 
 void mapEditPanel::OnRefreshSerial( wxCommandEvent& event )
 {
-    refreshSizer->Detach( 0 );
-    delete portPicker;
     this->switchPickerBox->refreshSerial();
-    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 200, -1 ), switchPickerBox->serialArray, 0L, wxDefaultValidator, "switchPort" );
-    refreshSizer->Insert( 0, portPicker, 0, wxALL, 5 );
-    refreshSizer->Layout();
+    portPicker->Clear();
+    for (size_t i = 0; i < switchPickerBox->serialArray.GetCount(); i++)
+    {
+        portPicker->Append( switchPickerBox->serialArray.Item( i ) );
+    }
+
+    if ( portPicker->GetCount() > 0 )
+        portPicker->SetSelection( portPicker->GetCount() - 1 );
 }
 
 void mapEditPanel::initConfig()

@@ -79,6 +79,7 @@ class mapEditPanel : public wxPanel
 
         // EditSizer
         wxFlexGridSizer* editSizer;
+        wxBoxSizer* pickerSizer;
 
         // Edit Controls
         wxStaticText* labelName;

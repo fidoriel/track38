@@ -73,4 +73,7 @@ void upEditBox::OnRefreshSerial( wxCommandEvent& event )
     {
         portPicker->Append( serialArray.Item( i ) );
     }
+
+    if ( portPicker->GetCount() > 0 )
+        portPicker->SetSelection( portPicker->GetCount() - 1 );
 }

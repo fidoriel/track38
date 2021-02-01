@@ -19,6 +19,9 @@ class pfEditBox : public editBox
     public:
         pfEditBox( wxPanel* parent, int id, wxString title );
         void OnRefreshSerial( wxCommandEvent& event );
+        void initConf();
+        void SaveTrain();
+        void SelectTrain( wxString trainSel );
 
         wxFlexGridSizer* topSizerPfEdit;
         wxStaticText* nameTxt;
@@ -36,6 +39,9 @@ class pfEditBox : public editBox
         wxSpinCtrl* maxSpeedPicker;
         wxBoxSizer* refreshSizer;
         wxButton* m_RefreshBtn;
+
+        wxConfigBase* configTrain;
+        wxConfigBase* track38ConfigTrain;
     
     private:
         DECLARE_EVENT_TABLE();

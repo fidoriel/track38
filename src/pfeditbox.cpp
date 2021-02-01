@@ -1,4 +1,5 @@
 #include "pfeditbox.h"
+#include "track38App.h"
 
 wxBEGIN_EVENT_TABLE( pfEditBox, wxPanel )
     EVT_BUTTON( ID_REFRESHSERIAL, pfEditBox::OnRefreshSerial )
@@ -77,4 +78,60 @@ void pfEditBox::OnRefreshSerial( wxCommandEvent& event )
     {
         portPicker->Append( serialArray.Item( i ) );
     }
+
+    if ( portPicker->GetCount() > 0 )
+        portPicker->SetSelection( portPicker->GetCount() - 1 );
+}
+
+void pfEditBox::initConf()
+{
+    // Init config
+    configTrain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "train.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configTrain );
+    track38ConfigTrain = wxConfigBase::Get();
+}
+
+void pfEditBox::SaveTrain()
+{
+    this->initConf();
+
+    track38ConfigTrain->SetPath( "/Train/" );
+
+    track38ConfigTrain->SetPath( trainName->GetValue() );
+    track38ConfigTrain->Write( "control", "pf" );
+    track38ConfigTrain->Write( "gpio", wxString::Format( wxT( "%i" ), gpioPicker->GetValue() ) );
+    track38ConfigTrain->Write( "subChannel", subChannelPicker->GetStringSelection() );
+    track38ConfigTrain->Write( "maxSpeed", wxString::Format( wxT( "%i" ), maxSpeedPicker->GetValue() ) );
+    track38ConfigTrain->Write( "channel", channelPicker->GetStringSelection() );
+    track38ConfigTrain->Write( "port", portPicker->GetStringSelection() );
+    
+    track38ConfigTrain->Flush();
+}
+
+void pfEditBox::SelectTrain( wxString trainSel )
+{
+    this->initConf();
+
+    track38ConfigTrain->SetPath( "/Train/" );
+    track38ConfigTrain->SetPath( trainSel );
+
+    gpioPicker->SetValue( track38ConfigTrain->Read( "gpio", "13" ) );
+
+    for ( size_t idx = 0; idx < channelPicker->GetCount(); idx++ )
+    {
+        if ( track38ConfigTrain->Read( "channel", "1" ).IsSameAs( channelPicker->GetString( idx ) ) )
+            channelPicker->SetSelection( idx );
+    }
+
+    for ( size_t idx = 0; idx < subChannelPicker->GetCount(); idx++ )
+    {
+        if ( track38ConfigTrain->Read( "subChannel", "R" ).IsSameAs( subChannelPicker->GetString( idx ) ) )
+            subChannelPicker->SetSelection( idx );            
+    }
+
+    trainName->ChangeValue( trainSel );
+    maxSpeedPicker->SetValue( track38ConfigTrain->Read( "maxSpeed", "7" ) );
+
+    channelPicker->Refresh();
+    subChannelPicker->Refresh();
 }
