@@ -140,7 +140,7 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
             switch ( dialog.ShowModal() )
             {
                 case wxID_YES:
-		    wxMessageBox( "stop" );
+		    // wxMessageBox( "stop" );
                     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
 		    usleep(50000);
                     m_controlPanel->CloseAll();

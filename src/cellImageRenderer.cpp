@@ -1,4 +1,5 @@
 #include "cellImageRenderer.h"
+#include "track38App.h"
 
 // cellImageRenderer::cellImageRenderer( std::string filename, int border )
 // {
@@ -12,15 +13,6 @@ cellImageRenderer::cellImageRenderer()
 
 cellImageRenderer::cellImageRenderer( wxString filename, int border, int degree )
 {
-
-    #ifdef __APPLE__
-    wxString path = wxString( "track38.app/Contents/Resources/" );
-    #elif defined(__linux__) || defined(__FreeBSD__)
-    wxString path = "../usr/share/icons/";
-    #elif __WIN32__
-    wxString path = "resources/";
-    #endif
-
     filepath = "";
 
     if ( filename.Find( "|" ) == wxNOT_FOUND )
@@ -28,7 +20,7 @@ cellImageRenderer::cellImageRenderer( wxString filename, int border, int degree 
         this->rotation = degree;
         this->file = filename;
 
-        this->filepath += path;
+        this->filepath += wxGetApp().ressourcePath;
         this->filepath += filename;
     }
 
@@ -36,7 +28,7 @@ cellImageRenderer::cellImageRenderer( wxString filename, int border, int degree 
     {
         wxArrayString ary = wxArrayString( wxSplit( filename, '|' ) );
 
-        this->filepath += path;
+        this->filepath += wxGetApp().ressourcePath;
         this->filepath += ary.Item( 0 );
         this->rotation = wxAtoi( ary.Item( 1 ) );
         this->file = ary.Item( 0 );

@@ -28,6 +28,14 @@ public:
     wxString ini_dir = stdp.GetUserDataDir() + "\\";
     #endif
 
+    #ifdef __APPLE__
+    wxString ressourcePath = wxString( "track38.app/Contents/Resources/" );
+    #elif defined(__linux__) || defined(__FreeBSD__)
+    wxString ressourcePath = "../usr/share/icons/";
+    #elif __WIN32__
+    wxString ressourcePath = "resources/";
+    #endif
+
     virtual bool OnInit();
     void ShowPreferencesEditor( wxWindow* parent );
 

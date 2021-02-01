@@ -175,6 +175,7 @@ if( APPLE )
         POST_BUILD
         COMMAND plutil -replace NSHighResolutionCapable -bool true ${PROJECT_NAME}.app/Contents/Info.plist
         COMMAND cp -r "../resources/tracks" "${PROJECT_NAME}.app/Contents/Resources"
+        COMMAND cp -r "../resources/icons" "${PROJECT_NAME}.app/Contents/Resources"
         )
 elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
     EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
@@ -196,6 +197,7 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
         COMMAND mkdir -p "AppDir/usr/share/"
         COMMAND mkdir -p "AppDir/usr/share/icons"
         COMMAND cp -r "../resources/tracks/" "AppDir/usr/share/icons/"
+        COMMAND cp -r "../resources/icons/" "AppDir/usr/share/icons/"
         COMMAND wget -N https://github.com/AppImage/AppImageKit/releases/download/continuous/${AppImageRelease}
         COMMAND chmod a+x ${AppImageRelease}
         COMMAND cp ../icons/AppIcon.png AppDir/AppIcon.png
@@ -221,5 +223,7 @@ elseif( WIN32 )
         COMMAND if not exist "${PROJECT_NAME}\\resources" mkdir "${PROJECT_NAME}\\resources"
         COMMAND if not exist "${PROJECT_NAME}\\resources\\tracks" mkdir "${PROJECT_NAME}\\resources\\tracks"
         COMMAND copy "..\\resources\\tracks" "${PROJECT_NAME}\\resources\\tracks\\"
+        COMMAND if not exist "${PROJECT_NAME}\\resources\\icons" mkdir "${PROJECT_NAME}\\resources\\icons"
+        COMMAND copy "..\\resources\\icons" "${PROJECT_NAME}\\resources\\icons\\"
     )
 endif()

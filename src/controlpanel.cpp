@@ -154,9 +154,12 @@ void controlPanel::OnLClickMap( wxGridEvent& event )
     {
         for ( tswitch* & selswitch : this->m_switchHandler->switches)
         {
-            if( ( selswitch->col == event.GetCol() ) && ( selswitch->row == event.GetRow() ) )
+            if ( selswitch->con != -1 )
             {
-                selswitch->Toggle();
+                if( ( selswitch->col == event.GetCol() ) && ( selswitch->row == event.GetRow() ) )
+                {
+                    selswitch->Toggle();
+                }
             }
         }
     }

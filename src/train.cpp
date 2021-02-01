@@ -1,4 +1,5 @@
 #include "train.h"
+#include "track38App.h"
 
 train::train( wxString wxName )
 {
@@ -9,7 +10,13 @@ void train::createControls( wxPanel* parent )
 {
     this->trainName = new wxStaticText( parent, wxID_ANY, this->name );
     this->speedSlider = new wxSlider( parent, ID_ChangeSpeed, 0, this->maxTrainSpeed*( -1 ), this->maxTrainSpeed, wxDefaultPosition, wxSize( 200, -1 ), wxSL_AUTOTICKS );
-    this->stopBtn = new wxButton( parent, ID_StopTrain, "X", wxDefaultPosition, wxSize( 30, 30 ) );
+    this->stopBtn = new wxButton( parent, ID_StopTrain, wxEmptyString, wxDefaultPosition, wxSize( 35, 35 ) );
+
+    wxBitmap bitmap( 25, 25 );
+    wxImage image = bitmap.ConvertToImage();
+    image.LoadFile( wxGetApp().ressourcePath + "icons/stop.png", wxBITMAP_TYPE_PNG );
+    image.Rescale( 25, 25, wxIMAGE_QUALITY_BICUBIC );
+    this->stopBtn->SetBitmap( wxBitmap( image ), wxLEFT );
 }
 
 void train::OnStop( wxCommandEvent& event ) 
