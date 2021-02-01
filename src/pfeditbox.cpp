@@ -9,14 +9,14 @@ pfEditBox::pfEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 {   
     topSizerPfEdit = new wxFlexGridSizer( 2, 0, 0 );
 
-
     nameTxt = new wxStaticText( this, wxID_ANY, "Train Name:" );
-    trainName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 300, -1 ), 0L, wxDefaultValidator, "tName" );
+    trainName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 200, -1 ), 0L, wxDefaultValidator, "tName" );
+    trainName->SetEditable( false );
 
     refreshSizer = new wxBoxSizer( wxHORIZONTAL );
     portTxt = new wxStaticText( this, wxID_ANY, "Arduino ComPort:" );
     this->refreshSerial();
-    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), serialArray, 0L, wxDefaultValidator, "pfPort" );
+    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 200, -1 ), serialArray, 0L, wxDefaultValidator, "pfPort" );
 
     m_RefreshBtn = new wxButton( this, ID_REFRESHSERIAL, "Refresh", wxDefaultPosition, wxDefaultSize );
     refreshSizer->Add( portPicker, 0, wxALL, 5 );
@@ -86,17 +86,16 @@ void pfEditBox::OnRefreshSerial( wxCommandEvent& event )
 void pfEditBox::initConf()
 {
     // Init config
-    configTrain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "train.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    configTrain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "trains.ini", "", wxCONFIG_USE_GLOBAL_FILE );
     wxConfigBase::Set( configTrain );
     track38ConfigTrain = wxConfigBase::Get();
 }
 
-void pfEditBox::SaveTrain()
+bool pfEditBox::SaveTrain( bool overwrite )
 {
     this->initConf();
-
     track38ConfigTrain->SetPath( "/Train/" );
-
+    track38ConfigTrain->DeleteGroup( trainName->GetValue() );
     track38ConfigTrain->SetPath( trainName->GetValue() );
     track38ConfigTrain->Write( "control", "pf" );
     track38ConfigTrain->Write( "gpio", wxString::Format( wxT( "%i" ), gpioPicker->GetValue() ) );
@@ -106,6 +105,8 @@ void pfEditBox::SaveTrain()
     track38ConfigTrain->Write( "port", portPicker->GetStringSelection() );
     
     track38ConfigTrain->Flush();
+
+    return true;
 }
 
 void pfEditBox::SelectTrain( wxString trainSel )
@@ -130,8 +131,24 @@ void pfEditBox::SelectTrain( wxString trainSel )
     }
 
     trainName->ChangeValue( trainSel );
-    maxSpeedPicker->SetValue( track38ConfigTrain->Read( "maxSpeed", "7" ) );
+    maxSpeedPicker->SetValue( track38ConfigTrain->Read( "maxSpeed", "5" ) );
 
     channelPicker->Refresh();
     subChannelPicker->Refresh();
+}
+
+void pfEditBox::AddTrain( wxString trainName )
+{
+    this->initConf();
+    track38ConfigTrain->SetPath( "/Train/" );
+    track38ConfigTrain->SetPath( trainName );
+    track38ConfigTrain->Write( "control", "pf" );
+    track38ConfigTrain->Flush();
+
+    SelectTrain( trainName );
+}
+
+void pfEditBox::SetTrainName( wxString name )
+{
+    trainName->ChangeValue( name );
 }

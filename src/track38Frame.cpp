@@ -70,7 +70,7 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/
     //-----------
     // Status bar
     //-----------
-    CreateStatusBar( 2 );
+    // CreateStatusBar( 2 );
 
     //--------------
     // Load Settings
@@ -157,6 +157,11 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
     
     case 1:
         m_mapEditPanel->SaveMapToFile();
+        m_mapEditPanel->saveSwitch();
+        break;
+    
+    case 2:
+        m_trainEditPanel->SaveTrain();
         break;
     
     default:
@@ -200,9 +205,10 @@ track38Frame::~track38Frame()
 {
     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
     usleep( 50000 );
-    m_controlPanel->CloseAll();
+
+    m_trainEditPanel->SaveTrain();
     m_mapEditPanel->SaveMapToFile();
-    m_controlPanel->m_switchHandler->~switchHandler();
+    m_mapEditPanel->saveSwitch();
 
     wxConfigBase::Set( configMain );
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
@@ -215,4 +221,7 @@ track38Frame::~track38Frame()
     track38ConfigBase->Write( "/Application/frameY", y );
     track38ConfigBase->Write( "/Application/frameW", w );
     track38ConfigBase->Write( "/Application/frameH", h );
+
+    m_controlPanel->CloseAll();
+    m_controlPanel->m_switchHandler->~switchHandler();
 }

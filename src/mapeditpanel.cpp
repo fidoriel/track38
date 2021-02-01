@@ -3,8 +3,7 @@
 
 wxBEGIN_EVENT_TABLE( mapEditPanel, wxPanel )
     EVT_BUTTON( ID_RefreshSerial, mapEditPanel::OnRefreshSerial )
-    EVT_BUTTON( ID_AddSwitch, mapEditPanel::OnAddSwitch )
-    EVT_BUTTON( ID_UpdateSwitch, mapEditPanel::OnUpdateSwitch )
+    EVT_BUTTON( ID_RenameSwitch, mapEditPanel::OnRenameSwitch )
     EVT_BUTTON( ID_RemoveSwitch, mapEditPanel::OnRemoveSwitch )
     EVT_LISTBOX( ID_SelectSwitch, mapEditPanel::OnSelectSwitch )
     EVT_GRID_CMD_CELL_LEFT_CLICK( ID_DragPicker, mapEditPanel::OnDragCellPicker )
@@ -45,6 +44,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
 
     labelName = new wxStaticText( this, wxID_ANY, "Switch Name" );
     switchName = new wxTextCtrl( this, wxID_ANY, "", wxDefaultPosition, wxSize( 200, -1 ) );
+    switchName->SetEditable( false );
 
     refreshSizer = new wxBoxSizer( wxHORIZONTAL );
     labelPort = new wxStaticText( this, wxID_ANY, "Arduino ComPort:" );
@@ -83,7 +83,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
 
     // Save Sizer
     wxBoxSizer* saveSizer = new wxBoxSizer( wxHORIZONTAL );
-    wxButton* m_UpdateBtn = new wxButton( this, ID_UpdateSwitch, "Update", wxDefaultPosition, wxDefaultSize );
+    wxButton* m_UpdateBtn = new wxButton( this, ID_RenameSwitch, "Rename", wxDefaultPosition, wxDefaultSize );
     wxButton* m_RemoveBtn = new wxButton( this, ID_RemoveSwitch, "Remove", wxDefaultPosition, wxDefaultSize );
     saveSizer->Add( m_UpdateBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Add( m_RemoveBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
@@ -183,46 +183,6 @@ void mapEditPanel::initConfig()
     track38ConfigMap->Flush();
 }
 
-void mapEditPanel::OnAddSwitch( wxCommandEvent& event )
-{   
-    if ( m_switchPicker->FindString( switchName->GetValue() ) != wxNOT_FOUND )
-    {
-        wxMessageDialog dialog( this, "The Switch does already Exists. Do you want to Overwrite?", "Overwrite?", wxYES_NO | wxICON_INFORMATION );
-        switch ( dialog.ShowModal() )
-        {
-            case wxID_YES:
-                this->AddSwitch();
-                break;
-
-            case wxID_NO:
-                return;
-                break;
-        }
-    }
-    else
-    {
-        this->AddSwitch();
-        m_switchPicker->AppendString( switchName->GetValue() );
-        m_switchPicker->SetStringSelection( switchName->GetValue() );
-    }
-}
-
-void mapEditPanel::AddSwitch()
-{
-    if ( m_switchPicker->GetCount() == 0 )
-        return; 
-
-    this->initConfig();
-    track38ConfigSwitch->SetPath( "/Switch/" );
-    track38ConfigSwitch->SetPath( switchName->GetValue() );
-    track38ConfigSwitch->Write( "gpio", wxString::Format( wxT( "%i" ), gpioPicker->GetValue() ) );
-    track38ConfigSwitch->Write( "dir", dirPicker->GetStringSelection() );
-
-    track38ConfigSwitch->Write( "port", portPicker->GetStringSelection() );
-    track38ConfigSwitch->Write( "manufacturer", manufacturerPicker->GetStringSelection() );
-    track38ConfigSwitch->Flush();
-}
-
 void mapEditPanel::DragSwitchToMap( int row, int col )
 {
     this->initConfig();
@@ -245,7 +205,12 @@ void mapEditPanel::DragSwitchToMap( int row, int col )
     this->SelectSwitch();
 }
 
-void mapEditPanel::OnUpdateSwitch( wxCommandEvent& event )
+void mapEditPanel::saveSwitch()
+{
+    this->saveSwitch( m_switchPicker->GetStringSelection() );
+}
+
+void mapEditPanel::saveSwitch( wxString name )
 {
     if ( m_switchPicker->GetCount() == 0 )
         return;
@@ -253,21 +218,22 @@ void mapEditPanel::OnUpdateSwitch( wxCommandEvent& event )
     this->initConfig();
 
     track38ConfigSwitch->SetPath( "/Switch/" );
-    track38ConfigSwitch->RenameGroup( m_switchPicker->GetStringSelection(), switchName->GetValue() );
-    track38ConfigSwitch->SetPath( switchName->GetValue() );
+    track38ConfigSwitch->SetPath( name );
     track38ConfigSwitch->Write( "gpio", wxString::Format( wxT( "%i" ), gpioPicker->GetValue() ) );
     track38ConfigSwitch->Write( "dir", dirPicker->GetStringSelection() );
     track38ConfigSwitch->Write( "port", portPicker->GetStringSelection() );
     track38ConfigSwitch->Write( "manufacturer", manufacturerPicker->GetStringSelection() );
     track38ConfigSwitch->Flush();
-
-    m_switchPicker->Delete( m_switchPicker->GetSelection() );
-    m_switchPicker->AppendString( switchName->GetValue() );
-    m_switchPicker->SetStringSelection( switchName->GetValue() );
 }
 
 void mapEditPanel::OnRemoveSwitch( wxCommandEvent& event )
 {
+    if ( m_switchPicker->GetCount() == 0 )
+    {
+        switchName->SetValue( "" );
+        gpioPicker->SetValue( 2 );
+    }
+
     this->RemoveSwitch();
 }
 
@@ -321,10 +287,11 @@ void mapEditPanel::RemoveSwitch()
 
 void mapEditPanel::OnSelectSwitch( wxCommandEvent& event )
 {
-    this->SelectSwitch();
+    if ( !selectedSwitch.IsEmpty() )
+        this->saveSwitch( selectedSwitch );
 
-    // if ( portPicker->FindString( track38ConfigSwitch->Read( "port", "" ) ) == wxNOT_FOUND )
-    //     wxMessageBox( "The saved Port was not found. Please plug in the device.", "Port Error" );
+    this->SelectSwitch();
+    selectedSwitch = m_switchPicker->GetStringSelection();
 }
 
 void mapEditPanel::SelectSwitch( int row, int col )
@@ -759,6 +726,52 @@ void mapEditPanel::OnDragMode( wxCommandEvent& event )
 {
     this->clickToDrag = !this->clickToDrag;
     mapMenu->Check( ID_DragMode, this->clickToDrag );
+}
+
+void mapEditPanel::OnRenameSwitch( wxCommandEvent& event )
+{
+    if ( m_switchPicker->GetCount() == 0 )
+        return;
+
+    this->initConfig();
+    track38ConfigSwitch->SetPath( "/Switch/" );
+
+    wxString oldName = m_switchPicker->GetStringSelection();
+    wxString newName;
+
+    wxTextEntryDialog dlg( this, "Please enter new Name", "Rename", oldName );
+    switch ( dlg.ShowModal() )
+    {
+        case wxID_OK:
+            newName = dlg.GetValue();
+
+            // Same Name
+            if ( newName.IsSameAs( oldName ) )
+                return;
+
+            // Other Name But exists
+            else if ( track38ConfigSwitch->Exists( newName ) )
+            {
+                wxMessageBox( "The entered Name already exists. Please remove the switch first." );
+            }
+
+            else
+            {
+                track38ConfigSwitch->RenameGroup( oldName, newName );
+                int oldPos = m_switchPicker->FindString( oldName );
+                m_switchPicker->Delete( oldPos );
+                m_switchPicker->Insert( newName, oldPos );
+            }
+            
+            break;
+
+        case wxID_CANCEL:
+            return;
+            break;
+    }
+    track38ConfigSwitch->Flush();
+    this->m_switchPicker->SetStringSelection( newName ); 
+    this->SelectSwitch();
 }
 
 

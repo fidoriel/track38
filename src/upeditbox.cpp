@@ -1,4 +1,5 @@
 #include "upeditbox.h"
+#include "track38App.h"
 
 wxBEGIN_EVENT_TABLE( upEditBox, wxPanel )
     EVT_BUTTON( ID_REFRESHSERIAL, upEditBox::OnRefreshSerial )
@@ -9,19 +10,20 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     topSizerUpEdit = new wxFlexGridSizer( 2, 0, 0 );
 
     nameTxt = new wxStaticText( this, wxID_ANY, "Train Name:" );
-    trainName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 300, -1 ), 0L, wxDefaultValidator, "tName" );
+    trainName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 200, -1 ), 0L, wxDefaultValidator, "tName" );
+    trainName->SetEditable( false );
 
     refreshSizer = new wxBoxSizer( wxHORIZONTAL );
     portTxt = new wxStaticText( this, wxID_ANY, "Arduino ComPort:" );
     this->refreshSerial();
-    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300, -1 ), serialArray, 0L, wxDefaultValidator, "upPort" );
+    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 200, -1 ), serialArray, 0L, wxDefaultValidator, "upPort" );
 
     m_RefreshBtn = new wxButton( this, ID_REFRESHSERIAL, "Refresh", wxDefaultPosition, wxDefaultSize );
     refreshSizer->Add( portPicker, 0, wxALL, 5 );
     refreshSizer->Add( m_RefreshBtn, 0, wxALL, 5 );
 
     hubAdressTxt = new wxStaticText( this, wxID_ANY, "Hub Adress:" );
-    hubAdress = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 300, -1 ), 0L, wxDefaultValidator, "upHubAdress" );
+    hubAdress = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 200, -1 ), 0L, wxDefaultValidator, "upHubAdress" );
 
     channelTxt = new wxStaticText( this, wxID_ANY, "PoweredUP Hub Channel:" );
     channel.Add( "A" );
@@ -76,4 +78,67 @@ void upEditBox::OnRefreshSerial( wxCommandEvent& event )
 
     if ( portPicker->GetCount() > 0 )
         portPicker->SetSelection( portPicker->GetCount() - 1 );
+}
+
+void upEditBox::initConf()
+{
+    // Init config
+    configTrain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "trains.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configTrain );
+    track38ConfigTrain = wxConfigBase::Get();
+}
+
+bool upEditBox::SaveTrain( bool overwrite )
+{
+    this->initConf();
+
+    track38ConfigTrain->SetPath( "/Train/" );
+    track38ConfigTrain->DeleteGroup( trainName->GetValue() );
+    track38ConfigTrain->SetPath( trainName->GetValue() );
+    track38ConfigTrain->Write( "control", "up" );
+    track38ConfigTrain->Write( "maxSpeed", wxString::Format( wxT( "%i" ), maxSpeedPicker->GetValue() ) );
+    track38ConfigTrain->Write( "channel", channelPicker->GetStringSelection() );
+    track38ConfigTrain->Write( "port", portPicker->GetStringSelection() );
+    track38ConfigTrain->Write( "hubadress", hubAdress->GetValue() );
+    track38ConfigTrain->Write( "hastwomotors", hasTwoMotors->GetValue() );
+    
+    track38ConfigTrain->Flush();
+
+    return true;
+}
+
+void upEditBox::SelectTrain( wxString trainSel )
+{
+    this->initConf();
+
+    track38ConfigTrain->SetPath( "/Train/" );
+    track38ConfigTrain->SetPath( trainSel );
+
+    for ( size_t idx = 0; idx < channelPicker->GetCount(); idx++ )
+    {
+        if ( track38ConfigTrain->Read( "channel", "1" ).IsSameAs( channelPicker->GetString( idx ) ) )
+            channelPicker->SetSelection( idx );
+    }
+
+    trainName->ChangeValue( trainSel );
+    maxSpeedPicker->SetValue( track38ConfigTrain->Read( "maxSpeed", "5" ) );
+
+    hubAdress->SetValue( track38ConfigTrain->Read( "hubadress", "" ) );
+    hasTwoMotors->SetValue( track38ConfigTrain->Write( "hastwomotors", "" ) );
+}
+
+void upEditBox::AddTrain( wxString trainName )
+{
+    this->initConf();
+    track38ConfigTrain->SetPath( "/Train/" );
+    track38ConfigTrain->SetPath( trainName );
+    track38ConfigTrain->Write( "control", "up" );
+    track38ConfigTrain->Flush();
+
+    SelectTrain( trainName );
+}
+
+void upEditBox::SetTrainName( wxString name )
+{
+    trainName->ChangeValue( name );
 }

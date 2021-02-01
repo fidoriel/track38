@@ -2,8 +2,11 @@
 #include "track38App.h"
 
 wxBEGIN_EVENT_TABLE( trainEditPanel, wxPanel )
-    //EVT_RADIOBOX( ID_ChangeControl, trainEditPanel::OnChangeControler )
-    //EVT_LISTBOX( ID_SelectTrain, trainEditPanel::OnSelectTrain )
+    EVT_RADIOBOX( ID_ChangeControl, trainEditPanel::OnChangeControler )
+    EVT_LISTBOX( ID_SelectTrain, trainEditPanel::OnSelectTrain )
+    EVT_BUTTON( ID_NewTrain, trainEditPanel::OnNewTrain )
+    EVT_BUTTON( ID_RemoveTrain, trainEditPanel::OnRemoveTrain )
+    EVT_BUTTON( ID_RenameTrain, trainEditPanel::OnRenameTrain )
 wxEND_EVENT_TABLE()
 
 trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
@@ -23,13 +26,15 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
 
     leftBox = new wxStaticBox( this, wxID_ANY, "Pick Train to edit" );
     leftSizer = new wxStaticBoxSizer( leftBox, wxVERTICAL );
-    m_trainPicker = new wxListBox( this, ID_SelectTrain, wxDefaultPosition, wxSize( -1, 500 ), 0, NULL );
+    m_trainPicker = new wxListBox( this, ID_SelectTrain, wxDefaultPosition, wxSize( -1, 400 ), 0, NULL );
 
     // Save Panel
     saveSizer = new wxBoxSizer( wxHORIZONTAL );
-    m_NewBtn = new wxButton( this, ID_AddTrain, "New", wxDefaultPosition, wxDefaultSize );
+    m_NewBtn = new wxButton( this, ID_NewTrain, "New", wxDefaultPosition, wxDefaultSize );
+    m_RenameBtn = new wxButton( this, ID_RenameTrain, "Rename", wxDefaultPosition, wxDefaultSize );
     m_RemoveBtn = new wxButton( this, ID_RemoveTrain, "Remove", wxDefaultPosition, wxDefaultSize );
     saveSizer->Add( m_NewBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
+    saveSizer->Add( m_RenameBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Add( m_RemoveBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Layout();
 
@@ -71,6 +76,7 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     parent->Layout();
 	topSizer->Fit( this );
 
+    this->initConf();
     track38ConfigTrain->SetPath( "/Train/" );
     int count = track38ConfigTrain->GetNumberOfGroups( false );
 
@@ -90,35 +96,31 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     if ( m_trainPicker->GetCount() > 0 )
     {
         m_trainPicker->SetSelection( 0 );
-        // this->SelectTrain();
+        this->SelectTrain();
     }
 }
 
 void trainEditPanel::OnChangeControler( wxCommandEvent& event )
 {
     this->RefreshPanel();
-    panelParent->SendSizeEvent();
+    wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
 
-    int sel = trainKindPicker->GetSelection();
-
-    wxTextCtrl* tName;
-
-    switch ( sel )
+    if ( trainKindPicker->GetSelection() == 0 )
     {
-        // PF
-        case 0: 
-            tName = ( wxTextCtrl* ) FindWindow( "tName" );
-            break;
-        //UP
-        case 1:
-            tName = ( wxTextCtrl* ) FindWindow( "tName" );
-            break;
+        pfEditBox* tmpPtr = ( pfEditBox* ) m_trainEditBox;
+        tmpPtr->SetTrainName( trainSel );
+        tmpPtr->SaveTrain();
     }
+
+    else if ( trainKindPicker->GetSelection() == 1 )
+    {
+        upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
+        tmpPtr->SetTrainName( trainSel );
+        tmpPtr->SaveTrain();
+    }
+
     if ( m_trainPicker->GetCount() == 0 )
         return;
-
-    wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
-    tName->ChangeValue( trainSel );
 }
 
 void trainEditPanel::RefreshPanel()
@@ -127,28 +129,181 @@ void trainEditPanel::RefreshPanel()
     {
         rightSizer->Remove( 1 );
         delete m_trainEditBox;
+
+        this->initConf();
+        track38ConfigTrain->SetPath( "/Train/" );
+        track38ConfigTrain->SetPath( m_trainPicker->GetStringSelection() );
         
         int sel = trainKindPicker->GetSelection();
         switch ( sel )
         {
         case 0:
             m_trainEditBox = new pfEditBox( this, wxID_ANY, "Edit PowerFunctions Settings" );
+            track38ConfigTrain->Write( "control", "pf" );
             break;
         
         case 1:
             m_trainEditBox = new upEditBox( this, wxID_ANY, "Edit PoweredUP Settings" );
+            track38ConfigTrain->Write( "control", "up" );
             break;
         }
 
         rightSizer->Insert( 1, m_trainEditBox, 0, wxALL | wxGROW, 5 );
     }
+
     rightSizer->Layout();
+    panelParent->SendSizeEvent();
 }
 
 void trainEditPanel::initConf()
 {
     // Init config
-    configTrain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "train.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    configTrain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "trains.ini", "", wxCONFIG_USE_GLOBAL_FILE );
     wxConfigBase::Set( configTrain );
     track38ConfigTrain = wxConfigBase::Get();
+}
+
+void trainEditPanel::OnNewTrain( wxCommandEvent& event )
+{
+    int i = 1;
+    while ( !( m_trainPicker->FindString( "Train " + wxString::Format( wxT( "%i" ), i ) ) == wxNOT_FOUND ) )
+        i += 1;
+
+    wxString trainName = "Train " + wxString::Format( wxT( "%i" ), i );
+
+    m_trainPicker->Append( trainName );
+
+    trainKindPicker->SetSelection( 0 );
+    RefreshPanel();
+    pfEditBox* tmpPtr = ( pfEditBox* ) m_trainEditBox;
+    
+    tmpPtr->AddTrain( trainName );
+    m_trainPicker->SetStringSelection( trainName );
+}
+
+wxString trainEditPanel::GetTrainControl( wxString trainSel )
+{
+    this->initConf();
+    track38ConfigTrain->SetPath( "/Train/" );
+    track38ConfigTrain->SetPath( trainSel );
+    return track38ConfigTrain->Read( "control", "" );
+}
+
+void trainEditPanel::OnRemoveTrain( wxCommandEvent& event )
+{
+    if ( m_trainPicker->GetCount() == 0 )
+        return;
+    
+    this->initConf();
+    track38ConfigTrain->SetPath( "/Train/" );
+    track38ConfigTrain->DeleteGroup( m_trainPicker->GetStringSelection() );
+    m_trainPicker->Delete( m_trainPicker->GetSelection() );
+    track38ConfigTrain->Flush();
+
+    if ( m_trainPicker->GetCount() > 0 )
+    {
+        m_trainPicker->SetSelection( 0 );
+        this->SelectTrain();
+    }
+}
+
+void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
+{
+    this->SaveTrain();
+    this->SelectTrain();
+}
+
+void trainEditPanel::SaveTrain()
+{
+    if ( trainKindPicker->GetSelection() == 0 )
+    {
+        pfEditBox* tmpPtr = ( pfEditBox* ) m_trainEditBox;
+        tmpPtr->SaveTrain();
+    }
+
+    else if ( trainKindPicker->GetSelection() == 1 )
+    {
+        upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
+        tmpPtr->SaveTrain();
+    }
+}
+
+void trainEditPanel::SelectTrain()
+{
+    if ( m_trainPicker->GetCount() == 0 )
+        return;
+
+    if ( this->GetTrainControl( m_trainPicker->GetStringSelection() ).IsSameAs( "pf" ) )
+    {
+        trainKindPicker->SetSelection( 0 );
+        this->RefreshPanel();
+        pfEditBox* tmpPtr = ( pfEditBox* ) m_trainEditBox;
+        tmpPtr->SelectTrain( m_trainPicker->GetStringSelection() );
+    }
+
+    else if ( this->GetTrainControl( m_trainPicker->GetStringSelection() ).IsSameAs( "up" ) )
+    {
+        trainKindPicker->SetSelection( 1 );
+        this->RefreshPanel();
+        upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
+        tmpPtr->SelectTrain( m_trainPicker->GetStringSelection() );
+    }
+}
+
+void trainEditPanel::OnRenameTrain( wxCommandEvent& event )
+{
+    if ( m_trainPicker->GetCount() == 0 )
+        return;
+
+    this->initConf();
+    track38ConfigTrain->SetPath( "/Train/" );
+
+    wxString oldName = m_trainPicker->GetStringSelection();
+    wxString newName;
+
+    wxTextEntryDialog dlg( this, "Please enter new Name", "Rename", oldName );
+    switch ( dlg.ShowModal() )
+    {
+        case wxID_OK:
+            newName = dlg.GetValue();
+
+            // Same Name
+            if ( newName.IsSameAs( oldName) )
+                return;
+
+            // Other Name But exists
+            else if ( track38ConfigTrain->Exists( newName ) )
+            {
+                wxMessageDialog dialog( this, "The enterd train exists alredy. Do you want to replace it?", "Overwrite " + newName + "?", wxYES_NO | wxICON_INFORMATION );
+                switch ( dialog.ShowModal() )
+                {
+                    case wxID_YES:
+                        track38ConfigTrain->DeleteGroup( newName );
+                        track38ConfigTrain->RenameGroup( oldName, newName );
+                        m_trainPicker->Delete( m_trainPicker->FindString( oldName ) );
+                        break;
+
+                    case wxID_NO:
+                        return;
+                        break;
+                }
+            }
+
+            else
+            {
+                track38ConfigTrain->RenameGroup( oldName, newName );
+                int oldPos = m_trainPicker->FindString( oldName );
+                m_trainPicker->Delete( oldPos );
+                m_trainPicker->Insert( newName, oldPos );
+            }
+            
+            break;
+
+        case wxID_CANCEL:
+            return;
+            break;
+    }
+    track38ConfigTrain->Flush();
+    this->m_trainPicker->SetStringSelection( newName ); 
+    this->SelectTrain();
 }

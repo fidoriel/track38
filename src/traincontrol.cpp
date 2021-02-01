@@ -53,7 +53,7 @@ void trainControlPanel::loadTrains( std::unordered_map< wxString, int > &cons )
     bool exists = track38ConfigTrain->GetFirstGroup( out, idx );
     if (  exists == true  )
         trains.push_back( new train(out) );
-    
+             
     while ( exists )
     {
         exists = track38ConfigTrain->GetNextGroup( out, idx );

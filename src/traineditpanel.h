@@ -21,10 +21,12 @@ class trainEditPanel : public wxPanel
         wxString GetTrainControl( wxString trainSel );
         void OnSelectTrain( wxCommandEvent& event );
         void SelectTrain();
-        void SaveTrain();
         void initConf();
         void RefreshPanel();
-        void RemoveTrain();
+        void OnNewTrain( wxCommandEvent& event );
+        void OnRemoveTrain( wxCommandEvent& event );
+        void OnRenameTrain( wxCommandEvent& event );
+        void SaveTrain();
 
         wxBoxSizer* topSizer;
         wxStaticBox* leftBox;
@@ -37,6 +39,7 @@ class trainEditPanel : public wxPanel
 
         wxBoxSizer* saveSizer;
         wxButton* m_NewBtn;
+        wxButton* m_RenameBtn;
         wxButton* m_RemoveBtn;
 
         wxNotebook* panelParent;
@@ -50,9 +53,9 @@ class trainEditPanel : public wxPanel
 enum
 {
     ID_RemoveTrain,
-    ID_UpdateTrain,
     ID_ChangeControl,
-    ID_AddTrain,
-    ID_SelectTrain
+    ID_NewTrain,
+    ID_SelectTrain,
+    ID_RenameTrain
 };
 #endif

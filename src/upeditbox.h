@@ -10,6 +10,7 @@
 #include "wx/statbox.h"
 #include "wx/spinctrl.h"
 #include "wx/checkbox.h"
+#include "wx/confbase.h"
 
 #include "editBox.h"
 
@@ -17,6 +18,15 @@ class upEditBox : public editBox
 { 
     public:
         upEditBox( wxPanel* parent, int id, wxString title );
+        void SelectTrain( wxString trainSel );
+        void AddTrain( wxString trainName  );
+        bool SaveTrain( bool overwrite = false );
+        void SetTrainName( wxString name );
+   
+    private:
+        DECLARE_EVENT_TABLE();
+
+        void initConf();
         void OnRefreshSerial( wxCommandEvent& event );
 
         wxFlexGridSizer* topSizerUpEdit;
@@ -34,9 +44,9 @@ class upEditBox : public editBox
         wxSpinCtrl* maxSpeedPicker;
         wxBoxSizer* refreshSizer;
         wxButton* m_RefreshBtn;
-    
-    private:
-        DECLARE_EVENT_TABLE();
+
+        wxConfigBase* configTrain;
+        wxConfigBase* track38ConfigTrain;
     
     enum
     {

@@ -24,9 +24,8 @@ class mapEditPanel : public wxPanel
     public:
         mapEditPanel( wxNotebook* parent );
         void OnRefreshSerial( wxCommandEvent& event );
-        void OnAddSwitch( wxCommandEvent& event );
-        void AddSwitch();
-        void OnUpdateSwitch( wxCommandEvent& event );
+        void saveSwitch();
+        void saveSwitch( wxString name );
         void OnRemoveSwitch( wxCommandEvent& event );
         void OnSelectSwitch( wxCommandEvent& event );
         void OnDragMode( wxCommandEvent& event );
@@ -47,6 +46,7 @@ class mapEditPanel : public wxPanel
         void SaveMapToFile();
         void DragSwitchToMap( int row, int col );
         void initConfig();
+        void OnRenameSwitch( wxCommandEvent& event );
 
         // Topsizer
         wxBoxSizer* topSizer;
@@ -98,12 +98,12 @@ class mapEditPanel : public wxPanel
 
         wxArrayString dirList;
         wxArrayString manufacturerList;
+        wxString selectedSwitch;
 
         enum
         {
             ID_RefreshSerial,
             ID_AddSwitch,
-            ID_UpdateSwitch,
             ID_RemoveSwitch,
             ID_SelectSwitch,
             ID_DragPicker,
@@ -112,7 +112,8 @@ class mapEditPanel : public wxPanel
             ID_CellRemove,
             ID_RMenuTurnCW,
             ID_RMenuTurnCC,
-            ID_RMenuEdit
+            ID_RMenuEdit,
+            ID_RenameSwitch
         };
 
     private:
