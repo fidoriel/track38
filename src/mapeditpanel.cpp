@@ -489,14 +489,45 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
 
         // wxMessageBox( wxString::Format( wxT( "%i" ), result ) );
 
-        if ( ( result == wxDragError ) || ( result == wxDragCancel ) || ( result == wxDragNone ) || wxGetApp().vetoDND )
-        {
-            map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( fileRot ) );
-            if ( !( fileRot.Find( "switch" ) == wxNOT_FOUND ) )
-                if ( wasSelected )
-                    map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxLIGHT_GREY ); 
-            // wxMessageBox("error");
-        }
+        // check switch is on map after drop
+
+        // track38ConfigMap->SetPath( "/map/" );
+        // bool switchFound = false;
+        // exists = track38ConfigMap->GetFirstEntry( out, idx );
+        // if (  exists == true  )
+        // {   
+        //     track38ConfigMap->SetPath( out );
+        //     if ( track38ConfigMap->Read( out, "").IsSameAs( fileRot ) )
+        //     {
+        //         switchFound = true;
+        //     }
+        //     track38ConfigMap->SetPath( "/map/" );
+        // }
+        
+        // while ( exists )
+        // {
+        //     exists = track38ConfigMap->GetNextEntry( out, idx );
+        //     wxMessageBox(out);
+        //     if (  exists == true  )
+        //     {   
+        //         track38ConfigMap->SetPath( out );
+        //         if ( track38ConfigMap->Read( out, "").IsSameAs( fileRot ) )
+        //         {
+        //             switchFound = true;
+        //         }
+        //         track38ConfigMap->SetPath( "/map/" );
+        //     }
+        // }
+
+        // if ( ( ( result == wxDragError ) || ( result == wxDragCancel ) || ( result == wxDragNone ) || wxGetApp().vetoDND ) && !switchFound )
+        // {
+        //     map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( fileRot ) );
+        //     if ( !( fileRot.Find( "switch" ) == wxNOT_FOUND ) )
+        //         if ( wasSelected )
+        //             map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxLIGHT_GREY ); 
+        //     // wxMessageBox("error");
+        // }
+        
         map->ForceRefresh();
         wxGetApp().vetoDND = false;
     }

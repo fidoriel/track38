@@ -193,17 +193,31 @@ void trainEditPanel::OnRemoveTrain( wxCommandEvent& event )
 {
     if ( m_trainPicker->GetCount() == 0 )
         return;
-    
-    this->initConf();
-    track38ConfigTrain->SetPath( "/Train/" );
-    track38ConfigTrain->DeleteGroup( m_trainPicker->GetStringSelection() );
-    m_trainPicker->Delete( m_trainPicker->GetSelection() );
-    track38ConfigTrain->Flush();
 
-    if ( m_trainPicker->GetCount() > 0 )
+    wxString msg = "Do you want to remove " + m_trainPicker->GetStringSelection() + "?";
+    wxString hl = "Remove " + m_trainPicker->GetStringSelection() + "?";
+    wxMessageDialog dialog( this, msg, hl, wxYES_NO | wxICON_INFORMATION );
+    switch ( dialog.ShowModal() )
     {
-        m_trainPicker->SetSelection( 0 );
-        this->SelectTrain();
+        case wxID_YES:
+        {
+            this->initConf();
+            track38ConfigTrain->SetPath( "/Train/" );
+            track38ConfigTrain->DeleteGroup( m_trainPicker->GetStringSelection() );
+            m_trainPicker->Delete( m_trainPicker->GetSelection() );
+            track38ConfigTrain->Flush();
+
+            if ( m_trainPicker->GetCount() > 0 )
+            {
+                m_trainPicker->SetSelection( 0 );
+                this->SelectTrain();
+            }
+        }
+            break;
+
+        case wxID_NO:
+            return;
+            break;
     }
 }
 
@@ -215,6 +229,9 @@ void trainEditPanel::OnSelectTrain( wxCommandEvent& event )
 
 void trainEditPanel::SaveTrain()
 {
+    if ( m_trainPicker->GetCount() == 0 )
+        return;
+    
     if ( trainKindPicker->GetSelection() == 0 )
     {
         pfEditBox* tmpPtr = ( pfEditBox* ) m_trainEditBox;
