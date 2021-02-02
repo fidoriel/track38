@@ -496,10 +496,9 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
                 if ( wasSelected )
                     map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxLIGHT_GREY ); 
             // wxMessageBox("error");
-            map->ForceRefresh();
-
-            wxGetApp().vetoDND = false;
         }
+        map->ForceRefresh();
+        wxGetApp().vetoDND = false;
     }
 
     else
@@ -818,7 +817,7 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
         return false;
     }
 
-    m_grid->SetCellRenderer( row, col, new cellImageRenderer( send ) );
+    m_grid->SetCellRenderer( row, col, new cellImageRenderer( text ) );
 
     // with rotation
     if ( ary.GetCount() == 3 )
@@ -852,5 +851,6 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
     }
 
     m_grid->ForceRefresh();
+    wxGetApp().vetoDND = false;
     return true;
 }
