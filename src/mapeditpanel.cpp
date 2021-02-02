@@ -813,23 +813,9 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
     cellImageRenderer* cellRenderer = ( cellImageRenderer* ) m_grid->GetCellRenderer( row, col );
     if ( !cellRenderer->isEmptyCell && !( cellRenderer->file.Find( "switch" ) == wxNOT_FOUND ) )
     {
-        wxMessageDialog dialog( parent, "The Switch does already Exists. Do you want to Overwrite?", "Overwrite?", wxYES_NO | wxICON_INFORMATION );
-        switch ( dialog.ShowModal() )
-        {
-            case wxID_NO:
-                wxGetApp().vetoDND = true;
-                return false;
-                break;
-            
-            case wxID_YES:
-                parent->RemoveMap( row, col );
-                if ( text.Find( "switch" ) == wxNOT_FOUND )
-                {
-                    m_grid->SetCellRenderer( row, col, new cellImageRenderer( send ) );
-                    return true;
-                }
-                break;
-        }
+        wxMessageBox( "At the drop destination a switch does already exists. You are not allowed to drag a track element on a switch. Please (re)move the switch first." );
+        wxGetApp().vetoDND = true;
+        return false;
     }
 
     m_grid->SetCellRenderer( row, col, new cellImageRenderer( send ) );
@@ -853,7 +839,7 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
                 m_grid->SetCellBackgroundColour( row, col, *wxWHITE );
             }
         }
-        m_grid->SetCellBackgroundColour( wxAtoi( track38ConfigSwitch->Read( "row", "" ) ), wxAtoi( track38ConfigSwitch->Read( "col", "" ) ), *wxLIGHT_GREY );
+        m_grid->SetCellBackgroundColour( row, col, *wxLIGHT_GREY );
         parent->m_switchPicker->SetStringSelection( ary.Item( 2 ) );
         parent->SelectSwitch();
     }
