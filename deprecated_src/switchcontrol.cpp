@@ -37,24 +37,24 @@ void switchControlPanel::createControlBox()
 void switchControlPanel::loadswitchs( std::unordered_map< wxString, int > &cons )
 {
     // init Config
-    configSwitch = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "switches.ini", "", wxCONFIG_USE_GLOBAL_FILE );
-    wxConfigBase::Set( configSwitch );
-    track38ConfigSwitch = wxConfigBase::Get();
+    configMap = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "map.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configMap );
+    track38ConfigMap = wxConfigBase::Get();
 
     //init Config
-    track38ConfigSwitch->SetPath( "/Switch/" );
+    track38ConfigMap->SetPath( "/Switch/" );
     switches.clear();
 
     // Read switch Names
     long idx;
     wxString out;
-    bool exists = track38ConfigSwitch->GetFirstGroup( out, idx );
+    bool exists = track38ConfigMap->GetFirstGroup( out, idx );
     if (  exists == true  )
         switches.push_back( new tswitch(out) );
     
     while ( exists )
     {
-        exists = track38ConfigSwitch->GetNextGroup( out, idx );
+        exists = track38ConfigMap->GetNextGroup( out, idx );
         if (  exists == true  )
             switches.push_back( new tswitch(out) );
     }
@@ -63,16 +63,16 @@ void switchControlPanel::loadswitchs( std::unordered_map< wxString, int > &cons 
     for (tswitch* & selswitch : switches)
     {
         // Access the object through iterator
-        track38ConfigSwitch->SetPath( "/Switch/" );
-        track38ConfigSwitch->SetPath( selswitch->name );
+        track38ConfigMap->SetPath( "/Switch/" );
+        track38ConfigMap->SetPath( selswitch->name );
 
-        wxString port = track38ConfigSwitch->Read( "port", "" );
+        wxString port = track38ConfigMap->Read( "port", "" );
         selswitch->setPort( port );
-        selswitch->setGPIO( track38ConfigSwitch->Read( "gpio", "" ) );
-        selswitch->setDir( track38ConfigSwitch->Read( "dir", "" ) );
-        selswitch->setManufacturer( track38ConfigSwitch->Read( "manufacturer", "" ) );
-        selswitch->SetMapRowCol( wxAtoi( track38ConfigSwitch->Read( "row", "" ) ), wxAtoi( track38ConfigSwitch->Read( "col", "" ) ) );
-        selswitch->setCurrentPos( track38ConfigSwitch->Read( "currentPos", "n" ) );
+        selswitch->setGPIO( track38ConfigMap->Read( "gpio", "" ) );
+        selswitch->setDir( track38ConfigMap->Read( "dir", "" ) );
+        selswitch->setManufacturer( track38ConfigMap->Read( "manufacturer", "" ) );
+        selswitch->SetMapRowCol( wxAtoi( track38ConfigMap->Read( "row", "" ) ), wxAtoi( track38ConfigMap->Read( "col", "" ) ) );
+        selswitch->setCurrentPos( track38ConfigMap->Read( "currentPos", "n" ) );
 
     
         if ( cons.count( port ) )
@@ -107,19 +107,19 @@ void switchControlPanel::loadswitchs( std::unordered_map< wxString, int > &cons 
 switchControlPanel::~switchControlPanel()
 {
     // init Config
-    configSwitch = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "switches.ini", "", wxCONFIG_USE_GLOBAL_FILE );
-    wxConfigBase::Set( configSwitch );
-    track38ConfigSwitch = wxConfigBase::Get();
+    configMap = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + "map.ini", "", wxCONFIG_USE_GLOBAL_FILE );
+    wxConfigBase::Set( configMap );
+    track38ConfigMap = wxConfigBase::Get();
 
     for (tswitch* & selswitch : switches)
     {
         // Access the object through iterator
-        track38ConfigSwitch->SetPath( "/Switch/" );
-        if ( track38ConfigSwitch->HasGroup( selswitch->name ) )
+        track38ConfigMap->SetPath( "/Switch/" );
+        if ( track38ConfigMap->HasGroup( selswitch->name ) )
         {
-            track38ConfigSwitch->SetPath( selswitch->name );
-            track38ConfigSwitch->Write( "currentPos", wxString( selswitch->currentPos ) );
+            track38ConfigMap->SetPath( selswitch->name );
+            track38ConfigMap->Write( "currentPos", wxString( selswitch->currentPos ) );
         }
     }
-    track38ConfigSwitch->Flush();
+    track38ConfigMap->Flush();
 }

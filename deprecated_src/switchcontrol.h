@@ -28,8 +28,8 @@ class switchControlPanel : public wxScrolledWindow
         wxPanel* parent;
 
 
-        wxFileConfig* configSwitch;
-        wxConfigBase* track38ConfigSwitch;
+        wxFileConfig* configMap;
+        wxConfigBase* track38ConfigMap;
 };
 
 #endif

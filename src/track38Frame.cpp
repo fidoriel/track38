@@ -10,6 +10,8 @@
 BEGIN_EVENT_TABLE( track38Frame, wxFrame )
     EVT_MENU( wxID_ABOUT, track38Frame::OnAbout )
     EVT_MENU( wxID_EXIT,  track38Frame::OnQuit )
+    // EVT_MENU( ID_Export,  track38Frame::OnQuit )
+    // EVT_MENU( ID_Import,  track38Frame::OnQuit )
     EVT_NOTEBOOK_PAGE_CHANGING( ID_NbChanged, track38Frame::OnNbChangeing )
     EVT_NOTEBOOK_PAGE_CHANGED( ID_NbChanged, track38Frame::OnNbChanged )
 END_EVENT_TABLE()
@@ -40,7 +42,6 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/
     wxImage::AddHandler( new wxPNGHandler );
     
     SetIcon( wxICON( AppIcon ) );
-    this->Settings();
 
     //----------------
     //Main Application
@@ -76,6 +77,7 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/
     // Load Settings
     //--------------
 
+    configMain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + wxGetApp().GetAppName() + ".ini", "", wxCONFIG_USE_GLOBAL_FILE );
     wxConfigBase::Set( configMain );
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
 
@@ -102,8 +104,16 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/
     Bind( wxEVT_COMMAND_MENU_SELECTED, &track38Frame::OnSettings, this, wxID_PREFERENCES );
 
     fileMenu = new wxMenu;
+    fileMenu->Append( ID_ImportT, "Import Trains" );
+    fileMenu->Enable( ID_ImportT, false );
+    fileMenu->Append( ID_ImportMS, "Import Map & Switches" );
+    fileMenu->Enable( ID_ImportMS, false );
+    fileMenu->AppendSeparator();
+    fileMenu->Append( ID_ExportT, "Export Trains" );
+    fileMenu->Enable( ID_ExportT, false );
+    fileMenu->Append( ID_ExportMS, "Export Map & Switches" );
+    fileMenu->Enable( ID_ExportMS, false );
     fileMenu->Append( wxID_EXIT );
-    fileMenu->Append( wxID_OPEN, "Open\tCtrl-O", "Open a .t38 file" );
 
     controlMenu = new wxMenu;
     controlMenu->Append( ID_Reconnect, "Reload Connections\tCtrl-R", "Reconnect all Clients" );
@@ -177,7 +187,7 @@ void track38Frame::OnNbChanged( wxBookCtrlEvent& event )
     }
 }
 
-void track38Frame::Settings()
+void track38Frame::checkDir()
 {
     wxString ini_dir = wxGetApp().ini_dir;
 
@@ -186,14 +196,6 @@ void track38Frame::Settings()
         wxDir::Make( ini_dir );
         // wxMessageBox( ini_dir );
     }
-
-    ini_dir += "track38.ini";
-
-    configMain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), ini_dir, "", wxCONFIG_USE_GLOBAL_FILE );
-
-    wxConfigBase::Set( configMain );
-    wxConfigBase *track38ConfigBase = wxConfigBase::Get();
-    track38ConfigBase->Flush();
 }
 
 void track38Frame::OnSettings( wxCommandEvent& event )
@@ -224,4 +226,6 @@ track38Frame::~track38Frame()
 
     m_controlPanel->CloseAll();
     m_controlPanel->m_switchHandler->~switchHandler();
+
+    track38ConfigBase->Flush();
 }

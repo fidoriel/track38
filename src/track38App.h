@@ -1,6 +1,8 @@
 #ifndef track38App_h
 #define track38App_h
 
+#include <ctime>
+
 #include "wx/wx.h"
 #include <string>
 #include "wx/fileconf.h"

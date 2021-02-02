@@ -285,7 +285,7 @@ void trainEditPanel::OnRenameTrain( wxCommandEvent& event )
             newName = dlg.GetValue();
 
             // Same Name
-            if ( newName.IsSameAs( oldName) )
+            if ( newName.IsSameAs( oldName ) )
                 return;
 
             // Other Name But exists
