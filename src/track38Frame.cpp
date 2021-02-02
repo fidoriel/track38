@@ -154,7 +154,13 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
                 case wxID_YES:
 		    // wxMessageBox( "stop" );
                     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
-		    usleep(50000);
+
+                    #ifdef __WIN32__
+                    Sleep(500);
+                    #else
+		            usleep(50000);
+                    #endif
+
                     m_controlPanel->CloseAll();
                     return;
                     break;
@@ -208,8 +214,13 @@ void track38Frame::OnSettings( wxCommandEvent& event )
 track38Frame::~track38Frame()
 {
     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
-    usleep( 50000 );
 
+    #ifdef __WIN32__
+    Sleep(500);
+    #else
+    usleep(50000);
+    #endif
+    
     m_trainEditPanel->SaveTrain();
     m_mapEditPanel->SaveMapToFile();
     m_mapEditPanel->saveSwitch();

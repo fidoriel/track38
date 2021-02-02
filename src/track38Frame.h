@@ -20,6 +20,10 @@
 #include "controlpanel.h"
 #include "preferences.h"
 
+#ifdef __WIN32__
+#include <Windows.h>
+#endif
+
 class track38Frame : public wxFrame
 {
 public:

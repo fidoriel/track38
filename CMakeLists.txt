@@ -222,8 +222,8 @@ elseif( WIN32 )
         POST_BUILD
         COMMAND if not exist "${PROJECT_NAME}\\resources" mkdir "${PROJECT_NAME}\\resources"
         COMMAND if not exist "${PROJECT_NAME}\\resources\\tracks" mkdir "${PROJECT_NAME}\\resources\\tracks"
-        COMMAND copy "..\\resources\\tracks" "${PROJECT_NAME}\\resources\\tracks\\"
+        COMMAND copy "..\\resources\\tracks" "${PROJECT_NAME}\\resources\\tracks"
         COMMAND if not exist "${PROJECT_NAME}\\resources\\icons" mkdir "${PROJECT_NAME}\\resources\\icons"
-        COMMAND copy "..\\resources\\icons" "${PROJECT_NAME}\\resources\\icons\\"
+        COMMAND copy "..\\resources\\icons" "${PROJECT_NAME}\\resources\\icons"
     )
 endif()
