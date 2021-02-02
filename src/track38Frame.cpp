@@ -77,6 +77,8 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/
     // Load Settings
     //--------------
 
+    this->checkDir();
+
     configMain = new wxFileConfig( wxGetApp().GetAppName(), wxGetApp().GetVendorName(), wxGetApp().ini_dir + wxGetApp().GetAppName() + ".ini", "", wxCONFIG_USE_GLOBAL_FILE );
     wxConfigBase::Set( configMain );
     wxConfigBase *track38ConfigBase = wxConfigBase::Get();
