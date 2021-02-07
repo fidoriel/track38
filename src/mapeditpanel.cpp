@@ -477,54 +477,24 @@ void mapEditPanel::OnLClickMap( wxGridEvent& event )
         map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxWHITE );
         map->ForceRefresh();
 
+        wxGetApp().vetoDND = 0;
         wxTextDataObject myData( fileRot );
         wxDropSource dragSource( this );
         dragSource.SetData( myData );
         wxDragResult result = dragSource.DoDragDrop( wxDrag_AllowMove );
 
-        // wxMessageBox( wxString::Format( wxT( "%i" ), result ) );
-
-        // check switch is on map after drop
-
-        // track38ConfigMap->SetPath( "/map/" );
-        // bool switchFound = false;
-        // exists = track38ConfigMap->GetFirstEntry( out, idx );
-        // if (  exists == true  )
-        // {   
-        //     track38ConfigMap->SetPath( out );
-        //     if ( track38ConfigMap->Read( out, "").IsSameAs( fileRot ) )
-        //     {
-        //         switchFound = true;
-        //     }
-        //     track38ConfigMap->SetPath( "/map/" );
-        // }
-        
-        // while ( exists )
-        // {
-        //     exists = track38ConfigMap->GetNextEntry( out, idx );
-        //     wxMessageBox(out);
-        //     if (  exists == true  )
-        //     {   
-        //         track38ConfigMap->SetPath( out );
-        //         if ( track38ConfigMap->Read( out, "").IsSameAs( fileRot ) )
-        //         {
-        //             switchFound = true;
-        //         }
-        //         track38ConfigMap->SetPath( "/map/" );
-        //     }
-        // }
-
-        // if ( ( ( result == wxDragError ) || ( result == wxDragCancel ) || ( result == wxDragNone ) || wxGetApp().vetoDND ) && !switchFound )
-        // {
-        //     map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( fileRot ) );
-        //     if ( !( fileRot.Find( "switch" ) == wxNOT_FOUND ) )
-        //         if ( wasSelected )
-        //             map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxLIGHT_GREY ); 
-        //     // wxMessageBox("error");
-        // }
+        //if ( ( ( result == wxDragError ) || ( result == wxDragCancel ) || ( result == wxDragNone ) || wxGetApp().vetoDND ) )
+        if ( wxGetApp().vetoDND != 1 )
+        {
+            map->SetCellRenderer( event.GetRow(), event.GetCol(), new cellImageRenderer( fileRot ) );
+            if ( !( fileRot.Find( "switch" ) == wxNOT_FOUND ) )
+                if ( wasSelected )
+                    map->SetCellBackgroundColour( event.GetRow(), event.GetCol(), *wxLIGHT_GREY ); 
+            // wxMessageBox("error");
+        }
 
         map->ForceRefresh();
-        wxGetApp().vetoDND = false;
+        wxGetApp().vetoDND = 0;
     }
 
     else
@@ -845,7 +815,7 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
     if ( !cellRenderer->isEmptyCell && !( cellRenderer->file.Find( "switch" ) == wxNOT_FOUND ) )
     {
         wxMessageBox( "At the drop destination a switch does already exists. You are not allowed to drag a track element on a switch. Please (re)move the switch first." );
-        wxGetApp().vetoDND = true;
+        wxGetApp().vetoDND = -1;
         return false;
     }
 
@@ -883,6 +853,6 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
     }
 
     m_grid->ForceRefresh();
-    wxGetApp().vetoDND = false;
+    wxGetApp().vetoDND = 1;
     return true;
 }

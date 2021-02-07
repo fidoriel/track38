@@ -42,7 +42,7 @@ public:
     void ShowPreferencesEditor( wxWindow* parent );
 
     // Dnd veto workaround
-    bool vetoDND;
+    int vetoDND;
 
 private:
     wxScopedPtr<wxPreferencesEditor> m_prefEditor;
