@@ -12,6 +12,7 @@
 
 #include "pfeditbox.h"
 #include "upeditbox.h"
+#include "rceditbox.h"
 
 class trainEditPanel : public wxPanel
 { 

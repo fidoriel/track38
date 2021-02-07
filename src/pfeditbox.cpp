@@ -68,6 +68,7 @@ pfEditBox::pfEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     parent->Layout();
 	topSizerPfEdit->Fit( this );
     topSizerPfEdit->SetSizeHints( this );
+    parent->SendSizeEvent();
 }
 
 void pfEditBox::OnRefreshSerial( wxCommandEvent& event )

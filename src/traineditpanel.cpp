@@ -57,8 +57,8 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // options.Add( "Buwizz" );
     // options.Add( "SBrick" );
     trainKindPicker = new wxRadioBox( this, ID_ChangeControl, "Train Controller", wxDefaultPosition, wxDefaultSize, options, 3, wxRA_HORIZONTAL );
-    trainKindPicker->Enable( 1, false );
-    trainKindPicker->Enable( 2, false );
+    // trainKindPicker->Enable( 1, false );
+    // trainKindPicker->Enable( 2, false );
     // trainKindPicker->Enable( 3, false );
     // trainKindPicker->Enable( 4, false );
 
@@ -119,6 +119,13 @@ void trainEditPanel::OnChangeControler( wxCommandEvent& event )
         tmpPtr->SaveTrain();
     }
 
+    else if ( trainKindPicker->GetSelection() == 2 )
+    {
+        rcEditBox* tmpPtr = ( rcEditBox* ) m_trainEditBox;
+        tmpPtr->SetTrainName( trainSel );
+        tmpPtr->SaveTrain();
+    }
+
     if ( m_trainPicker->GetCount() == 0 )
         return;
 }
@@ -146,12 +153,16 @@ void trainEditPanel::RefreshPanel()
             m_trainEditBox = new upEditBox( this, wxID_ANY, "Edit PoweredUP Settings" );
             track38ConfigTrain->Write( "control", "up" );
             break;
+
+        case 2:
+            m_trainEditBox = new rcEditBox( this, wxID_ANY, "Edit 9V RC Settings" );
+            track38ConfigTrain->Write( "control", "rc" );
+            break;
         }
 
         rightSizer->Insert( 1, m_trainEditBox, 0, wxALL | wxGROW, 5 );
     }
 
-    rightSizer->Layout();
     panelParent->SendSizeEvent();
 }
 
@@ -243,6 +254,12 @@ void trainEditPanel::SaveTrain()
         upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
         tmpPtr->SaveTrain();
     }
+
+    else if ( trainKindPicker->GetSelection() == 2 )
+    {
+        rcEditBox* tmpPtr = ( rcEditBox* ) m_trainEditBox;
+        tmpPtr->SaveTrain();
+    }
 }
 
 void trainEditPanel::SelectTrain()
@@ -263,6 +280,14 @@ void trainEditPanel::SelectTrain()
         trainKindPicker->SetSelection( 1 );
         this->RefreshPanel();
         upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
+        tmpPtr->SelectTrain( m_trainPicker->GetStringSelection() );
+    }
+
+    else if ( this->GetTrainControl( m_trainPicker->GetStringSelection() ).IsSameAs( "rc" ) )
+    {
+        trainKindPicker->SetSelection( 2 );
+        this->RefreshPanel();
+        rcEditBox* tmpPtr = ( rcEditBox* ) m_trainEditBox;
         tmpPtr->SelectTrain( m_trainPicker->GetStringSelection() );
     }
 }

@@ -65,6 +65,7 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     parent->Layout();
 	topSizerUpEdit->Fit( this );
     topSizerUpEdit->SetSizeHints( this );
+    parent->SendSizeEvent();
 }
 
 void upEditBox::OnRefreshSerial( wxCommandEvent& event )
