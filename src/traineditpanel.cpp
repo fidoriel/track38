@@ -103,7 +103,7 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
 void trainEditPanel::OnChangeControler( wxCommandEvent& event )
 {
     this->RefreshPanel();
-    wxString trainSel = m_trainPicker->GetString( m_trainPicker->GetSelection() );
+    wxString trainSel = m_trainPicker->GetStringSelection();
 
     if ( trainKindPicker->GetSelection() == 0 )
     {
