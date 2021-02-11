@@ -63,8 +63,9 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     dirPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 60, -1 ), dirList, 0L, wxDefaultValidator, "switchDir" );
 
     labelManufacturer = new wxStaticText( this, wxID_ANY, "Manufacturer:" );
-    manufacturerList.Add( "4d Brixx" );
-    manufacturerPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, manufacturerList, 0L, wxDefaultValidator, "manufacturerPicker" );
+    manufacturerList.Add( "4D Brixx" );
+    manufacturerList.Add( "Pursit PoweredUP Solution" );
+    manufacturerPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 200, -1 ), manufacturerList, 0L, wxDefaultValidator, "manufacturerPicker" );
 
     editSizer->Add( labelName, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
     editSizer->Add( switchName, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
