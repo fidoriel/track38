@@ -3,7 +3,14 @@
 #UNIX like wxWidgets
 #create build directory Mac: mkdir macbuild; cd macbuild
 #create build directory Linux: mkdir gtkbuild; cd gtkbuild
-#build instrucions for wxWidgets Platform Linux und macOS: ../configure --disable-shared --disable-sys-libs
+#build instrucions for wxWidgets Platform Linux: ../configure --disable-shared --disable-sys-libs --with-gtk=3
+# git submodule update --init 3rdparty/catch
+# git submodule update --init src/zlib
+# git submodule update --init src/jpeg
+# git submodule update --init src/png
+# git submodule update --init src/tiff
+# git submodule update --init src/expat
+#build instrucions for wxWidgets Platform macOS: ../configure --disable-shared --disable-sys-libs
 #compile with: make -j4
 
 #change to project directory and: mkdir build; cd build

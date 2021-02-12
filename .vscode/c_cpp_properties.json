@@ -41,8 +41,8 @@
             "name": "Linux",            
             "includePath": [
                 "${workspaceFolder}/src/**",
-                "${workspaceFolder}/dep/linux/linux_lib/lib/wx/include/gtk3-unicode-static-3.1",
-                "${workspaceFolder}/dep/linux/include"           
+                "/home/luca/wxWidgets-3.1.4-GTK3/gtkbuild/lib/wx/include/gtk3-unicode-static-3.1",
+                "/home/luca/wxWidgets-3.1.4-GTK3/include"      
             ],            
             "defines": [
                 "WX_PRECOMP",
