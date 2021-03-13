@@ -1,9 +1,12 @@
 #Change to directory where wxwidgets is located. 
 
+#git: git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets.git
 #UNIX like wxWidgets
 #create build directory Mac: mkdir macbuild; cd macbuild
 #create build directory Linux: mkdir gtkbuild; cd gtkbuild
 #build instrucions for wxWidgets Platform Linux und macOS: ../configure --disable-shared --disable-sys-libs
+#RasPiOS: Deps: sudo apt install libgtk-3-dev
+#RasPi: ../configure --disable-shared --disable-sys-libs --with-gtk=3
 #compile with: make -j4
 
 #change to project directory and: mkdir build; cd build
