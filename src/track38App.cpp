@@ -4,8 +4,34 @@
 // Give wxWidgets the means to create a track38 object
 IMPLEMENT_APP( track38App );
 
+bool checkIfValid()
+{
+    int Vday = 31;
+    int Vmonth = 3;
+    int Vyear = 2021;
+
+    time_t ttime = time(0);
+    tm *local_time = localtime(&ttime);
+
+    // std::cout << "year " << 1900 + local_time->tm_year << endl;
+    // std::cout << "month " << 1 + local_time->tm_mon << endl;
+    // std::cout << "day " << local_time->tm_mday << endl;
+
+    if ( ( 1900 + local_time->tm_year <= Vyear ) && ( ( 1 + local_time->tm_mon ) <= Vmonth ) && ( local_time->tm_mday <= Vday ) )
+        return true;
+    
+    else
+        return false;
+}
+
 bool track38App::OnInit()
 {
+    if ( !checkIfValid() )
+    {
+        wxMessageBox( "This beta copy is not valid anymore. track38 will close now." );
+        return false;
+    }
+
     SetVendorName( vendorName );
     SetAppName( appName );
 

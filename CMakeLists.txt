@@ -4,6 +4,7 @@
 #UNIX like wxWidgets
 #create build directory Mac: mkdir macbuild; cd macbuild
 #create build directory Linux: mkdir gtkbuild; cd gtkbuild
+
 #build instrucions for wxWidgets Platform Linux und macOS: ../configure --disable-shared --disable-sys-libs
 #RasPiOS: Deps: sudo apt install libgtk-3-dev
 #RasPi: ../configure --disable-shared --disable-sys-libs --with-gtk=3
@@ -225,8 +226,8 @@ elseif( WIN32 )
         POST_BUILD
         COMMAND if not exist "${PROJECT_NAME}\\resources" mkdir "${PROJECT_NAME}\\resources"
         COMMAND if not exist "${PROJECT_NAME}\\resources\\tracks" mkdir "${PROJECT_NAME}\\resources\\tracks"
-        COMMAND copy "..\\resources\\tracks" "${PROJECT_NAME}\\resources\\tracks\\"
+        COMMAND copy "..\\resources\\tracks" "${PROJECT_NAME}\\resources\\tracks"
         COMMAND if not exist "${PROJECT_NAME}\\resources\\icons" mkdir "${PROJECT_NAME}\\resources\\icons"
-        COMMAND copy "..\\resources\\icons" "${PROJECT_NAME}\\resources\\icons\\"
+        COMMAND copy "..\\resources\\icons" "${PROJECT_NAME}\\resources\\icons"
     )
 endif()

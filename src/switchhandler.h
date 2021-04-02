@@ -19,8 +19,8 @@ class switchHandler
         list< tswitch* > switches;
 
 
-        wxFileConfig* configSwitch;
-        wxConfigBase* track38ConfigSwitch;
+        wxFileConfig* configMap;
+        wxConfigBase* track38ConfigMap;
 };
 
 #endif

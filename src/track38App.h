@@ -1,6 +1,8 @@
 #ifndef track38App_h
 #define track38App_h
 
+#include <ctime>
+
 #include "wx/wx.h"
 #include <string>
 #include "wx/fileconf.h"
@@ -38,6 +40,9 @@ public:
 
     virtual bool OnInit();
     void ShowPreferencesEditor( wxWindow* parent );
+
+    // Dnd veto workaround
+    int vetoDND;
 
 private:
     wxScopedPtr<wxPreferencesEditor> m_prefEditor;

@@ -12,20 +12,22 @@
 
 #include "pfeditbox.h"
 #include "upeditbox.h"
+#include "rceditbox.h"
 
 class trainEditPanel : public wxPanel
 { 
     public:
         trainEditPanel( wxNotebook* parent );
         void OnChangeControler( wxCommandEvent& event );
-        void OnAddTrain( wxCommandEvent& event );
-        void OnUpdateTrain( wxCommandEvent& event );
+        wxString GetTrainControl( wxString trainSel );
         void OnSelectTrain( wxCommandEvent& event );
         void SelectTrain();
-        void OnRemoveTrain( wxCommandEvent& event );
-        void SaveTrain();
+        void initConf();
         void RefreshPanel();
-        void RemoveTrain();
+        void OnNewTrain( wxCommandEvent& event );
+        void OnRemoveTrain( wxCommandEvent& event );
+        void OnRenameTrain( wxCommandEvent& event );
+        void SaveTrain();
 
         wxBoxSizer* topSizer;
         wxStaticBox* leftBox;
@@ -35,11 +37,12 @@ class trainEditPanel : public wxPanel
         wxSizer* rightSizer;
         wxRadioBox* trainKindPicker;
         wxStaticBox* m_trainEditBox;
-        wxStaticBox* saveBox;
-        wxSizer* saveSizer;
-        wxButton* m_AddBtn;
-        wxButton* m_UpdateBtn;
+
+        wxBoxSizer* saveSizer;
+        wxButton* m_NewBtn;
+        wxButton* m_RenameBtn;
         wxButton* m_RemoveBtn;
+
         wxNotebook* panelParent;
         wxConfigBase* configTrain;
         wxConfigBase* track38ConfigTrain;
@@ -51,9 +54,9 @@ class trainEditPanel : public wxPanel
 enum
 {
     ID_RemoveTrain,
-    ID_UpdateTrain,
     ID_ChangeControl,
-    ID_AddTrain,
-    ID_SelectTrain
+    ID_NewTrain,
+    ID_SelectTrain,
+    ID_RenameTrain
 };
 #endif

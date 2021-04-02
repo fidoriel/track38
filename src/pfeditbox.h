@@ -17,7 +17,15 @@
 class pfEditBox : public editBox
 { 
     public:
-        pfEditBox( wxPanel* parent, int id, wxString title );
+        pfEditBox( wxPanel* parent, int id, wxString title );       
+        bool SaveTrain( bool overwrite = false );
+        void SelectTrain( wxString trainSel );
+        void AddTrain( wxString trainName  );
+        void SetTrainName( wxString name );
+    
+    private:
+        DECLARE_EVENT_TABLE();
+        void initConf();
         void OnRefreshSerial( wxCommandEvent& event );
 
         wxFlexGridSizer* topSizerPfEdit;
@@ -36,9 +44,8 @@ class pfEditBox : public editBox
         wxSpinCtrl* maxSpeedPicker;
         wxBoxSizer* refreshSizer;
         wxButton* m_RefreshBtn;
-    
-    private:
-        DECLARE_EVENT_TABLE();
+        wxConfigBase* configTrain;
+        wxConfigBase* track38ConfigTrain;
     
     enum
     {

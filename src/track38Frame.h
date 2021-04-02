@@ -20,6 +20,10 @@
 #include "controlpanel.h"
 #include "preferences.h"
 
+#ifdef __WIN32__
+#include <Windows.h>
+#endif
+
 class track38Frame : public wxFrame
 {
 public:
@@ -30,7 +34,7 @@ public:
     void OnNbChangeing( wxBookCtrlEvent& event );
     void OnNbChanged( wxBookCtrlEvent& event );
     void OnSettings( wxCommandEvent& event );
-    void Settings();
+    void checkDir();
 
     wxMenu* fileMenu;
     wxMenu* helpMenu;
@@ -53,7 +57,12 @@ public:
     {
         ID_NbChanged,
         ID_VisitGithub,
-        ID_Reconnect
+        ID_Reconnect,
+
+        ID_ImportT,
+        ID_ImportMS,
+        ID_ExportT,
+        ID_ExportMS
     };
 
 private:

@@ -1,5 +1,5 @@
-#ifndef upeditbox_h
-#define upeditbox_h
+#ifndef rceditbox_h
+#define rceditbox_h
 
 #include "wx/wx.h"
 #include "wx/sizer.h"
@@ -9,42 +9,38 @@
 #include "wx/panel.h"
 #include "wx/statbox.h"
 #include "wx/spinctrl.h"
-#include "wx/checkbox.h"
-#include "wx/confbase.h"
+#include "wx/fileconf.h"
+#include "wx/config.h"
 
 #include "editBox.h"
 
-class upEditBox : public editBox
+class rcEditBox : public editBox
 { 
     public:
-        upEditBox( wxPanel* parent, int id, wxString title );
+        rcEditBox( wxPanel* parent, int id, wxString title );       
+        bool SaveTrain( bool overwrite = false );
         void SelectTrain( wxString trainSel );
         void AddTrain( wxString trainName  );
-        bool SaveTrain( bool overwrite = false );
         void SetTrainName( wxString name );
-   
+    
     private:
         DECLARE_EVENT_TABLE();
-
         void initConf();
         void OnRefreshSerial( wxCommandEvent& event );
 
-        wxFlexGridSizer* topSizerUpEdit;
+        wxFlexGridSizer* topSizerrcEdit;
         wxStaticText* nameTxt;
         wxTextCtrl* trainName;
         wxStaticText* portTxt;
-        wxStaticText* hubAdressTxt;
-        wxTextCtrl* hubAdress;
+        wxStaticText* gpioTxt;
+        wxSpinCtrl* gpioPicker;
         wxStaticText* channelTxt;
         wxArrayString channel;
         wxChoice* channelPicker;
-        wxStaticText* hasTwoMotorsTxt;
-        wxCheckBox* hasTwoMotors;
         wxStaticText* maxSpeedTxt;
         wxSpinCtrl* maxSpeedPicker;
         wxBoxSizer* refreshSizer;
         wxButton* m_RefreshBtn;
-
         wxConfigBase* configTrain;
         wxConfigBase* track38ConfigTrain;
     
