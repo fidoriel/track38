@@ -76,6 +76,7 @@ void upEditBox::OnBleMenue( wxCommandEvent& event )
     // dlg.ShowModal();
 
     bleConDialog dlg( wxGetApp().m_frame );
+    dlg.Create();
     dlg.ShowModal();
 }
 

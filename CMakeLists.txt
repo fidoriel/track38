@@ -29,7 +29,7 @@
 
 cmake_minimum_required( VERSION 3.0 )
 set( CMAKE_BIULD_TYPE Debug )
-set( CMAKE_CXX_STANDARD 11 )
+set( CMAKE_CXX_STANDARD 17 )
 
 project( track38 )
 
@@ -39,6 +39,11 @@ set( RELEASE 1 )
 message( "CXX Compiler: ${CMAKE_CXX_COMPILER}" )
 message( "CXX Compiler ID: ${CMAKE_CXX_COMPILER_ID}" )
 message( "CXX Compiler is GNU: ${CMAKE_COMPILER_IS_GNUCXX}" )
+
+#SimpleBLE
+add_subdirectory(src/SimpleBLE/ ${CMAKE_BINARY_DIR}/simpleble)
+include_directories(${SIMPLEBLE_INCLUDES})
+
 
 if( WIN32 )
     message( "Target: Windows32" )
@@ -133,7 +138,7 @@ if( NOT WIN32 )
     endif( wxWidgets_FOUND )
 endif()
 
-file( GLOB_RECURSE SRC_FILES
+file( GLOB SRC_FILES
     src/*.h
     src/*.hpp
     src/*.c
@@ -143,10 +148,6 @@ file( GLOB_RECURSE SRC_FILES
     src/*/*.c
     src/*/*.cpp
     )
-
-#SimpleBLE
-add_subdirectory(src/SimpleBLE/ ${CMAKE_BINARY_DIR}/simpleble)
-include_directories(${SIMPLEBLE_INCLUDES})
 
 if( WIN32 )
     # Include a RC file for windows
@@ -169,6 +170,8 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
     add_executable( ${PROJECT_NAME} ${SRC_FILES} )
     target_link_libraries( ${PROJECT_NAME} ${wxWidgets_LIBRARIES} ${CMAKE_CXX_FLAGS} )
 endif()
+
+target_link_libraries(${PROJECT_NAME} simpleble-static)
 
 #After compilation processing
 if( APPLE )

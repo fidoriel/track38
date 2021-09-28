@@ -67,6 +67,11 @@
         "unordered_set": "cpp",
         "utility": "cpp",
         "vector": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "clocale": "cpp",
+        "condition_variable": "cpp",
+        "iomanip": "cpp",
+        "thread": "cpp",
+        "valarray": "cpp"
     }
 }
