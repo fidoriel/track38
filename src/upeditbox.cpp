@@ -71,8 +71,12 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 
 void upEditBox::OnBleMenue( wxCommandEvent& event )
 {
+
+    // wxDialog dlg( wxGetApp().m_frame, wxID_ANY, "Blutooth");
+    // dlg.ShowModal();
+
     bleConDialog dlg( wxGetApp().m_frame );
-    dlg.Create();
+    dlg.ShowModal();
 }
 
 void upEditBox::initConf()

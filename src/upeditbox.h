@@ -11,6 +11,7 @@
 #include "wx/spinctrl.h"
 #include "wx/checkbox.h"
 #include "wx/confbase.h"
+#include "wx/dialog.h"
 
 #include "editBox.h"
 #include "bleConDialog.h"
