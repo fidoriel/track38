@@ -2,7 +2,7 @@
 #include "track38App.h"
 
 wxBEGIN_EVENT_TABLE( upEditBox, wxPanel )
-    EVT_BUTTON( ID_REFRESHSERIAL, upEditBox::OnRefreshSerial )
+    //EVT_BUTTON( ID_REFRESHSERIAL, upEditBox::OnRefreshSerial )
 wxEND_EVENT_TABLE()
 
 upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( parent, id, title )
@@ -14,12 +14,12 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     trainName->SetEditable( false );
 
     refreshSizer = new wxBoxSizer( wxHORIZONTAL );
-    portTxt = new wxStaticText( this, wxID_ANY, "Arduino ComPort:" );
-    this->refreshSerial();
-    portPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 200, -1 ), serialArray, 0L, wxDefaultValidator, "upPort" );
+    bleDevTxt = new wxStaticText( this, wxID_ANY, "Blutooth Device:" );
+    // this->refreshSerial();
+    bleDevName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 200, -1 ), 0L, wxDefaultValidator, "upPort" );
 
     m_RefreshBtn = new wxButton( this, ID_REFRESHSERIAL, "Refresh", wxDefaultPosition, wxDefaultSize );
-    refreshSizer->Add( portPicker, 0, wxALL, 5 );
+    refreshSizer->Add( bleDevName, 0, wxALL, 5 );
     refreshSizer->Add( m_RefreshBtn, 0, wxALL, 5 );
 
     hubAdressTxt = new wxStaticText( this, wxID_ANY, "Hub Adress:" );
@@ -33,6 +33,7 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     hasTwoMotorsTxt = new wxStaticText( this, wxID_ANY, "Two Motors used:" );
     hasTwoMotors = new wxCheckBox( this, wxID_ANY, wxT( "" ), wxDefaultPosition, wxDefaultSize, 0L, wxDefaultValidator, "upAreTwoMotorsUsed" );
 
+
     maxSpeedTxt = new wxStaticText( this, wxID_ANY, "Train Max Speed" );
     maxSpeedPicker = new wxSpinCtrl( this, wxID_ANY, "7", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 7, "upSpeed" );
 
@@ -42,7 +43,7 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     topSizerUpEdit->Add( nameTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
     topSizerUpEdit->Add( trainName, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
 
-    topSizerUpEdit->Add( portTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
+    topSizerUpEdit->Add( bleDevTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
     topSizerUpEdit->Add( refreshSizer, 0, wxALL | ( wxALL & ~wxLEFT ), 0 );
 
     topSizerUpEdit->Add( hubAdressTxt, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
@@ -68,18 +69,18 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     parent->SendSizeEvent();
 }
 
-void upEditBox::OnRefreshSerial( wxCommandEvent& event )
-{
-    this->refreshSerial();
-    portPicker->Clear();
-    for (size_t i = 0; i < serialArray.GetCount(); i++)
-    {
-        portPicker->Append( serialArray.Item( i ) );
-    }
+// void upEditBox::OnRefreshSerial( wxCommandEvent& event )
+// {
+//     this->refreshSerial();
+//     portPicker->Clear();
+//     for (size_t i = 0; i < serialArray.GetCount(); i++)
+//     {
+//         portPicker->Append( serialArray.Item( i ) );
+//     }
 
-    if ( portPicker->GetCount() > 0 )
-        portPicker->SetSelection( portPicker->GetCount() - 1 );
-}
+//     if ( portPicker->GetCount() > 0 )
+//         portPicker->SetSelection( portPicker->GetCount() - 1 );
+// }
 
 void upEditBox::initConf()
 {
@@ -99,9 +100,14 @@ bool upEditBox::SaveTrain( bool overwrite )
     track38ConfigTrain->Write( "control", "up" );
     track38ConfigTrain->Write( "maxSpeed", wxString::Format( wxT( "%i" ), maxSpeedPicker->GetValue() ) );
     track38ConfigTrain->Write( "channel", channelPicker->GetStringSelection() );
-    track38ConfigTrain->Write( "port", portPicker->GetStringSelection() );
+    // track38ConfigTrain->Write( "port", portPicker->GetStringSelection() );
     track38ConfigTrain->Write( "hubadress", hubAdress->GetValue() );
-    track38ConfigTrain->Write( "hastwomotors", hasTwoMotors->GetValue() );
+
+    if (hasTwoMotors->GetValue())
+        track38ConfigTrain->Write( "hastwomotors", "1" );
+    else
+        track38ConfigTrain->Write( "hastwomotors", "0" );
+
     
     track38ConfigTrain->Flush();
 
@@ -125,7 +131,7 @@ void upEditBox::SelectTrain( wxString trainSel )
     maxSpeedPicker->SetValue( track38ConfigTrain->Read( "maxSpeed", "5" ) );
 
     hubAdress->SetValue( track38ConfigTrain->Read( "hubadress", "" ) );
-    hasTwoMotors->SetValue( track38ConfigTrain->Write( "hastwomotors", "" ) );
+    hasTwoMotors->SetValue( bool( atoi( track38ConfigTrain->Read( "hastwomotors", "0" ) ) ) );
 }
 
 void upEditBox::AddTrain( wxString trainName )

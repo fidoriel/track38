@@ -30,9 +30,10 @@ class upEditBox : public editBox
         void OnRefreshSerial( wxCommandEvent& event );
 
         wxFlexGridSizer* topSizerUpEdit;
+        wxTextCtrl* bleDevName;
         wxStaticText* nameTxt;
         wxTextCtrl* trainName;
-        wxStaticText* portTxt;
+        wxStaticText* bleDevTxt;
         wxStaticText* hubAdressTxt;
         wxTextCtrl* hubAdress;
         wxStaticText* channelTxt;
