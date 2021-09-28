@@ -14,7 +14,7 @@
 #include "wx/dialog.h"
 
 #include "editBox.h"
-#include "bleConDialog.h"
+#include "ble/bleConDialog.h"
 
 class upEditBox : public editBox
 { 
