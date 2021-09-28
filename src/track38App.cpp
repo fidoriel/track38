@@ -36,7 +36,7 @@ bool track38App::OnInit()
     SetVendorName( vendorName );
     SetAppName( appName );
 
-    track38Frame* m_frame = new track38Frame();
+    m_frame = new track38Frame();
     m_frame->Show();
     return true;
 }

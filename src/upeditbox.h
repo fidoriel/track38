@@ -13,6 +13,7 @@
 #include "wx/confbase.h"
 
 #include "editBox.h"
+#include "bleConDialog.h"
 
 class upEditBox : public editBox
 { 
@@ -27,8 +28,9 @@ class upEditBox : public editBox
         DECLARE_EVENT_TABLE();
 
         void initConf();
-        void OnRefreshSerial( wxCommandEvent& event );
+        void OnBleMenue( wxCommandEvent& event );
 
+        wxPanel* parentPanel;
         wxFlexGridSizer* topSizerUpEdit;
         wxTextCtrl* bleDevName;
         wxStaticText* nameTxt;

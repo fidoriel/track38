@@ -2,11 +2,12 @@
 #include "track38App.h"
 
 wxBEGIN_EVENT_TABLE( upEditBox, wxPanel )
-    //EVT_BUTTON( ID_REFRESHSERIAL, upEditBox::OnRefreshSerial )
+    EVT_BUTTON( ID_REFRESHSERIAL, upEditBox::OnBleMenue )
 wxEND_EVENT_TABLE()
 
 upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( parent, id, title )
 {
+    parentPanel = parent;
     topSizerUpEdit = new wxFlexGridSizer( 2, 0, 0 );
 
     nameTxt = new wxStaticText( this, wxID_ANY, "Train Name:" );
@@ -15,7 +16,6 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 
     refreshSizer = new wxBoxSizer( wxHORIZONTAL );
     bleDevTxt = new wxStaticText( this, wxID_ANY, "Blutooth Device:" );
-    // this->refreshSerial();
     bleDevName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 200, -1 ), 0L, wxDefaultValidator, "upPort" );
 
     m_RefreshBtn = new wxButton( this, ID_REFRESHSERIAL, "Refresh", wxDefaultPosition, wxDefaultSize );
@@ -69,18 +69,11 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     parent->SendSizeEvent();
 }
 
-// void upEditBox::OnRefreshSerial( wxCommandEvent& event )
-// {
-//     this->refreshSerial();
-//     portPicker->Clear();
-//     for (size_t i = 0; i < serialArray.GetCount(); i++)
-//     {
-//         portPicker->Append( serialArray.Item( i ) );
-//     }
-
-//     if ( portPicker->GetCount() > 0 )
-//         portPicker->SetSelection( portPicker->GetCount() - 1 );
-// }
+void upEditBox::OnBleMenue( wxCommandEvent& event )
+{
+    bleConDialog dlg( wxGetApp().m_frame );
+    dlg.Create();
+}
 
 void upEditBox::initConf()
 {

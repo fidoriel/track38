@@ -13,12 +13,15 @@
 #include <wx/stdpaths.h>
 
 #include "preferences.h"
+#include "track38Frame.h"
 
 class track38App : public wxApp
 {
 public:
     wxString appName = "track38";
     wxString vendorName = "fidoriel";
+
+    track38Frame* m_frame;
 
     wxStandardPathsBase& stdp = wxStandardPaths::Get();
     #ifdef __APPLE__
