@@ -144,6 +144,10 @@ file( GLOB_RECURSE SRC_FILES
     src/*/*.cpp
     )
 
+#SimpleBLE
+add_subdirectory(src/SimpleBLE/ ${CMAKE_BINARY_DIR}/simpleble)
+include_directories(${SIMPLEBLE_INCLUDES})
+
 if( WIN32 )
     # Include a RC file for windows
     list( APPEND SRC_FILES icons/icon_win.rc )
