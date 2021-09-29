@@ -63,7 +63,7 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     dirPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 60, -1 ), dirList, 0L, wxDefaultValidator, "switchDir" );
 
     labelManufacturer = new wxStaticText( this, wxID_ANY, "Manufacturer:" );
-    manufacturerList.Add( "4D Brixx" );
+    manufacturerList.Add( "4D_Brixx" );
     manufacturerList.Add( "Pursit PoweredUP Solution" );
     manufacturerPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 200, -1 ), manufacturerList, 0L, wxDefaultValidator, "manufacturerPicker" );
 
@@ -179,7 +179,7 @@ void mapEditPanel::initConfig()
     track38ConfigMap->Flush();
 }
 
-void mapEditPanel::DragSwitchToMap( int row, int col )
+void mapEditPanel::DragSwitchToMap( int row, int col, char dir )
 {
     this->saveSwitch();
     this->initConfig();
@@ -191,7 +191,7 @@ void mapEditPanel::DragSwitchToMap( int row, int col )
     track38ConfigMap->SetPath( "/Switch/" );
     track38ConfigMap->SetPath( name + wxString::Format( wxT( "%i" ), i )  );
     track38ConfigMap->Write( "gpio", "" );
-    track38ConfigMap->Write( "dir", "" );
+    track38ConfigMap->Write( "dir", dir );
     track38ConfigMap->Write( "port", "" );
     track38ConfigMap->Write( "row", row );
     track38ConfigMap->Write( "col", col );
@@ -200,6 +200,7 @@ void mapEditPanel::DragSwitchToMap( int row, int col )
     m_switchPicker->Append( name + wxString::Format( wxT( "%i" ), i ) );
     m_switchPicker->Select( m_switchPicker->FindString( name + wxString::Format( wxT( "%i" ), i ) ) );
     this->SelectSwitch();
+    dirPicker->SetStringSelection( wxString(dir) );
 }
 
 void mapEditPanel::saveSwitch()
@@ -251,11 +252,15 @@ void mapEditPanel::RemoveSwitch()
                 map->SetCellRenderer( wxAtoi ( track38ConfigMap->Read( "row", "" ) ), wxAtoi( track38ConfigMap->Read( "col", "" ) ), new cellImageRenderer() );
                 track38ConfigMap->SetPath( "/map/" );
                 track38ConfigMap->DeleteEntry( "cell" + track38ConfigMap->Read( "row", "" ) + "_" + track38ConfigMap->Read( "col", "" ) );
+
                 track38ConfigMap->SetPath( "/Switch/" );
+
                 track38ConfigMap->DeleteGroup( switchName->GetValue() );
-                track38ConfigMap->Flush();
+                track38ConfigMap->Flush(true);
                 m_switchPicker->Delete( m_switchPicker->GetSelection() );
                 switchName->SetValue( "" );
+
+                map->Refresh();
 
                 // Deselect all
                 for ( int col = 0; col < map->GetNumberCols(); col++ )
@@ -266,11 +271,10 @@ void mapEditPanel::RemoveSwitch()
                     }
                 }
 
-                map->Refresh();
-
                 if ( m_switchPicker->GetCount() )
                 {
                     m_switchPicker->SetSelection( 0 );
+                    selectedSwitch = m_switchPicker->GetStringSelection();
                     this->SelectSwitch();
                 }
             }
@@ -815,7 +819,7 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
     cellImageRenderer* cellRenderer = ( cellImageRenderer* ) m_grid->GetCellRenderer( row, col );
     if ( !cellRenderer->isEmptyCell && !( cellRenderer->file.Find( "switch" ) == wxNOT_FOUND ) )
     {
-        wxMessageBox( "At the drop destination a switch does already exists. You are not allowed to drag a track element on a switch. Please (re)move the switch first." );
+        wxMessageBox( "At the drop destination a switch does already exists. You are not allowed to drag a track or a other switch element on a switch. Please (re)move the switch first." );
         wxGetApp().vetoDND = -1;
         return false;
     }
@@ -850,7 +854,10 @@ bool mapDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
     else if ( !( text.Find( "switch" ) == wxNOT_FOUND ) )
     {
         mapEditPanel* parent = ( mapEditPanel* ) m_grid->GetParent();
-        parent->DragSwitchToMap( row, col );
+        if (text.Contains('R') != 0)
+            parent->DragSwitchToMap( row, col, 'R' );
+        else
+            parent->DragSwitchToMap( row, col, 'L' );
     }
 
     m_grid->ForceRefresh();

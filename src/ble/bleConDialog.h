@@ -19,10 +19,13 @@ public:
     bleConDialog(wxWindow *parent);
     bool Create();
 
+    bleSearch* blesearch;
+
     wxSizer* topSizer;
     wxSizer* buttonSizer;
     wxListBox* bleDeviceList;
     wxButton* selDevButton;
+    wxButton* rescanButton;
     wxButton* cancelButton;
 };
 

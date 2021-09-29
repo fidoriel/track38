@@ -72,6 +72,7 @@
         "condition_variable": "cpp",
         "iomanip": "cpp",
         "thread": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "future": "cpp"
     }
 }

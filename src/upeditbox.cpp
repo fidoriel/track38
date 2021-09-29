@@ -2,7 +2,7 @@
 #include "track38App.h"
 
 wxBEGIN_EVENT_TABLE( upEditBox, wxPanel )
-    EVT_BUTTON( ID_REFRESHSERIAL, upEditBox::OnBleMenue )
+    EVT_BUTTON( ID_SCANBLE, upEditBox::OnBleMenue )
 wxEND_EVENT_TABLE()
 
 upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( parent, id, title )
@@ -18,7 +18,7 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     bleDevTxt = new wxStaticText( this, wxID_ANY, "Blutooth Device:" );
     bleDevName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 200, -1 ), 0L, wxDefaultValidator, "upPort" );
 
-    m_RefreshBtn = new wxButton( this, ID_REFRESHSERIAL, "Refresh", wxDefaultPosition, wxDefaultSize );
+    m_RefreshBtn = new wxButton( this, ID_SCANBLE, "Scan for Hubs", wxDefaultPosition, wxDefaultSize );
     refreshSizer->Add( bleDevName, 0, wxALL, 5 );
     refreshSizer->Add( m_RefreshBtn, 0, wxALL, 5 );
 

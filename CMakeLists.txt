@@ -185,6 +185,8 @@ if( APPLE )
         TARGET ${PROJECT_NAME}
         POST_BUILD
         COMMAND plutil -replace NSHighResolutionCapable -bool true ${PROJECT_NAME}.app/Contents/Info.plist
+        COMMAND plutil -insert NSBluetoothPeripheralUsageDescription -string "Connect to PoweredUP Hubs" ${PROJECT_NAME}.app/Contents/Info.plist || true
+        COMMAND plutil -insert NSBluetoothAlwaysUsageDescription -string "Connect to PoweredUP Hubs" ${PROJECT_NAME}.app/Contents/Info.plist || true
         COMMAND cp -r "../resources/tracks" "${PROJECT_NAME}.app/Contents/Resources"
         COMMAND cp -r "../resources/icons" "${PROJECT_NAME}.app/Contents/Resources"
         )

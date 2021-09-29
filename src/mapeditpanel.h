@@ -44,7 +44,7 @@ class mapEditPanel : public wxPanel
         void OnRClickMap( wxGridEvent& event );
         void LoadMapFromFile();
         void SaveMapToFile();
-        void DragSwitchToMap( int row, int col );
+        void DragSwitchToMap( int row, int col, char dir );
         void initConfig();
         void OnRenameSwitch( wxCommandEvent& event );
 
@@ -69,7 +69,6 @@ class mapEditPanel : public wxPanel
         wxListBox* m_switchPicker;
 
         // Symbol Picker
-
         wxStaticBox* mapPickerBox;
         wxStaticBoxSizer* mapPickerBoxSizer;
         wxGrid* pickerGrid;

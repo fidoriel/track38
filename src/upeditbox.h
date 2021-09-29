@@ -54,7 +54,7 @@ class upEditBox : public editBox
     
     enum
     {
-        ID_REFRESHSERIAL
+        ID_SCANBLE
     };
 };
 
