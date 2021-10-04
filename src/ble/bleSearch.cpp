@@ -15,16 +15,12 @@ bool bleSearch::searchAdapter( int adapterNumber )
     return true;
 }
 
-bool bleSearch::scan()
+int bleSearch::scan()
 {
     this->adapter->scan_for(5000);
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    std::vector<SimpleBLE::Peripheral> peripherals = adapter->scan_get_results();
-    if ( peripherals.size() )
-    {
-        return true;
-    }
-    return false;
+    peripherals = adapter->scan_get_results();
+    return peripherals.size();
 }
 
 bleSearch::~bleSearch()

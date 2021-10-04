@@ -67,17 +67,23 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 	topSizerUpEdit->Fit( this );
     topSizerUpEdit->SetSizeHints( this );
     parent->SendSizeEvent();
+
+    dlg = new bleConDialog( wxGetApp().m_frame );
+    dlg->Create();
 }
 
 void upEditBox::OnBleMenue( wxCommandEvent& event )
 {
-
-    // wxDialog dlg( wxGetApp().m_frame, wxID_ANY, "Blutooth");
-    // dlg.ShowModal();
-
-    bleConDialog dlg( wxGetApp().m_frame );
-    dlg.Create();
-    dlg.ShowModal();
+    if( dlg->ShowModal() == wxID_OK )
+    {
+        //SimpleBLE::Peripheral peripheral = dlg.getSelectedPeripheral();
+        //wxMessageBox( dlg.blesearch->peripherals[ dlg.selection ].identifier() );
+        if ( dlg->selection != -1 )
+        {
+            bleDevName->SetValue( dlg->blesearch->peripherals[ dlg->selection ].identifier() );
+            hubAdress->SetValue( dlg->blesearch->peripherals[ dlg->selection ].address() );
+        }
+    }
 }
 
 void upEditBox::initConf()
@@ -100,6 +106,7 @@ bool upEditBox::SaveTrain( bool overwrite )
     track38ConfigTrain->Write( "channel", channelPicker->GetStringSelection() );
     // track38ConfigTrain->Write( "port", portPicker->GetStringSelection() );
     track38ConfigTrain->Write( "hubadress", hubAdress->GetValue() );
+    track38ConfigTrain->Write( "hubname", bleDevName->GetValue() );
 
     if (hasTwoMotors->GetValue())
         track38ConfigTrain->Write( "hastwomotors", "1" );
@@ -129,6 +136,7 @@ void upEditBox::SelectTrain( wxString trainSel )
     maxSpeedPicker->SetValue( track38ConfigTrain->Read( "maxSpeed", "5" ) );
 
     hubAdress->SetValue( track38ConfigTrain->Read( "hubadress", "" ) );
+    bleDevName->SetValue( track38ConfigTrain->Read( "hubname", "" ) );
     hasTwoMotors->SetValue( bool( atoi( track38ConfigTrain->Read( "hastwomotors", "0" ) ) ) );
 }
 

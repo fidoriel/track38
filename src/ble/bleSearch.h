@@ -12,9 +12,10 @@ class bleSearch
 public:
     bleSearch(/* args */);
     bool searchAdapter( int adapterNumber );
-    bool scan();
+    int scan();
     ~bleSearch();
 
+    std::vector<SimpleBLE::Peripheral> peripherals;
     SimpleBLE::Adapter* adapter;
 };
 

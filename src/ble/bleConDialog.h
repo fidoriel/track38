@@ -7,6 +7,8 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include "wx/panel.h"
+#include <wx/gauge.h> // Progessbar
+#include <wx/progdlg.h>
 
 #include <thread>
 #include <future>
@@ -18,6 +20,13 @@ class bleConDialog : public wxDialog
 public:
     bleConDialog(wxWindow *parent);
     bool Create();
+    void triggerScan( wxCommandEvent& event );
+    void getSelection( wxCommandEvent& event );
+    void OnClose( wxCloseEvent& event );
+    void scan();
+    int selection = -1;
+    bool IsScanning = false;
+    bool DlgIsOpen = false;
 
     bleSearch* blesearch;
 
@@ -27,6 +36,15 @@ public:
     wxButton* selDevButton;
     wxButton* rescanButton;
     wxButton* cancelButton;
+
+    enum
+    {
+        ID_REFRESHSCAN,
+        ID_SELECTIONLISTBOX
+    };
+
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

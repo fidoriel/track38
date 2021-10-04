@@ -12,6 +12,7 @@
 #include "wx/checkbox.h"
 #include "wx/confbase.h"
 #include "wx/dialog.h"
+#include <wx/msgdlg.h>
 
 #include "editBox.h"
 #include "ble/bleConDialog.h"
@@ -51,6 +52,8 @@ class upEditBox : public editBox
 
         wxConfigBase* configTrain;
         wxConfigBase* track38ConfigTrain;
+
+        bleConDialog* dlg;
     
     enum
     {
