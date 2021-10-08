@@ -110,7 +110,7 @@ void trainControlPanel::loadTrains( std::unordered_map< wxString, int > &cons )
         {
             selTrain->setHubAdress( track38ConfigTrain->Read( "hubAdress", "" ) );
             selTrain->setUpChannel( track38ConfigTrain->Read( "channel", "1" ) );
-            selTrain->setTwoMotors( track38ConfigTrain->Read( "twoMotorsUsed", false ) );
+            selTrain->setTwoMotors( bool( track38ConfigTrain->ReadBool( "twoMotorsUsed", false ) ) );
         }
     }
 }

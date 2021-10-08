@@ -17,7 +17,7 @@
 #include "serial/serial_unix.h"
 #endif
 
-#if __WIN32__
+#if defined(WIN32)
 #include "serial/serial_win.h"
 #endif
 

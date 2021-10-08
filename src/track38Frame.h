@@ -20,7 +20,7 @@
 #include "controlpanel.h"
 #include "preferences.h"
 
-#ifdef __WIN32__
+#if defined(WIN32)
 #include <Windows.h>
 #endif
 

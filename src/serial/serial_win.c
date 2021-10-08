@@ -1,6 +1,6 @@
 #include "serial_win.h"
 
-#ifdef __WIN32__
+#if defined(WIN32)
 
 int connect_port(char* comPort)
 {

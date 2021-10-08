@@ -155,7 +155,7 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
 		    // wxMessageBox( "stop" );
                     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
 
-                    #ifdef __WIN32__
+                    #if defined(WIN32)
                     Sleep(500);
                     #else
 		            usleep(50000);
@@ -215,7 +215,7 @@ track38Frame::~track38Frame()
 {
     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
 
-    #ifdef __WIN32__
+    #if defined(WIN32)
     Sleep(500);
     #else
     usleep(50000);

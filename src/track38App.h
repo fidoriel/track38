@@ -29,7 +29,7 @@ public:
     wxString ini_dir = stdp.GetUserDataDir() + "/";
     #elif __linux__
     wxString ini_dir = stdp.GetUserDataDir() + "/";
-    #elif __WIN32__
+    #elif defined(WIN32)
     wxString ini_dir = stdp.GetUserDataDir() + "\\";
     #endif
 
@@ -37,7 +37,7 @@ public:
     wxString ressourcePath = wxString( "track38.app/Contents/Resources/" );
     #elif defined(__linux__) || defined(__FreeBSD__)
     wxString ressourcePath = "../usr/share/icons/";
-    #elif __WIN32__
+    #elif defined(WIN32)
     wxString ressourcePath = "resources/";
     #endif
 

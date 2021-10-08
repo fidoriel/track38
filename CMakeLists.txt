@@ -15,13 +15,23 @@
 #if Linux AppImage should be created cmake .. -D RELEASE=1
 #compile with: make -j4
 
-#Windows
+#Windows gcc Deprecated
 #change build directory Win32: cd build\msw
 #build instrucions for wxWidgets Platform Windows MinGW: mingw32-make SHELL=CMD.exe -j4 -f makefile.gcc BUILD=release UNICODE=1 SHARED=0 MONOLITHIC=0 DwxUSE_LIBPNG=builtin DwxUSE_ZLIB=builtin DCMAKE_POSITION_INDEPENDENT_CODE=ON
 #mingw-w64 workaround i686 and Version 6.3
 #mingw32-make SHELL=CMD.exe -j4 -f makefile.gcc BUILD=release UNICODE=1 SHARED=0 MONOLITHIC=0 DwxUSE_LIBPNG=builtin DwxUSE_ZLIB=builtin DCMAKE_POSITION_INDEPENDENT_CODE=ON LDFLAGS=-Wl,--allow-multiple-definition
 #the build command will fail the first and second time. the thrid will be succesful
 #mingw32 Compile: mingw32-make -j4
+
+#Windows x64 only MSVC
+# nmake /f makefile.vc BUILD=debug SHARED=1 TARGET_CPU=X64
+# cmake -G "Visual Studio 16 2019" -A x64 -S .. -B . -Wno-dev
+# cmake --build . --config Debug -j 4
+#
+#
+#
+#
+#
 
 #change to project directory and: mkdir build; cd build
 #cmake CMD.exe: cmake .. -G "MinGW Makefiles"
@@ -47,63 +57,18 @@ include_directories(${SIMPLEBLE_INCLUDES})
 
 if( WIN32 )
     message( "Target: Windows32" )
+
     if( RELEASE )
         set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_NAME}/" )
     endif()
-    #MONOLITHIC compiled value
-    #directory where wxwidget is located root folder
-    set( wxWidgets_BASE_DIR_WIN "C:/Users/$ENV{username}/${WXWIDGETS_VERSION_IN_HOME_DIR}" )
-    include_directories( 
-        includes
-        "${wxWidgets_BASE_DIR_WIN}/include/"
-        "${wxWidgets_BASE_DIR_WIN}/lib/gcc_lib/mswu/"
-     )
 
-    link_directories( 
-        "${wxWidgets_BASE_DIR_WIN}/lib/gcc_lib/"
-     )
+    set( wxWidgets_ROOT_DIR "C:/Users/lucak/wxWidgets-3.1.4/" )
+    set( wxWidgets_LIB_DIR "${wxWidgets_BASE_DIR_WIN}/lib/vc_x64_dll/" )
+    set (wxWidgets_CONFIGURATION "${wxWidgets_BASE_DIR_WIN}/lib/vc_x64_dll/mswud/" )
 
-    if( NOT MONO )
-        set( WX_LIBS
-            #MONOLITHIK=0
-            libwxmsw31u_core.a #core needs to be the first one
-            libwxbase31u.a
-            libwxbase31u_net.a
-            libwxbase31u_xml.a
-            libwxexpat.a
-            libwxjpeg.a
-            libwxmsw31u_adv.a
-            libwxmsw31u_aui.a
-            libwxmsw31u_gl.a
-            libwxmsw31u_html.a
-            libwxmsw31u_media.a
-            libwxmsw31u_propgrid.a
-            libwxmsw31u_ribbon.a
-            libwxmsw31u_richtext.a
-            libwxmsw31u_stc.a
-            libwxmsw31u_webview.a
-            libwxmsw31u_xrc.a
-            libwxpng.a
-            libwxregexu.a
-            libwxscintilla.a
-            libwxtiff.a
-            libwxzlib.a
-         )
-    elseif( MONO )
-        set( WX_LIBS
-            #MONOLITHIK=1
-            libwxexpat.a
-            libwxjpeg.a
-            libwxmsw31u.a
-            libwxmsw31u_gl.a
-            libwxpng.a
-            libwxregexu.a
-            libwxscintilla.a
-            libwxzlib.a
-            libwxtiff.a
-         )
-    endif()
-
+    find_package(wxWidgets COMPONENTS core base REQUIRED )
+    include( ${wxWidgets_USE_FILE})
+    
 elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
     message( "Target: Linux" )
     #directory where wxwidget is located root folder
@@ -113,6 +78,7 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
     if( RELEASE )
         set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "AppDir/usr/bin/" )
     endif()
+
 elseif( APPLE )
     message( "Target: Apple" )
     #directory where wxwidget is located root folder
@@ -152,26 +118,28 @@ file( GLOB SRC_FILES
 if( WIN32 )
     # Include a RC file for windows
     list( APPEND SRC_FILES icons/icon_win.rc )
-elseif( APPLE )
+endif()
+if( APPLE )
     # Add an icon for the apple .app file
     list( APPEND SRC_FILES icons/AppIcon.icns )
 endif()
 
 if( WIN32 )
     #-mwindows suppresses CMD
-    set( CMAKE_CXX_FLAGS "-mwindows -luxtheme -loleacc -lversion -lshlwapi -lcomctl32 -static-libstdc++ -static-libgcc -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic" )
     add_executable( ${PROJECT_NAME} WIN32 ${SRC_FILES} )
-    target_link_libraries( ${PROJECT_NAME} ${WX_LIBS} ${CMAKE_CXX_FLAGS} )
+    #target_link_libraries( ${PROJECT_NAME} ${WX_LIBS} ${CMAKE_CXX_FLAGS} )
+    target_link_libraries(${PROJECT_NAME} simpleble)
+    target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES})
 elseif( APPLE )
     add_executable( ${PROJECT_NAME} MACOSX_BUNDLE ${SRC_FILES} )
     target_link_libraries( ${PROJECT_NAME} ${wxWidgets_LIBRARIES} )
+    target_link_libraries(${PROJECT_NAME} simpleble-static)
 elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
     set( CMAKE_CXX_FLAGS "-no-pie" )
     add_executable( ${PROJECT_NAME} ${SRC_FILES} )
     target_link_libraries( ${PROJECT_NAME} ${wxWidgets_LIBRARIES} ${CMAKE_CXX_FLAGS} )
+    target_link_libraries(${PROJECT_NAME} simpleble-static)
 endif()
-
-target_link_libraries(${PROJECT_NAME} simpleble-static)
 
 #After compilation processing
 if( APPLE )
@@ -230,13 +198,25 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
         COMMAND ./${AppImageRelease} AppDir
 	    )
 elseif( WIN32 )
-    add_custom_command(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        COMMAND if not exist "${PROJECT_NAME}\\resources" mkdir "${PROJECT_NAME}\\resources"
-        COMMAND if not exist "${PROJECT_NAME}\\resources\\tracks" mkdir "${PROJECT_NAME}\\resources\\tracks"
-        COMMAND copy "..\\resources\\tracks" "${PROJECT_NAME}\\resources\\tracks"
-        COMMAND if not exist "${PROJECT_NAME}\\resources\\icons" mkdir "${PROJECT_NAME}\\resources\\icons"
-        COMMAND copy "..\\resources\\icons" "${PROJECT_NAME}\\resources\\icons"
+    set( wxBaseDirBS "C:\\Users\\lucak\\wxWidgets-3.1.4\\")
+    add_custom_command( TARGET ${PROJECT_NAME} POST_BUILD
+
+        COMMAND if not exist "${PROJECT_NAME}\\Debug\\resources" mkdir "${PROJECT_NAME}\\Debug\\resources"
+        COMMAND if not exist "${PROJECT_NAME}\\Debug\\resources\\tracks" mkdir "${PROJECT_NAME}\\Debug\\resources\\tracks"
+        COMMAND copy "..\\resources\\tracks" "${PROJECT_NAME}\\Debug\\resources\\tracks"
+        COMMAND if not exist "${PROJECT_NAME}\\Debug\\resources\\icons" mkdir "${PROJECT_NAME}\\Debug\\resources\\icons"
+        COMMAND copy "..\\resources\\icons" "${PROJECT_NAME}\\Debug\\resources\\icons"
+
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "simpleble\\Debug\\simpleble.dll"
+            "${PROJECT_NAME}\\Debug\\"
+
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${wxWidgets_ROOT_DIR}lib/vc_x64_dll/wxmsw316ud_core_vc_custom.dll"
+            "${PROJECT_NAME}\\Debug\\"
+
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${wxWidgets_ROOT_DIR}lib/vc_x64_dll/wxbase316ud_vc_custom.dll"
+            "${PROJECT_NAME}\\Debug\\"
     )
 endif()
