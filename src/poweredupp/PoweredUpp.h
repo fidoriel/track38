@@ -1,5 +1,11 @@
+#ifndef PoweredUpp_h
+#define PoweredUpp_h
+
 #include <cstdint>
 #include <cstddef>
+
+#include <stdio.h>
+#include <string.h>
 
 #define service = "00001623-1212-EFDE-1623-785FEABCD123"
 #define characteristic = "00001624-1212-EFDE-1623-785FEABCD123"
@@ -56,11 +62,13 @@ class PoweredUpp
     public:
         PoweredUpp();
 
+        int motor_start(uint8_t port, uint8_t speed);
         int motor_start(uint8_t port, int8_t speed);
         int set_color(uint8_t port, uint8_t color);
         int read(uint8_t property, uint8_t operation);
-        int subscribe(uint8_t port, uint8_t mode, bool subscribe);
+        int subscribe(uint8_t cmd[], uint8_t port, uint8_t mode, bool subscribe);
 
         ~PoweredUpp();
 };
 
+#endif
