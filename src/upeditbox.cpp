@@ -154,4 +154,7 @@ void upEditBox::AddTrain( wxString trainName )
 void upEditBox::SetTrainName( wxString name )
 {
     trainName->ChangeValue( name );
+    dlg->EndModal( 0 );
+    dlg->~bleConDialog();
+    delete dlg;
 }

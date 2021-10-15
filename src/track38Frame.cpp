@@ -14,6 +14,7 @@ BEGIN_EVENT_TABLE( track38Frame, wxFrame )
     // EVT_MENU( ID_Import,  track38Frame:: )
     EVT_NOTEBOOK_PAGE_CHANGING( ID_NbChanged, track38Frame::OnNbChangeing )
     EVT_NOTEBOOK_PAGE_CHANGED( ID_NbChanged, track38Frame::OnNbChanged )
+    //EVT_CLOSE( track38Frame::~track38Frame )
 END_EVENT_TABLE()
 
 void track38Frame::OnAbout( wxCommandEvent& event )
@@ -241,4 +242,7 @@ track38Frame::~track38Frame()
     m_controlPanel->m_switchHandler->~switchHandler();
 
     track38ConfigBase->Flush();
+
+    //wxWindow::Destroy();
+    wxGetApp().ExitMainLoop();
 }
