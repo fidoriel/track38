@@ -6,7 +6,7 @@ BEGIN_EVENT_TABLE( bleConDialog, wxDialog )
     EVT_CLOSE( bleConDialog::OnClose )
 END_EVENT_TABLE()
 
-bleConDialog::bleConDialog( wxWindow *parent ) : wxDialog( parent, wxID_ANY, "Search for PoweredUP Hubs", wxDefaultPosition, wxSize(-1, -1), wxDEFAULT_DIALOG_STYLE )
+bleConDialog::bleConDialog( wxWindow *parent ) : wxDialog( parent, wxID_ANY, "Search for PoweredUP Hubs", wxDefaultPosition, wxSize(-1, -1), wxCAPTION )
 {
     blesearch = new bleSearch();
     if ( !blesearch->searchAdapter( 0 ) )

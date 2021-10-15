@@ -241,4 +241,7 @@ track38Frame::~track38Frame()
     m_controlPanel->m_switchHandler->~switchHandler();
 
     track38ConfigBase->Flush();
+
+    //wxWindow::Destroy();
+    wxGetApp().ExitMainLoop();
 }

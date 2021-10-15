@@ -104,6 +104,20 @@ if( NOT WIN32 )
     endif( wxWidgets_FOUND )
 endif()
 
+if( APPLE )
+file( GLOB SRC_FILES
+    src/*.h
+    src/*.hpp
+    src/*.c
+    src/*.mm
+    src/*.cpp
+    src/*/*.h
+    src/*/*.hpp
+    src/*/*.c
+    src/*/*.cpp
+    src/*/*.mm
+)
+else()
 file( GLOB SRC_FILES
     src/*.h
     src/*.hpp
@@ -113,7 +127,8 @@ file( GLOB SRC_FILES
     src/*/*.hpp
     src/*/*.c
     src/*/*.cpp
-    )
+)
+endif()
 
 if( WIN32 )
     # Include a RC file for windows

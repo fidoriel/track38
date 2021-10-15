@@ -47,6 +47,8 @@ class trainEditPanel : public wxPanel
         wxConfigBase* configTrain;
         wxConfigBase* track38ConfigTrain;
 
+        int lastSel = 0;
+
     private:
         DECLARE_EVENT_TABLE();
 };

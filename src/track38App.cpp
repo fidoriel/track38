@@ -36,6 +36,12 @@ bool track38App::OnInit()
     SetVendorName( vendorName );
     SetAppName( appName );
 
+    this->blutoothPermission = bleIsAutorized();
+    if (this->blutoothPermission)
+    wxMessageBox( "acces" );
+    else
+    wxMessageBox( "no acces" );
+
     m_frame = new track38Frame();
     m_frame->Show();
     return true;

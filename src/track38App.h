@@ -14,6 +14,7 @@
 
 #include "preferences.h"
 #include "track38Frame.h"
+#include "ble/blPermission.h"
 
 class track38App : public wxApp
 {
@@ -22,6 +23,8 @@ public:
     wxString vendorName = "fidoriel";
 
     track38Frame* m_frame;
+
+    bool blutoothPermission = false;
 
     wxStandardPathsBase& stdp = wxStandardPaths::Get();
     #ifdef __APPLE__

@@ -57,7 +57,9 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // options.Add( "Buwizz" );
     // options.Add( "SBrick" );
     trainKindPicker = new wxRadioBox( this, ID_ChangeControl, "Train Controller", wxDefaultPosition, wxDefaultSize, options, 3, wxRA_HORIZONTAL );
-    // trainKindPicker->Enable( 1, false );
+
+    if ( !wxGetApp().blutoothPermission )
+        trainKindPicker->Enable( 1, false );
     // trainKindPicker->Enable( 2, false );
     // trainKindPicker->Enable( 3, false );
     // trainKindPicker->Enable( 4, false );
@@ -102,6 +104,18 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
 
 void trainEditPanel::OnChangeControler( wxCommandEvent& event )
 {
+    wxMessageDialog dialog( this, "Do you want to change the controller?", "All settings from the previuos controller will be removed! Do you want to proceed?", wxYES_NO | wxICON_INFORMATION );
+    switch ( dialog.ShowModal() )
+    {
+        case wxID_YES:
+        break;
+        
+        case wxID_NO:
+            trainKindPicker->SetSelection( this->lastSel );
+            return;
+        break;
+    }
+
     this->RefreshPanel();
     wxString trainSel = m_trainPicker->GetStringSelection();
 
@@ -112,7 +126,7 @@ void trainEditPanel::OnChangeControler( wxCommandEvent& event )
         tmpPtr->SaveTrain();
     }
 
-    else if ( trainKindPicker->GetSelection() == 1 )
+    else if ( ( trainKindPicker->GetSelection() == 1 ) && wxGetApp().blutoothPermission )
     {
         upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
         tmpPtr->SetTrainName( trainSel );
@@ -150,8 +164,11 @@ void trainEditPanel::RefreshPanel()
             break;
         
         case 1:
-            m_trainEditBox = new upEditBox( this, wxID_ANY, "Edit PoweredUP Settings" );
-            track38ConfigTrain->Write( "control", "up" );
+            if ( wxGetApp().blutoothPermission )
+            {
+                m_trainEditBox = new upEditBox( this, wxID_ANY, "Edit PoweredUP Settings" );
+                track38ConfigTrain->Write( "control", "up" );
+            }
             break;
 
         case 2:
@@ -164,6 +181,8 @@ void trainEditPanel::RefreshPanel()
     }
 
     panelParent->SendSizeEvent();
+
+    this->lastSel = trainKindPicker->GetSelection();
 }
 
 void trainEditPanel::initConf()
@@ -249,7 +268,7 @@ void trainEditPanel::SaveTrain()
         tmpPtr->SaveTrain();
     }
 
-    else if ( trainKindPicker->GetSelection() == 1 )
+    else if ( ( trainKindPicker->GetSelection() == 1 ) && wxGetApp().blutoothPermission )
     {
         upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
         tmpPtr->SaveTrain();
@@ -278,9 +297,14 @@ void trainEditPanel::SelectTrain()
     else if ( this->GetTrainControl( m_trainPicker->GetStringSelection() ).IsSameAs( "up" ) )
     {
         trainKindPicker->SetSelection( 1 );
-        this->RefreshPanel();
-        upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
-        tmpPtr->SelectTrain( m_trainPicker->GetStringSelection() );
+        if ( wxGetApp().blutoothPermission )
+        {
+            this->RefreshPanel();
+            upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
+            tmpPtr->SelectTrain( m_trainPicker->GetStringSelection() );
+        }
+        else
+            delete m_trainEditBox;
     }
 
     else if ( this->GetTrainControl( m_trainPicker->GetStringSelection() ).IsSameAs( "rc" ) )
