@@ -37,10 +37,11 @@ bool track38App::OnInit()
     SetAppName( appName );
 
     this->blutoothPermission = bleIsAutorized();
-    if (this->blutoothPermission)
-    wxMessageBox( "acces" );
-    else
-    wxMessageBox( "no acces" );
+    if ( !this->blutoothPermission )
+    {
+        wxMessageBox( "track38 needs permissions for Blutooth acces to be able to connect to Powered UP hubs. This acces was not granted. Please go to the Settings and grant the permission. Otherwise track38 cannot be used. track38 will close now." );
+        return false;
+    }
 
     m_frame = new track38Frame();
     m_frame->Show();

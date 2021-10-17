@@ -5,10 +5,8 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <Foundation/Foundation.h>
 
-
 bool bleIsAutorized()
 {
-
     // https://developer.apple.com/documentation/corebluetooth/cbmanagerauthorization/allowedalways
     if (CBManager.authorization == CBManagerAuthorizationAllowedAlways){
         return true;

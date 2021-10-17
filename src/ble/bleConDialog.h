@@ -7,40 +7,51 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include "wx/panel.h"
-#include <wx/gauge.h> // Progessbar
+#include "wx/gauge.h" // Progessbar
+#include "wx/progdlg.h"
 #include <wx/progdlg.h>
-
-#include <thread>
-#include <future>
+#include "wx/thread.h"
 
 #include "bleSearch.h"
+
+#include <memory>
+#include <string>
 
 class bleConDialog : public wxDialog
 {
 public:
-    bleConDialog(wxWindow *parent);
+    bleConDialog( wxWindow *parent);
+    ~bleConDialog();
     bool Create();
-    void triggerScan( wxCommandEvent& event );
-    void getSelection( wxCommandEvent& event );
-    void OnClose( wxCloseEvent& event );
+    void triggerScan();
+    void OnGetSelection( wxCommandEvent& event );
+    void OnClose( wxCommandEvent& event );
+    void OnScanFinished( wxThreadEvent& event );
     void scan();
+    void OnTriggerScan( wxCommandEvent& event );
+    std::string getBleId( std::string tag );
+    std::string getBleAdr( std::string tag );
     int selection = -1;
-    bool IsScanning = false;
-    bool DlgIsOpen = false;
 
-    bleSearch* blesearch;
+    bool adapterExists = false;
 
-    wxSizer* topSizer;
-    wxSizer* buttonSizer;
-    wxListBox* bleDeviceList;
-    wxButton* selDevButton;
-    wxButton* rescanButton;
-    wxButton* cancelButton;
+    bleSearch* blesearch = nullptr;
+
+    wxSizer* topSizer = nullptr;
+    wxSizer* buttonSizer = nullptr;
+    wxListBox* bleDeviceList = nullptr;
+    wxButton* selDevButton = nullptr;
+    wxButton* rescanButton = nullptr;
+    wxButton* cancelButton = nullptr;
+
+    std::vector<SimpleBLE::Peripheral> peripheralsPtr;
 
     enum
     {
         ID_REFRESHSCAN,
-        ID_SELECTIONLISTBOX
+        ID_SELECTIONLISTBOX,
+        ID_CANCEL,
+        FINISHED_BLE_ID = 100000
     };
 
 private:
