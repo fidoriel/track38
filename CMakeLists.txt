@@ -1,6 +1,8 @@
 #Change to directory where wxwidgets is located. 
 
 #git: git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets.git
+
+#git: git clone --recurse-submodules https://github.com/fidoriel/track38.git
 #UNIX like wxWidgets
 #create build directory Mac: cd wxWidgets; mkdir macbuild; cd macbuild
 #create build directory Linux: cd wxWidgets; mkdir gtkbuild; cd gtkbuild
