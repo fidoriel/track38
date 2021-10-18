@@ -29,23 +29,23 @@ class trainEditPanel : public wxPanel
         void OnRenameTrain( wxCommandEvent& event );
         void SaveTrain();
 
-        wxBoxSizer* topSizer;
-        wxStaticBox* leftBox;
-        wxStaticBoxSizer* leftSizer;
-        wxListBox* m_trainPicker;
-        wxStaticBox* rightBox;
-        wxSizer* rightSizer;
-        wxRadioBox* trainKindPicker;
-        wxStaticBox* m_trainEditBox;
+        wxBoxSizer* topSizer = nullptr;
+        wxStaticBox* leftBox = nullptr;
+        wxStaticBoxSizer* leftSizer = nullptr;
+        wxListBox* m_trainPicker = nullptr;
+        wxStaticBox* rightBox = nullptr;
+        wxSizer* rightSizer = nullptr;
+        wxRadioBox* trainKindPicker = nullptr;
+        wxStaticBox* m_trainEditBox = nullptr;
 
-        wxBoxSizer* saveSizer;
-        wxButton* m_NewBtn;
-        wxButton* m_RenameBtn;
-        wxButton* m_RemoveBtn;
+        wxBoxSizer* saveSizer = nullptr;
+        wxButton* m_NewBtn = nullptr;
+        wxButton* m_RenameBtn = nullptr;
+        wxButton* m_RemoveBtn = nullptr;
 
-        wxNotebook* panelParent;
-        wxConfigBase* configTrain;
-        wxConfigBase* track38ConfigTrain;
+        wxNotebook* panelParent = nullptr;
+        wxConfigBase* configTrain = nullptr;
+        wxConfigBase* track38ConfigTrain = nullptr;
 
         int lastSel = 0;
 

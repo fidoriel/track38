@@ -9,19 +9,30 @@
 
 #include "PoweredUpp.h"
 
-using namespace std;
+#include "wx/thread.h"
 
-class hubHandler
+enum
 {
-private:
-    /* data */
-public:
-    hubHandler(string uuid, string name);
 
-    SimpleBLE::Adapter* adapter;
-    SimpleBLE::Peripheral* bleHub;
+};
+
+class hubHandler  : wxThread
+{
+public:
+    hubHandler( std::string name );
+
+    SimpleBLE::Adapter* adapter = nullptr;
+    SimpleBLE::Peripheral* bleHub = nullptr;
+
+    wxCriticalSection m_csCancelled;
+    bool threadTerminated = false;
+
+    std::vector<SimpleBLE::Peripheral> results;
 
     ~hubHandler();
+
+private:
+    //virtual ExitCode Entry() wxOVERRIDE;
 };
 
 #endif

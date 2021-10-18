@@ -32,28 +32,28 @@ class upEditBox : public editBox
         void initConf();
         void OnBleMenue( wxCommandEvent& event );
 
-        wxPanel* parentPanel;
-        wxFlexGridSizer* topSizerUpEdit;
-        wxTextCtrl* bleDevName;
-        wxStaticText* nameTxt;
-        wxTextCtrl* trainName;
-        wxStaticText* bleDevTxt;
-        wxStaticText* hubAdressTxt;
-        wxTextCtrl* hubAdress;
-        wxStaticText* channelTxt;
+        wxPanel* parentPanel = nullptr;
+        wxFlexGridSizer* topSizerUpEdit = nullptr;
+        wxTextCtrl* bleDevName = nullptr;
+        wxStaticText* nameTxt = nullptr;
+        wxTextCtrl* trainName = nullptr;
+        wxStaticText* bleDevTxt = nullptr;
+        wxStaticText* hubAdressTxt = nullptr;
+        wxTextCtrl* hubAdress = nullptr;
+        wxStaticText* channelTxt = nullptr;
         wxArrayString channel;
-        wxChoice* channelPicker;
-        wxStaticText* hasTwoMotorsTxt;
-        wxCheckBox* hasTwoMotors;
-        wxStaticText* maxSpeedTxt;
-        wxSpinCtrl* maxSpeedPicker;
-        wxBoxSizer* refreshSizer;
-        wxButton* m_RefreshBtn;
+        wxChoice* channelPicker = nullptr;
+        wxStaticText* hasTwoMotorsTxt = nullptr;
+        wxCheckBox* hasTwoMotors = nullptr;
+        wxStaticText* maxSpeedTxt = nullptr;
+        wxSpinCtrl* maxSpeedPicker = nullptr;
+        wxBoxSizer* refreshSizer = nullptr;
+        wxButton* m_RefreshBtn = nullptr;
 
-        wxConfigBase* configTrain;
-        wxConfigBase* track38ConfigTrain;
+        wxConfigBase* configTrain = nullptr;
+        wxConfigBase* track38ConfigTrain = nullptr;
 
-        bleConDialog* dlg;
+        bleConDialog* dlg = nullptr;
     
     enum
     {

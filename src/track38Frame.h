@@ -36,19 +36,19 @@ public:
     void OnSettings( wxCommandEvent& event );
     void checkDir();
 
-    wxMenu* fileMenu;
-    wxMenu* helpMenu;
-    wxMenu* controlMenu;
+    wxMenu* fileMenu = nullptr;
+    wxMenu* helpMenu = nullptr;
+    wxMenu* controlMenu = nullptr;
 
-    wxNotebook* m_notebook;
+    wxNotebook* m_notebook = nullptr;
 
-    wxMenuBar* menuBar;
-    wxBoxSizer* topSizer;
-    controlPanel* m_controlPanel;
-    trainEditPanel* m_trainEditPanel;
-    mapEditPanel* m_mapEditPanel;
+    wxMenuBar* menuBar = nullptr;
+    wxBoxSizer* topSizer = nullptr;
+    controlPanel* m_controlPanel = nullptr;
+    trainEditPanel* m_trainEditPanel = nullptr;
+    mapEditPanel* m_mapEditPanel = nullptr;
 
-    wxFileConfig *configMain;
+    wxFileConfig *configMain = nullptr;
 
     int minw = 900;
     int minh = 650;

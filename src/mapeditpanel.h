@@ -55,42 +55,42 @@ class mapEditPanel : public wxPanel
         // Map
         int mapRows;
         int mapCols;
-        wxGrid* map;
+        wxGrid* map = nullptr;
         bool clickToDrag;
-        wxMenu* mapMenu;
+        wxMenu* mapMenu = nullptr;
         int eventCellRow;
         int eventCellCol;
-        wxFileConfig* configMap;
-        wxConfigBase* track38ConfigMap;
+        wxFileConfig* configMap = nullptr;
+        wxConfigBase* track38ConfigMap = nullptr;
 
         // switch
-        editBox* switchPickerBox;
-        wxStaticBoxSizer* switchPickerBoxSizer;
-        wxListBox* m_switchPicker;
+        editBox* switchPickerBox = nullptr;
+        wxStaticBoxSizer* switchPickerBoxSizer = nullptr;
+        wxListBox* m_switchPicker = nullptr;
 
         // Symbol Picker
-        wxStaticBox* mapPickerBox;
-        wxStaticBoxSizer* mapPickerBoxSizer;
-        wxGrid* pickerGrid;
+        wxStaticBox* mapPickerBox = nullptr;
+        wxStaticBoxSizer* mapPickerBoxSizer = nullptr;
+        wxGrid* pickerGrid = nullptr;
 
         // EditSizer
-        wxFlexGridSizer* editSizer;
-        wxBoxSizer* pickerSizer;
+        wxFlexGridSizer* editSizer = nullptr;
+        wxBoxSizer* pickerSizer = nullptr;
 
         // Edit Controls
-        wxStaticText* labelName;
-        wxTextCtrl* switchName;
+        wxStaticText* labelName = nullptr;
+        wxTextCtrl* switchName = nullptr;
 
-        wxBoxSizer* refreshSizer;
-        wxStaticText* labelPort;
-        wxChoice* portPicker;
-        wxButton* m_RefreshBtn;
-        wxStaticText* labelGpio;
-        wxSpinCtrl* gpioPicker;
-        wxStaticText* labelDir;
-        wxChoice* dirPicker;
-        wxStaticText* labelManufacturer;
-        wxChoice* manufacturerPicker;
+        wxBoxSizer* refreshSizer = nullptr;
+        wxStaticText* labelPort = nullptr;
+        wxChoice* portPicker = nullptr;
+        wxButton* m_RefreshBtn = nullptr;
+        wxStaticText* labelGpio = nullptr;
+        wxSpinCtrl* gpioPicker = nullptr;
+        wxStaticText* labelDir = nullptr;
+        wxChoice* dirPicker = nullptr;
+        wxStaticText* labelManufacturer = nullptr;
+        wxChoice* manufacturerPicker = nullptr;
 
         wxArrayString dirList;
         wxArrayString manufacturerList;
@@ -120,7 +120,7 @@ class mapDropTarget : public wxTextDropTarget
 {
     public:
         mapDropTarget(wxGrid *grid);
-        wxGrid *m_grid;
+        wxGrid *m_grid = nullptr;
         virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& text);
 };
 

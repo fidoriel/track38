@@ -28,7 +28,7 @@ class editBox : public wxStaticBox
     public:
         editBox( wxPanel* parent, int id, wxString title );
         void refreshSerial();
-        wxChoice* portPicker;
+        wxChoice* portPicker = nullptr;
         wxArrayString serialArray;
 };
 

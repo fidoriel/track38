@@ -19,8 +19,8 @@ class switchHandler
         list< tswitch* > switches;
 
 
-        wxFileConfig* configMap;
-        wxConfigBase* track38ConfigMap;
+        wxFileConfig* configMap = nullptr;
+        wxConfigBase* track38ConfigMap = nullptr;
 };
 
 #endif

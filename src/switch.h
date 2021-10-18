@@ -59,11 +59,11 @@ class tswitch
         bool isTurn();
         bool isStraight();
 
-        wxBoxSizer* sizer;
+        wxBoxSizer* sizer = nullptr;
 
-        wxStaticText* tswitchName;
-        wxButton* straightBtn;
-        wxButton* turnBtn;
+        wxStaticText* tswitchName = nullptr;
+        wxButton* straightBtn = nullptr;
+        wxButton* turnBtn = nullptr;
 
         wxString name;
         wxString manufacturer;

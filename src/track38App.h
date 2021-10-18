@@ -2,15 +2,16 @@
 #define track38App_h
 
 #include <ctime>
+#include <string>
 
 #include "wx/wx.h"
-#include <string>
 #include "wx/fileconf.h"
 #include "wx/config.h"
 #include "wx/image.h"
 #include "wx/preferences.h"
 #include "wx/scopedptr.h"
-#include <wx/stdpaths.h>
+#include "wx/stdpaths.h"
+#include "wx/statusbr.h"
 
 #include "preferences.h"
 #include "track38Frame.h"
@@ -22,9 +23,11 @@ public:
     wxString appName = "track38";
     wxString vendorName = "fidoriel";
 
-    track38Frame* m_frame;
+    track38Frame* m_frame = nullptr;
 
     bool blutoothPermission = false;
+
+    wxStatusBar* statBar = nullptr;
 
     wxStandardPathsBase& stdp = wxStandardPaths::Get();
     #ifdef __APPLE__

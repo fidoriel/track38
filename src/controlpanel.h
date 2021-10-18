@@ -23,18 +23,18 @@ class controlPanel : public wxPanel
         
 
         std::unordered_map< wxString, int > cons;
-        wxNotebook* parent;
-        trainControlBox* m_trainControlBox;
+        wxNotebook* parent = nullptr;
+        trainControlBox* m_trainControlBox = nullptr;
         // switchControlBox* m_switchControlBox;
-        wxBoxSizer* topSizer;
-        wxBoxSizer* mapSizer;
-        switchHandler* m_switchHandler;
+        wxBoxSizer* topSizer = nullptr;
+        wxBoxSizer* mapSizer = nullptr;
+        switchHandler* m_switchHandler = nullptr;
         void initConf();
 
         // Map
-        wxGrid* map;
-        wxFileConfig* configMap;
-        wxConfigBase* track38ConfigMap;
+        wxGrid* map = nullptr;
+        wxFileConfig* configMap = nullptr;
+        wxConfigBase* track38ConfigMap = nullptr;
         void LoadMapFromFile();
         void OnLClickMap( wxGridEvent& event );
         void RefreshMap();

@@ -28,24 +28,24 @@ class pfEditBox : public editBox
         void initConf();
         void OnRefreshSerial( wxCommandEvent& event );
 
-        wxFlexGridSizer* topSizerPfEdit;
-        wxStaticText* nameTxt;
-        wxTextCtrl* trainName;
-        wxStaticText* portTxt;
-        wxStaticText* gpioTxt;
-        wxSpinCtrl* gpioPicker;
-        wxStaticText* channelTxt;
+        wxFlexGridSizer* topSizerPfEdit = nullptr;
+        wxStaticText* nameTxt = nullptr;
+        wxTextCtrl* trainName = nullptr;
+        wxStaticText* portTxt = nullptr;
+        wxStaticText* gpioTxt = nullptr;
+        wxSpinCtrl* gpioPicker = nullptr;
+        wxStaticText* channelTxt = nullptr;
         wxArrayString channel;
-        wxChoice* channelPicker;
-        wxStaticText* subChannelTxt;
+        wxChoice* channelPicker = nullptr;
+        wxStaticText* subChannelTxt = nullptr;
         wxArrayString subChannel;
-        wxChoice* subChannelPicker;
-        wxStaticText* maxSpeedTxt;
-        wxSpinCtrl* maxSpeedPicker;
-        wxBoxSizer* refreshSizer;
-        wxButton* m_RefreshBtn;
-        wxConfigBase* configTrain;
-        wxConfigBase* track38ConfigTrain;
+        wxChoice* subChannelPicker = nullptr;
+        wxStaticText* maxSpeedTxt = nullptr;
+        wxSpinCtrl* maxSpeedPicker = nullptr;
+        wxBoxSizer* refreshSizer = nullptr;
+        wxButton* m_RefreshBtn = nullptr;
+        wxConfigBase* configTrain = nullptr;
+        wxConfigBase* track38ConfigTrain = nullptr;
     
     enum
     {
