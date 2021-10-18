@@ -49,8 +49,11 @@ class train
 
         void createControls( wxPanel* parent );
 
+        bool isConnected;
+
         bool isPf();
         bool isUp();
+        bool isRc();
 
         wxBoxSizer* sizer;
 

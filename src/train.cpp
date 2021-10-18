@@ -154,6 +154,11 @@ void train::ChangeSpeed( int newSpeed )
             // wxMessageBox( "OK" );
 		// }
     }
+
+    else if ( this->isUp() )
+    {
+
+    }
 }
 
 void train::setControl( wxString wxControl )
@@ -222,12 +227,21 @@ bool train::isUp()
     return false;
 }
 
+bool train::isRc()
+{
+    if ( this->control.compare( "rc" ) == 0 )
+       return true;
+    return false;
+}
+
 void train::CloseCon()
 {
-    close_port( this->con );
+    if ( this->isPf() )
+        close_port( this->con );
 }
 
 train::~train()
 {
-    this->CloseCon();
+    if ( this->isPf() )
+        this->CloseCon();
 }

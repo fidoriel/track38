@@ -205,4 +205,5 @@ void controlPanel::RefreshMap()
 
 controlPanel::~controlPanel()
 {
+    delete configMap;
 }

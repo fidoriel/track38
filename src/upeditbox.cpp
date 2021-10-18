@@ -67,23 +67,25 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 	topSizerUpEdit->Fit( this );
     topSizerUpEdit->SetSizeHints( this );
     parent->SendSizeEvent();
-
-    dlg = new bleConDialog( wxGetApp().m_frame );
-    dlg->Create();
 }
 
 void upEditBox::OnBleMenue( wxCommandEvent& event )
 {
+    dlg = new bleConDialog( wxGetApp().m_frame );
+    dlg->Create();
+
     if( dlg->ShowModal() == wxID_OK )
     {
         //SimpleBLE::Peripheral peripheral = dlg.getSelectedPeripheral();
         //wxMessageBox( dlg.blesearch->peripherals[ dlg.selection ].identifier() );
         if ( dlg->selection != -1 )
         {
-            bleDevName->SetValue( dlg->blesearch->peripherals[ dlg->selection ].identifier() );
-            hubAdress->SetValue( dlg->blesearch->peripherals[ dlg->selection ].address() );
+            bleDevName->SetValue( dlg->getBleId( std::string( dlg->bleDeviceList->GetString( dlg->selection ).mb_str() ) ) );
+            hubAdress->SetValue( dlg->getBleAdr( std::string( dlg->bleDeviceList->GetString( dlg->selection ).mb_str() ) ) );
         }
     }
+
+    delete dlg;
 }
 
 void upEditBox::initConf()
