@@ -19,8 +19,8 @@ class trainControlBox : public wxStaticBox
         trainControlBox( wxPanel* parent, int id, wxString title, wxString boxName, std::unordered_map< wxString, int > &cons );
         ~trainControlBox();
 
-        wxStaticBoxSizer* sizer;
-        trainControlPanel* m_trainControlPanel;
+        wxStaticBoxSizer* sizer  = nullptr;
+        trainControlPanel* m_trainControlPanel = nullptr;
 
         wxPanel* parent;
 };

@@ -55,11 +55,11 @@ class train
         bool isUp();
         bool isRc();
 
-        wxBoxSizer* sizer;
+        wxBoxSizer* sizer = nullptr;
 
-        wxStaticText* trainName;
-        wxSlider* speedSlider;
-        wxButton* stopBtn;
+        wxStaticText* trainName  = nullptr;
+        wxSlider* speedSlider  = nullptr;
+        wxButton* stopBtn  = nullptr;
 
         wxString name;
         string control;

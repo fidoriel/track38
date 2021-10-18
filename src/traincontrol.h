@@ -27,11 +27,11 @@ class trainControlPanel : public wxScrolledWindow
 
         list< train* > trains;
 
-        wxFlexGridSizer* topSizer;
-        wxButton* stopAllBtn;
-        wxPanel* parent;
-        wxConfigBase* configTrain;
-        wxConfigBase* track38ConfigTrain;
+        wxFlexGridSizer* topSizer = nullptr;
+        wxButton* stopAllBtn = nullptr;
+        wxPanel* parent = nullptr;
+        wxConfigBase* configTrain = nullptr;
+        wxConfigBase* track38ConfigTrain = nullptr;
     
     enum
     {

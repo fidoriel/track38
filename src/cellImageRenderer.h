@@ -15,7 +15,7 @@ class cellImageRenderer : public wxGridCellStringRenderer
         cellImageRenderer( wxString filename, int border = 0, int degree = 0 );
         cellImageRenderer();
         
-        wxBitmap* renderBmp;
+        wxBitmap* renderBmp = nullptr;
         wxString file;
         wxString filepath;
         wxImage image;

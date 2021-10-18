@@ -2,8 +2,8 @@
 
 #git: git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets.git
 #UNIX like wxWidgets
-#create build directory Mac: mkdir macbuild; cd macbuild
-#create build directory Linux: mkdir gtkbuild; cd gtkbuild
+#create build directory Mac: cd wxWidgets; mkdir macbuild; cd macbuild
+#create build directory Linux: cd wxWidgets; mkdir gtkbuild; cd gtkbuild
 
 #build instrucions for wxWidgets Platform Linux und macOS: ../configure --disable-shared --disable-sys-libs
 #RasPiOS: Deps: sudo apt install libgtk-3-dev

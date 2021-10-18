@@ -1,4 +1,4 @@
-#if defined( WIN32 ) || defined( LINUX )
+#if defined( WIN32 ) || defined( __linux__ )
 
 #include "blPermission.h"
 
