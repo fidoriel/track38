@@ -64,11 +64,11 @@ pfEditBox::pfEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     topSizerPfEdit->AddSpacer( 10 );
     
     // Top Sizer Settings
-    parent->SetSizer( topSizerPfEdit );
-    parent->Layout();
+    this->SetSizer( topSizerPfEdit );
+    this->Layout();
 	topSizerPfEdit->Fit( this );
     topSizerPfEdit->SetSizeHints( this );
-    parent->SendSizeEvent();
+    this->SendSizeEventToParent();
 }
 
 void pfEditBox::OnRefreshSerial( wxCommandEvent& event )

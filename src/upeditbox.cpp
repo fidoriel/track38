@@ -62,11 +62,11 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     topSizerUpEdit->AddSpacer( 10 );
     
     // Top Sizer Settings
-    parent->SetSizer( topSizerUpEdit );
-    parent->Layout();
+    this->SetSizer( topSizerUpEdit );
+    this->Layout();
 	topSizerUpEdit->Fit( this );
     topSizerUpEdit->SetSizeHints( this );
-    parent->SendSizeEvent();
+    this->SendSizeEventToParent();
 }
 
 void upEditBox::OnBleMenue( wxCommandEvent& event )

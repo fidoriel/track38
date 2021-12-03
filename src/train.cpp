@@ -12,11 +12,11 @@ void train::createControls( wxPanel* parent )
     this->speedSlider = new wxSlider( parent, ID_ChangeSpeed, 0, this->maxTrainSpeed*( -1 ), this->maxTrainSpeed, wxDefaultPosition, wxSize( 200, -1 ), wxSL_AUTOTICKS );
     this->stopBtn = new wxButton( parent, ID_StopTrain, wxEmptyString, wxDefaultPosition, wxSize( 35, 35 ) );
 
-    wxBitmap bitmap( 25, 25 );
+    wxBitmap bitmap( 20, 20 );
     wxImage image = bitmap.ConvertToImage();
     image.LoadFile( wxGetApp().ressourcePath + "icons/stop.png", wxBITMAP_TYPE_PNG );
-    image.Rescale( 25, 25, wxIMAGE_QUALITY_BICUBIC );
-    this->stopBtn->SetBitmap( wxBitmap( image ), wxLEFT );
+    image.Rescale( 20, 20, wxIMAGE_QUALITY_BICUBIC );
+    this->stopBtn->SetBitmap( wxBitmap( image ) );
 }
 
 void train::OnStop( wxCommandEvent& event ) 

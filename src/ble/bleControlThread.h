@@ -4,7 +4,7 @@
 #include "simpleble/SimpleBLE.h"
 #include "simpleble/Adapter.h"
 
-#include "../poweredupp/PoweredUpp.h"
+#include "../poweredup/PoweredUp.h"
 
 #include "wx/thread.h"
 
@@ -25,8 +25,6 @@ public:
     std::vector< SimpleBLE::Peripheral > results;
     std::vector< std::tuple< std::string, SimpleBLE::Peripheral> > hubList;
     std::vector< std::string > hubQue;
-
-    PoweredUpp pup;
 
 private:
     virtual ExitCode Entry() wxOVERRIDE;
