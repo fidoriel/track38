@@ -65,10 +65,10 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // trainKindPicker->Enable( 4, false );
 
     //PF edit Panel 
-    m_trainEditBox = new pfEditBox( this, wxID_ANY, "Edit PowerFunctions Settings" );
+    pfbox = new pfEditBox( this, wxID_ANY, "Edit PowerFunctions Settings" );
 
     rightSizer->Add( trainKindPicker, 0, wxALL | wxGROW, 5 );
-    rightSizer->Add( m_trainEditBox, 0, wxALL | wxGROW, 5 );
+    rightSizer->Add( pfbox, 0, wxALL | wxGROW, 5 );
     rightSizer->Layout();
 
     topSizer->Add( leftSizer, 1, wxALL, 5 );
@@ -104,6 +104,9 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
 
 void trainEditPanel::OnChangeControler( wxCommandEvent& event )
 {
+    if ( ( m_trainPicker->GetCount() == 0 ) || ( !wxGetApp().blutoothPermission && ( m_trainPicker->GetSelection() == 1 ) ) )
+        return;
+
     wxMessageDialog dialog( this, "Do you want to change the controller?", "All settings from the previuos controller will be removed! Do you want to proceed?", wxYES_NO | wxICON_INFORMATION );
     switch ( dialog.ShowModal() )
     {
@@ -121,27 +124,23 @@ void trainEditPanel::OnChangeControler( wxCommandEvent& event )
 
     if ( trainKindPicker->GetSelection() == 0 )
     {
-        pfEditBox* tmpPtr = ( pfEditBox* ) m_trainEditBox;
-        tmpPtr->SetTrainName( trainSel );
-        tmpPtr->SaveTrain();
+        pfbox->SetTrainName( trainSel );
+        pfbox->SaveTrain();
     }
 
-    else if ( ( trainKindPicker->GetSelection() == 1 ) && wxGetApp().blutoothPermission )
+    else if ( trainKindPicker->GetSelection() == 1 )
     {
-        upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
-        tmpPtr->SetTrainName( trainSel );
-        tmpPtr->SaveTrain();
+        wxMessageBox( "switch" );
+        upbox->SetTrainName( trainSel );
+        upbox->SaveTrain();
+        wxMessageBox( "switch2" );
     }
 
     else if ( trainKindPicker->GetSelection() == 2 )
     {
-        rcEditBox* tmpPtr = ( rcEditBox* ) m_trainEditBox;
-        tmpPtr->SetTrainName( trainSel );
-        tmpPtr->SaveTrain();
+        rcbox->SetTrainName( trainSel );
+        rcbox->SaveTrain();
     }
-
-    if ( m_trainPicker->GetCount() == 0 )
-        return;
 }
 
 void trainEditPanel::RefreshPanel()
@@ -149,7 +148,24 @@ void trainEditPanel::RefreshPanel()
     if ( trainKindPicker )
     {
         rightSizer->Remove( 1 );
-        delete m_trainEditBox;
+
+        if( rcbox != nullptr )
+        {
+            rcbox->Destroy();
+            rcbox = nullptr;
+        }
+        
+        if( upbox != nullptr )
+        {
+            upbox->Destroy();
+            upbox = nullptr;
+        }
+
+        if( pfbox != nullptr )
+        {
+            pfbox->Destroy();
+            pfbox = nullptr;
+        }
 
         this->initConf();
         track38ConfigTrain->SetPath( "/Train/" );
@@ -159,30 +175,29 @@ void trainEditPanel::RefreshPanel()
         switch ( sel )
         {
         case 0:
-            m_trainEditBox = new pfEditBox( this, wxID_ANY, "Edit PowerFunctions Settings" );
+            pfbox = new pfEditBox( this, wxID_ANY, "Edit PowerFunctions Settings" );
+            rightSizer->Insert( 1, pfbox, 0, wxALL | wxGROW, 5 );
             track38ConfigTrain->Write( "control", "pf" );
             break;
         
         case 1:
-            if ( wxGetApp().blutoothPermission )
-            {
-                m_trainEditBox = new upEditBox( this, wxID_ANY, "Edit PoweredUP Settings" );
-                track38ConfigTrain->Write( "control", "up" );
-            }
+            upbox = new upEditBox( this, wxID_ANY, "Edit PoweredUP Settings" );
+            rightSizer->Insert( 1, upbox, 0, wxALL | wxGROW, 5 );
+            track38ConfigTrain->Write( "control", "up" );
             break;
 
         case 2:
-            m_trainEditBox = new rcEditBox( this, wxID_ANY, "Edit 9V RC Settings" );
+            rcbox = new rcEditBox( this, wxID_ANY, "Edit 9V RC Settings" );
             track38ConfigTrain->Write( "control", "rc" );
+            rightSizer->Insert( 1, rcbox, 0, wxALL | wxGROW, 5 );
             break;
         }
 
-        rightSizer->Insert( 1, m_trainEditBox, 0, wxALL | wxGROW, 5 );
+        panelParent->SendSizeEvent();
+        panelParent->Refresh();
+
+        this->lastSel = trainKindPicker->GetSelection();
     }
-
-    panelParent->SendSizeEvent();
-
-    this->lastSel = trainKindPicker->GetSelection();
 }
 
 void trainEditPanel::initConf()
@@ -205,9 +220,9 @@ void trainEditPanel::OnNewTrain( wxCommandEvent& event )
 
     trainKindPicker->SetSelection( 0 );
     RefreshPanel();
-    pfEditBox* tmpPtr = ( pfEditBox* ) m_trainEditBox;
+    //pfEditBox* tmpPtr = ( pfEditBox* ) m_trainEditBox;
     
-    tmpPtr->AddTrain( trainName );
+    pfbox->AddTrain( trainName );
     m_trainPicker->SetStringSelection( trainName );
 }
 
@@ -264,20 +279,17 @@ void trainEditPanel::SaveTrain()
     
     if ( trainKindPicker->GetSelection() == 0 )
     {
-        pfEditBox* tmpPtr = ( pfEditBox* ) m_trainEditBox;
-        tmpPtr->SaveTrain();
+        pfbox->SaveTrain();
     }
 
     else if ( ( trainKindPicker->GetSelection() == 1 ) && wxGetApp().blutoothPermission )
     {
-        upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
-        tmpPtr->SaveTrain();
+        upbox->SaveTrain();
     }
 
     else if ( trainKindPicker->GetSelection() == 2 )
     {
-        rcEditBox* tmpPtr = ( rcEditBox* ) m_trainEditBox;
-        tmpPtr->SaveTrain();
+        rcbox->SaveTrain();
     }
 }
 
@@ -290,29 +302,26 @@ void trainEditPanel::SelectTrain()
     {
         trainKindPicker->SetSelection( 0 );
         this->RefreshPanel();
-        pfEditBox* tmpPtr = ( pfEditBox* ) m_trainEditBox;
-        tmpPtr->SelectTrain( m_trainPicker->GetStringSelection() );
+        pfbox->SelectTrain( m_trainPicker->GetStringSelection() );
     }
 
     else if ( this->GetTrainControl( m_trainPicker->GetStringSelection() ).IsSameAs( "up" ) )
     {
-        trainKindPicker->SetSelection( 1 );
         if ( wxGetApp().blutoothPermission )
         {
+            trainKindPicker->SetSelection( 1 );
             this->RefreshPanel();
-            upEditBox* tmpPtr = ( upEditBox* ) m_trainEditBox;
-            tmpPtr->SelectTrain( m_trainPicker->GetStringSelection() );
+            upbox->SelectTrain( m_trainPicker->GetStringSelection() );
         }
         else
-            delete m_trainEditBox;
+            m_trainPicker->SetSelection( this->lastSel );
     }
 
     else if ( this->GetTrainControl( m_trainPicker->GetStringSelection() ).IsSameAs( "rc" ) )
     {
         trainKindPicker->SetSelection( 2 );
         this->RefreshPanel();
-        rcEditBox* tmpPtr = ( rcEditBox* ) m_trainEditBox;
-        tmpPtr->SelectTrain( m_trainPicker->GetStringSelection() );
+        rcbox->SelectTrain( m_trainPicker->GetStringSelection() );
     }
 }
 
