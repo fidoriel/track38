@@ -38,6 +38,8 @@ class train
         void setPfChannel( wxString wxCh );
         void setPfSubChannel( wxString wxSub );
         void setPfGPIO( wxString wxGPIO );
+        void SetButton( wxString file );
+        bool connectBLE();
 
         wxString getName();
         void OnStop( wxCommandEvent& event );
@@ -49,7 +51,7 @@ class train
 
         void createControls( wxPanel* parent );
 
-        bool isConnected;
+        bool isConnected = false;
 
         bool isPf();
         bool isUp();

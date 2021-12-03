@@ -72,31 +72,37 @@ void trainControlPanel::loadTrains( std::unordered_map< wxString, int > &cons )
         selTrain->setMaxSpeed( track38ConfigTrain->Read( "maxSpeed", "7" ) );
         wxString port = track38ConfigTrain->Read( "port", "" );
         selTrain->setPort( port );
-    
-        if ( cons.count( port ) )
-        {
-            // wxMessageBox( "port used" );
-            selTrain->con = cons[ port ];
-        }
-        
-        else
-        {
-            int con = connect_port( selTrain->portPoint );
 
-            if ( con < 0 )
+        // Check port already connected
+        if ( selTrain->isPf() || selTrain->isRc() )
+        { 
+            if ( cons.count( port ) )
             {
-                // usleep( 2000000 );
-                con = connect_port( selTrain->portPoint );
-                if ( con < 0 )
-                {
-                    wxString msg;
-                    msg.Printf( "The port %s is not avaliable. Please select an other port or plug in the device.", selTrain->port );
-                    wxMessageBox( msg, "Port not avaliable");
-                }
+                // wxMessageBox( "port used" );
+                selTrain->con = cons[ port ];
+                selTrain->isConnected = true;
             }
             
-            selTrain->con = con;
-            cons.insert( { port, con } );         
+            else
+            {
+                int con = connect_port( selTrain->portPoint );
+
+                if ( con < 0 )
+                {
+                    // usleep( 2000000 );
+                    con = connect_port( selTrain->portPoint );
+                    if ( con < 0 )
+                    {
+                        wxString msg;
+                        msg.Printf( "The port %s is not avaliable. Please select an other port or plug in the device.", selTrain->port );
+                        wxMessageBox( msg, "Port not avaliable");
+                    }
+                }
+                
+                selTrain->con = con;
+                cons.insert( { port, con } );
+                selTrain->isConnected = true;      
+            }
         }
 
         if ( selTrain->isPf() )

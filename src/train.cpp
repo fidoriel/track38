@@ -12,9 +12,18 @@ void train::createControls( wxPanel* parent )
     this->speedSlider = new wxSlider( parent, ID_ChangeSpeed, 0, this->maxTrainSpeed*( -1 ), this->maxTrainSpeed, wxDefaultPosition, wxSize( 200, -1 ), wxSL_AUTOTICKS );
     this->stopBtn = new wxButton( parent, ID_StopTrain, wxEmptyString, wxDefaultPosition, wxSize( 35, 35 ) );
 
+    if ( this->isUp() )
+        this->SetButton( "ble.png" );
+
+    else
+        this->SetButton( "stop.png" );
+}
+
+void train::SetButton( wxString file )
+{
     wxBitmap bitmap( 20, 20 );
     wxImage image = bitmap.ConvertToImage();
-    image.LoadFile( wxGetApp().ressourcePath + "icons/stop.png", wxBITMAP_TYPE_PNG );
+    image.LoadFile( wxGetApp().ressourcePath + "icons/" + file, wxBITMAP_TYPE_PNG );
     image.Rescale( 20, 20, wxIMAGE_QUALITY_BICUBIC );
     this->stopBtn->SetBitmap( wxBitmap( image ) );
 }
@@ -239,6 +248,9 @@ void train::CloseCon()
     if ( this->isPf() )
         close_port( this->con );
 }
+
+bool train::connectBLE()
+{}
 
 train::~train()
 {
