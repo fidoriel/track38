@@ -211,9 +211,12 @@ void trainEditPanel::RefreshPanel()
 
         // wxMessageBox("resize event");
         rightSizer->Layout();
+        topSizer->Layout();
+        
 
+        this->Refresh();
+        this->Update();
         this->SendSizeEventToParent();
-        panelParent->Refresh();
 
         this->lastSel = trainKindPicker->GetSelection();
     }
