@@ -34,6 +34,8 @@ public:
     void OnNbChangeing( wxBookCtrlEvent& event );
     void OnNbChanged( wxBookCtrlEvent& event );
     void OnSettings( wxCommandEvent& event );
+    void OnIdle( wxIdleEvent& event );
+    void OnRefreshUIControlPanel( wxThreadEvent& event );
     void checkDir();
 
     wxMenu* fileMenu = nullptr;

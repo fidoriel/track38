@@ -115,7 +115,8 @@ void trainControlPanel::loadTrains( std::unordered_map< wxString, int > &cons )
         else if ( selTrain->isUp() )
         {
             selTrain->setHubAdress( track38ConfigTrain->Read( "hubAdress", "" ) );
-            selTrain->setUpChannel( track38ConfigTrain->Read( "channel", "1" ) );
+            selTrain->setHubName( track38ConfigTrain->Read( "hubname", "" ) );
+            selTrain->setUpChannel( track38ConfigTrain->Read( "channel", "A" ) );
             selTrain->setTwoMotors( bool( track38ConfigTrain->ReadBool( "twoMotorsUsed", false ) ) );
         }
     }
@@ -131,6 +132,23 @@ void trainControlPanel::StopAll()
     for (train* & selTrain : this->trains)
     {
         selTrain->Stop();
+    }  
+}
+
+void trainControlPanel::BLEDisconnectAll()
+{
+    for (train* & selTrain : this->trains)
+    {
+        if ( selTrain->isUp() )
+            selTrain->CloseCon();
+    }  
+}
+
+void trainControlPanel::IdleButtonRefresh()
+{
+    for (train* & selTrain : this->trains)
+    {
+        selTrain->stopBtn->Refresh();
     }  
 }
 

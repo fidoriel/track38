@@ -22,6 +22,8 @@ class trainControlPanel : public wxScrolledWindow
 
         void OnStopAll( wxCommandEvent& event );
         void StopAll();
+        void BLEDisconnectAll();
+        void IdleButtonRefresh();
 
         ~trainControlPanel();
 

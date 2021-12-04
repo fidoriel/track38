@@ -7,8 +7,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define service = "00001623-1212-EFDE-1623-785FEABCD123"
-#define characteristic = "00001624-1212-EFDE-1623-785FEABCD123"
+#define serviceUUID = "00001623-1212-EFDE-1623-785FEABCD123"
+#define characteristicUUID = "00001624-1212-EFDE-1623-785FEABCD123"
 
 enum readOperations
 {
@@ -44,8 +44,16 @@ enum UpIO
     portAB = 0x39
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int motor_speed(uint8_t **cmd, uint8_t port, int8_t speed);
 int set_color(uint8_t **cmd, uint8_t port, uint8_t color);
 int subscribe(uint8_t **cmd, uint8_t port, uint8_t mode, bool subscribe);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif

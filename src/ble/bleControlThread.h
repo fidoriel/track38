@@ -7,27 +7,51 @@
 #include "../poweredup/PoweredUp.h"
 
 #include "wx/thread.h"
+#include "wx/msgdlg.h"
 
 #include <memory>
 #include <thread>
 #include <vector>
+#include <string>
+#include <functional>
+
+using namespace std;
 
 class bleControlThread : wxThread
 {
 public:
-    bleControlThread();
+    bleControlThread( string sadr, string sname );
+    void setCallbackFunc(std::function<void(bool)> onConStatusChange);
+    void connect();
+    void RequestTermination();
+    void idle();
     ~bleControlThread();
 
-    void queHub( std::string hub );
-    void sendCommand();
+    wxCriticalSection m_csCancelled;
+    bool threadTerminated = false;
+    bool hubDetected = false;
 
-    SimpleBLE::Adapter* adapter = nullptr;
-    std::vector< SimpleBLE::Peripheral > results;
-    std::vector< std::tuple< std::string, SimpleBLE::Peripheral> > hubList;
-    std::vector< std::string > hubQue;
+    SimpleBLE::Peripheral* hub = nullptr;
 
 private:
     virtual ExitCode Entry() wxOVERRIDE;
+
+    int idx = -1;
+
+    bool cmdInPipe = false;
+
+    string sadr;
+    string sname;
+    string message;
+
+    SimpleBLE::Adapter* adapter = nullptr;
+    std::vector< SimpleBLE::Peripheral > results;
+
+    std::function<void(bool)> onStatusChangeCallback;
+    std::vector<std::pair<SimpleBLE::BluetoothUUID, SimpleBLE::BluetoothUUID>> uuids;
+
+    bool connectionAttempt();
+    void sendCommand( uint8_t ary[], int len );
 };
 
 #endif

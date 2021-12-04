@@ -8,29 +8,94 @@ train::train( wxString wxName )
 
 void train::createControls( wxPanel* parent )
 {
+    this->parent = parent;
     this->trainName = new wxStaticText( parent, wxID_ANY, this->name );
     this->speedSlider = new wxSlider( parent, ID_ChangeSpeed, 0, this->maxTrainSpeed*( -1 ), this->maxTrainSpeed, wxDefaultPosition, wxSize( 200, -1 ), wxSL_AUTOTICKS );
     this->stopBtn = new wxButton( parent, ID_StopTrain, wxEmptyString, wxDefaultPosition, wxSize( 35, 35 ) );
 
-    if ( this->isUp() )
-        this->SetButton( "ble.png" );
+    speedSlider->SetValue( 0 );
+    this->SetCorrectPNG();
+}
 
+void train::SetCorrectPNG()
+{
+    if ( this->isUp() )
+    {
+        if ( this->isConnected )
+        {
+            if ( speedSlider->GetValue() == 0 )
+            {
+                this->SetButton( disconectPNG );
+            }
+            else
+            {
+                this->SetButton( stopPNG );
+            }
+        }
+        else
+        {
+            this->SetButton( connectPNG );
+        }
+    }
     else
-        this->SetButton( "stop.png" );
+    {
+        this->SetButton( stopPNG );
+    }
 }
 
 void train::SetButton( wxString file )
 {
-    wxBitmap bitmap( 20, 20 );
+    wxSize sz = this->stopBtn->GetSize();
+    double sf = 0.5;
+    sz.Scale( sf, sf );
+    wxBitmap bitmap( sz );
     wxImage image = bitmap.ConvertToImage();
     image.LoadFile( wxGetApp().ressourcePath + "icons/" + file, wxBITMAP_TYPE_PNG );
-    image.Rescale( 20, 20, wxIMAGE_QUALITY_BICUBIC );
+    image.Rescale( sz.GetWidth(), sz.GetHeight(), wxIMAGE_QUALITY_BICUBIC );
     this->stopBtn->SetBitmap( wxBitmap( image ) );
+    this->stopBtn->Refresh();
 }
 
 void train::OnStop( wxCommandEvent& event ) 
 {
-    this->Stop();
+    if ( this->isUp() && blect && blect->threadTerminated )
+    {
+        delete blect;
+        blect = nullptr;
+    }
+    
+    // try to connect
+    if ( ( this->isUp() && !this->isConnected ) && ( speedSlider->GetValue() == 0 ) )
+    {
+        if ( blect == nullptr )
+        {
+            //wxMessageBox("try connecting");
+            blect = new bleControlThread( this->upHubAdress, this->upHubName );
+
+            blect->setCallbackFunc([&](bool newStatus) {
+                wxMutexGuiEnter();
+
+                this->isConnected = newStatus;
+                this->SetCorrectPNG();
+
+                wxMutexGuiLeave();
+
+                wxThreadEvent event( wxEVT_THREAD, 424242 );
+                event.SetInt(-1); // that's all
+                wxQueueEvent( parent, event.Clone() );
+            });
+
+            blect->connect();
+        }
+    }
+    else if ( ( this->isUp() && this->isConnected ) && ( speedSlider->GetValue() == 0 ) )
+    {
+        this->blect->RequestTermination();
+    }
+    else
+    {
+        this->Stop();
+    }
 }
 
 void train::Stop()
@@ -46,6 +111,8 @@ void train::OnChangeSpeed( wxCommandEvent& event )
 
 void train::ChangeSpeed( int newSpeed )
 {
+    this->speed = newSpeed;
+
     if ( this->isPf() )
     {
         string serialSignal = "<T";
@@ -166,8 +233,13 @@ void train::ChangeSpeed( int newSpeed )
 
     else if ( this->isUp() )
     {
-
+        int len;
+        uint8_t *ary;
+        len = motor_speed( &ary, portA, -100);
+        
     }
+
+    this->SetCorrectPNG();
 }
 
 void train::setControl( wxString wxControl )
@@ -190,6 +262,11 @@ void train::setMaxSpeed( wxString wxSpeed )
 void train::setHubAdress( wxString wxHub )
 {
     this->upHubAdress = string( wxHub.mb_str() );
+}
+
+void train::setHubName( wxString wxHub )
+{
+    this->upHubName = string( wxHub.mb_str() );
 }
 
 void train::setUpChannel( wxString wxCh )
@@ -247,10 +324,14 @@ void train::CloseCon()
 {
     if ( this->isPf() )
         close_port( this->con );
+    else if ( this->isUp() && this->blect )
+        this->blect->RequestTermination();
 }
 
 bool train::connectBLE()
-{}
+{
+    return false;
+}
 
 train::~train()
 {
