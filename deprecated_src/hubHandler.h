@@ -7,7 +7,7 @@
 #include "simpleble/SimpleBLE.h"
 #include "simpleble/Adapter.h"
 
-#include "PoweredUpp.h"
+#include "PoweredUp.h"
 
 #include "wx/thread.h"
 

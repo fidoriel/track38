@@ -53,13 +53,13 @@ rcEditBox::rcEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 
     topSizerrcEdit->AddSpacer( 10 );
     topSizerrcEdit->AddSpacer( 10 );
-    
+
     // Top Sizer Settings
-    parent->SetSizer( topSizerrcEdit );
-    parent->Layout();
+    this->SetSizer( topSizerrcEdit );
+    this->Layout();
 	topSizerrcEdit->Fit( this );
     topSizerrcEdit->SetSizeHints( this );
-    parent->SendSizeEvent();
+    this->SendSizeEventToParent();
 }
 
 void rcEditBox::OnRefreshSerial( wxCommandEvent& event )

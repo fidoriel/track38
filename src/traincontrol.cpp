@@ -1,6 +1,10 @@
 #include "traincontrol.h"
 #include "track38App.h"
 
+BEGIN_EVENT_TABLE( trainControlPanel, wxPanel )
+    EVT_THREAD( ID_RefreshBmpButton, trainControlPanel::OnButtonRefresh )
+END_EVENT_TABLE()
+
 trainControlPanel::trainControlPanel( wxPanel* parent, int id ) : wxScrolledWindow( parent, id )
 {
     this->parent = parent;
@@ -22,7 +26,7 @@ void trainControlPanel::createControlBox()
         topSizer->Add( selTrain->stopBtn, 0, wxALL , 5 );
 
         selTrain->stopBtn->Bind( wxEVT_BUTTON, &train::OnStop, selTrain );
-        selTrain->speedSlider->Bind( wxEVT_SLIDER, &train::OnChangeSpeed, selTrain );
+        selTrain->speedSlider->Bind( wxEVT_SCROLL_THUMBRELEASE, &train::OnChangeSpeed, selTrain );
     }
 
     stopAllBtn = new wxButton( parent, ID_StopAll, "Stop All", wxDefaultPosition, wxDefaultSize );
@@ -35,6 +39,16 @@ void trainControlPanel::createControlBox()
     this->SetSizer(topSizer);
     this->FitInside();
     this->SetScrollRate(20, 20);
+
+    // Disable Buttons if port not found
+    for (train* & selTrain : trains)
+    {
+        if ( ( selTrain->isPf() || selTrain->isRc() ) && ( selTrain->con < 0 ) )
+        {
+            selTrain->stopBtn->Disable();
+            selTrain->isConnected = false;
+        }
+    }
 }
 
 void trainControlPanel::loadTrains( std::unordered_map< wxString, int > &cons )
@@ -72,31 +86,37 @@ void trainControlPanel::loadTrains( std::unordered_map< wxString, int > &cons )
         selTrain->setMaxSpeed( track38ConfigTrain->Read( "maxSpeed", "7" ) );
         wxString port = track38ConfigTrain->Read( "port", "" );
         selTrain->setPort( port );
-    
-        if ( cons.count( port ) )
-        {
-            // wxMessageBox( "port used" );
-            selTrain->con = cons[ port ];
-        }
-        
-        else
-        {
-            int con = connect_port( selTrain->portPoint );
 
-            if ( con < 0 )
+        // Check port already connected
+        if ( selTrain->isPf() || selTrain->isRc() )
+        { 
+            if ( cons.count( port ) )
             {
-                // usleep( 2000000 );
-                con = connect_port( selTrain->portPoint );
-                if ( con < 0 )
-                {
-                    wxString msg;
-                    msg.Printf( "The port %s is not avaliable. Please select an other port or plug in the device.", selTrain->port );
-                    wxMessageBox( msg, "Port not avaliable");
-                }
+                // wxMessageBox( "port used" );
+                selTrain->con = cons[ port ];
+                selTrain->isConnected = true;
             }
             
-            selTrain->con = con;
-            cons.insert( { port, con } );         
+            else
+            {
+                int con = connect_port( selTrain->portPoint );
+
+                if ( con < 0 )
+                {
+                    // usleep( 2000000 );
+                    con = connect_port( selTrain->portPoint );
+                    if ( con < 0 )
+                    {
+                        wxString msg;
+                        msg.Printf( "The port %s is not avaliable. Please select an other port or plug in the device.", selTrain->port );
+                        wxMessageBox( msg, "Port not avaliable");
+                    }
+                }
+                
+                selTrain->con = con;
+                cons.insert( { port, con } );
+                selTrain->isConnected = true;      
+            }
         }
 
         if ( selTrain->isPf() )
@@ -109,7 +129,8 @@ void trainControlPanel::loadTrains( std::unordered_map< wxString, int > &cons )
         else if ( selTrain->isUp() )
         {
             selTrain->setHubAdress( track38ConfigTrain->Read( "hubAdress", "" ) );
-            selTrain->setUpChannel( track38ConfigTrain->Read( "channel", "1" ) );
+            selTrain->setHubName( track38ConfigTrain->Read( "hubname", "" ) );
+            selTrain->setUpChannel( track38ConfigTrain->Read( "channel", "A" ) );
             selTrain->setTwoMotors( bool( track38ConfigTrain->ReadBool( "twoMotorsUsed", false ) ) );
         }
     }
@@ -125,6 +146,24 @@ void trainControlPanel::StopAll()
     for (train* & selTrain : this->trains)
     {
         selTrain->Stop();
+    }  
+}
+
+void trainControlPanel::BLEDisconnectAll()
+{
+    for (train* & selTrain : this->trains)
+    {
+        if ( selTrain->isUp() )
+            selTrain->CloseCon();
+    }  
+}
+
+void trainControlPanel::OnButtonRefresh( wxThreadEvent& event )
+{
+    //wxMessageBox("refresh");
+    for (train* & selTrain : this->trains)
+    {
+        selTrain->stopBtn->Refresh();
     }  
 }
 

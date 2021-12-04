@@ -13,6 +13,11 @@
 #include "train.h"
 #include "traincontrol.h"
 
+enum
+{
+    ID_RefreshBmpButton
+};
+
 class trainControlPanel : public wxScrolledWindow
 { 
     public:
@@ -22,6 +27,8 @@ class trainControlPanel : public wxScrolledWindow
 
         void OnStopAll( wxCommandEvent& event );
         void StopAll();
+        void BLEDisconnectAll();
+        void OnButtonRefresh( wxThreadEvent& event );
 
         ~trainControlPanel();
 
@@ -35,8 +42,11 @@ class trainControlPanel : public wxScrolledWindow
     
     enum
     {
-        ID_StopAll
+        ID_StopAll,
     };
+
+    private:
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

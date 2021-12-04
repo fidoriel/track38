@@ -36,11 +36,11 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     saveSizer->Add( m_NewBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Add( m_RenameBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
     saveSizer->Add( m_RemoveBtn, 0, wxALL | wxALIGN_CENTER | wxSHAPED, 5 );
-    saveSizer->Layout();
+    //saveSizer->Layout();
 
     leftSizer->Add( m_trainPicker, 1, wxGROW | wxALL, 5 );
     leftSizer->Add( saveSizer, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5 );
-    leftSizer->SetMinSize( 200, 0 );
+    //leftSizer->SetMinSize( 200, 0 );
 
     //
     // Right Edit and Buttons
@@ -74,9 +74,11 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     topSizer->Add( leftSizer, 1, wxALL, 5 );
     topSizer->Add( rightSizer, 4, wxALL, 5 );
 
-    parent->SetSizer( topSizer );
-    parent->Layout();
-	topSizer->Fit( this );
+    //this->SetSizerAndFit( topSizer );
+    // parent->SetSizer( topSizer );
+    // this->Layout();
+    // topSizer->Fit( this );
+    // topSizer->SetSizeHints( this );
 
     this->initConf();
     track38ConfigTrain->SetPath( "/Train/" );
@@ -100,6 +102,12 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
         m_trainPicker->SetSelection( 0 );
         this->SelectTrain();
     }
+
+    this->SetSizerAndFit( topSizer );
+    this->Layout();
+	topSizer->Fit( this );
+    topSizer->SetSizeHints( this );
+    this->SendSizeEventToParent();
 }
 
 void trainEditPanel::OnChangeControler( wxCommandEvent& event )
@@ -130,10 +138,10 @@ void trainEditPanel::OnChangeControler( wxCommandEvent& event )
 
     else if ( trainKindPicker->GetSelection() == 1 )
     {
-        wxMessageBox( "switch" );
+        //wxMessageBox( "switch" );
         upbox->SetTrainName( trainSel );
         upbox->SaveTrain();
-        wxMessageBox( "switch2" );
+        //wxMessageBox( "switch2" );
     }
 
     else if ( trainKindPicker->GetSelection() == 2 )
@@ -147,21 +155,24 @@ void trainEditPanel::RefreshPanel()
 {
     if ( trainKindPicker )
     {
+        //wxMessageBox( wxString::Format( wxT( "%i" ), (int) rightSizer->GetItemCount() ) );
+        //wxMessageBox("tkp");
         rightSizer->Remove( 1 );
+        rightSizer->Layout();
 
-        if( rcbox != nullptr )
+        if( rcbox )
         {
             rcbox->Destroy();
             rcbox = nullptr;
         }
         
-        if( upbox != nullptr )
+        if( upbox )
         {
             upbox->Destroy();
             upbox = nullptr;
         }
 
-        if( pfbox != nullptr )
+        if( pfbox )
         {
             pfbox->Destroy();
             pfbox = nullptr;
@@ -172,28 +183,36 @@ void trainEditPanel::RefreshPanel()
         track38ConfigTrain->SetPath( m_trainPicker->GetStringSelection() );
         
         int sel = trainKindPicker->GetSelection();
+        // wxMessageBox("before delete");
+        // delete m_trainEditBox;
         switch ( sel )
         {
         case 0:
             pfbox = new pfEditBox( this, wxID_ANY, "Edit PowerFunctions Settings" );
-            rightSizer->Insert( 1, pfbox, 0, wxALL | wxGROW, 5 );
+            rightSizer->Add( pfbox, 0, wxALL | wxGROW, 5 );
             track38ConfigTrain->Write( "control", "pf" );
             break;
         
         case 1:
+            // wxMessageBox("c1");
             upbox = new upEditBox( this, wxID_ANY, "Edit PoweredUP Settings" );
-            rightSizer->Insert( 1, upbox, 0, wxALL | wxGROW, 5 );
+            // wxMessageBox("upbox");
+            rightSizer->Add( upbox, 0, wxALL | wxGROW, 5 );
+            // wxMessageBox("upbox");
             track38ConfigTrain->Write( "control", "up" );
             break;
 
         case 2:
             rcbox = new rcEditBox( this, wxID_ANY, "Edit 9V RC Settings" );
             track38ConfigTrain->Write( "control", "rc" );
-            rightSizer->Insert( 1, rcbox, 0, wxALL | wxGROW, 5 );
+            rightSizer->Add( rcbox, 0, wxALL | wxGROW, 5 );
             break;
         }
 
-        panelParent->SendSizeEvent();
+        // wxMessageBox("resize event");
+        rightSizer->Layout();
+
+        this->SendSizeEventToParent();
         panelParent->Refresh();
 
         this->lastSel = trainKindPicker->GetSelection();
@@ -210,12 +229,13 @@ void trainEditPanel::initConf()
 
 void trainEditPanel::OnNewTrain( wxCommandEvent& event )
 {
+    // wxMessageBox("new train");
     int i = 1;
     while ( !( m_trainPicker->FindString( "Train " + wxString::Format( wxT( "%i" ), i ) ) == wxNOT_FOUND ) )
         i += 1;
 
     wxString trainName = "Train " + wxString::Format( wxT( "%i" ), i );
-
+    // wxMessageBox("stop");
     m_trainPicker->Append( trainName );
 
     trainKindPicker->SetSelection( 0 );

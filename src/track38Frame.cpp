@@ -14,6 +14,7 @@ BEGIN_EVENT_TABLE( track38Frame, wxFrame )
     // EVT_MENU( ID_Import,  track38Frame:: )
     EVT_NOTEBOOK_PAGE_CHANGING( ID_NbChanged, track38Frame::OnNbChangeing )
     EVT_NOTEBOOK_PAGE_CHANGED( ID_NbChanged, track38Frame::OnNbChanged )
+    //EVT_IDLE( track38Frame::OnIdle )
     //EVT_CLOSE( track38Frame::~track38Frame )
 END_EVENT_TABLE()
 
@@ -155,11 +156,12 @@ void track38Frame::OnNbChangeing( wxBookCtrlEvent& event )
                 case wxID_YES:
 		    // wxMessageBox( "stop" );
                     m_controlPanel->m_trainControlBox->m_trainControlPanel->StopAll();
+                    m_controlPanel->m_trainControlBox->m_trainControlPanel->BLEDisconnectAll();
 
                     #if defined(WIN32)
                     Sleep(500);
                     #else
-		            usleep(50000);
+		            usleep(100000);
                     #endif
 
                     m_controlPanel->CloseAll();
@@ -210,6 +212,11 @@ void track38Frame::checkDir()
 void track38Frame::OnSettings( wxCommandEvent& event )
 {
     wxGetApp().ShowPreferencesEditor( this );
+}
+
+void track38Frame::OnIdle( wxIdleEvent& event )
+{
+    //m_controlPanel->m_trainControlBox->m_trainControlPanel->IdleButtonRefresh();
 }
 
 track38Frame::~track38Frame()

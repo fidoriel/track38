@@ -73,6 +73,9 @@
         "iomanip": "cpp",
         "thread": "cpp",
         "valarray": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "poweredupp.h": "c",
+        "__bits": "cpp",
+        "__functional_03": "cpp"
     }
 }

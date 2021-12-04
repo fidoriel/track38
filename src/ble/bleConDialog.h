@@ -27,6 +27,8 @@ public:
     void OnGetSelection( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnScanFinished( wxThreadEvent& event );
+    void OnScanFound( wxThreadEvent& event );
+    void OnOK( wxCommandEvent& event );
     void scan();
     void OnTriggerScan( wxCommandEvent& event );
     std::string getBleId( std::string tag );
@@ -35,14 +37,15 @@ public:
 
     bool adapterExists = false;
 
-    bleSearch* blesearch = nullptr;
+    bleSearch *blesearch = nullptr;
+    wxWindow *parent = nullptr;
 
-    wxSizer* topSizer = nullptr;
-    wxSizer* buttonSizer = nullptr;
-    wxListBox* bleDeviceList = nullptr;
-    wxButton* selDevButton = nullptr;
-    wxButton* rescanButton = nullptr;
-    wxButton* cancelButton = nullptr;
+    wxSizer *topSizer = nullptr;
+    wxSizer *buttonSizer = nullptr;
+    wxListBox *bleDeviceList = nullptr;
+    wxButton *selDevButton = nullptr;
+    wxButton *rescanButton = nullptr;
+    wxButton *cancelButton = nullptr;
 
     std::vector<SimpleBLE::Peripheral> peripheralsPtr;
 
@@ -50,8 +53,7 @@ public:
     {
         ID_REFRESHSCAN,
         ID_SELECTIONLISTBOX,
-        ID_CANCEL,
-        FINISHED_BLE_ID = 100000
+        ID_CANCEL
     };
 
 private:

@@ -27,6 +27,10 @@ int bleSearch::scan()
         wxMutexGuiLeave();
 
         wxMilliSleep(50);
+
+        wxThreadEvent event( wxEVT_THREAD, ITEM_LIST_APPENDED_ID );
+        event.SetInt(-1); // that's all
+        wxQueueEvent( parent, event.Clone() );
     });
 
     //wxMessageBox( "Thread Start" );
@@ -38,9 +42,15 @@ int bleSearch::scan()
         std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
         ctr++;
 
-        if ( TestDestroy() || CancelationReqested() )
+        if ( TestDestroy() )
         {
             this->adapter->scan_stop();
+            return 0;
+        }
+        if ( CancelationReqested() )
+        {
+            this->adapter->scan_stop();
+            results = adapter->scan_get_results();
             return 0;
         }
     }
@@ -55,7 +65,7 @@ int bleSearch::scan()
         if ( TestDestroy() || CancelationReqested() )
             return 0;
     }
-
+    
     results = adapter->scan_get_results();
 
     // notify the main thread

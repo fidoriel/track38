@@ -34,7 +34,7 @@ class trainEditPanel : public wxPanel
         wxStaticBoxSizer* leftSizer = nullptr;
         wxListBox* m_trainPicker = nullptr;
         wxStaticBox* rightBox = nullptr;
-        wxSizer* rightSizer = nullptr;
+        wxStaticBoxSizer* rightSizer = nullptr;
         wxRadioBox* trainKindPicker = nullptr;
         
         rcEditBox* rcbox = nullptr;

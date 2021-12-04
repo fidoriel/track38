@@ -4,8 +4,8 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/src/**",
-                "/Users/lucakleinschmidt/wxWidgets-3.1.4/macbuild/lib/wx/include/osx_cocoa-unicode-static-3.1",
-                "/Users/lucakleinschmidt/wxWidgets-3.1.4/include"                
+                "~/wxWidgets/macbuild/lib/wx/include/osx_cocoa-unicode-static-3.1",
+                "~/wxWidgets/include"                
             ],
             "defines": [
                 "WX_PRECOMP",
@@ -41,8 +41,8 @@
             "name": "Linux",            
             "includePath": [
                 "${workspaceFolder}/src/**",
-                "/home/luca/wxWidgets-3.1.4-GTK3/gtkbuild/lib/wx/include/gtk3-unicode-static-3.1",
-                "/home/luca/wxWidgets-3.1.4-GTK3/include"      
+                "~/wxWidgets-3.1.4-GTK3/gtkbuild/lib/wx/include/gtk3-unicode-static-3.1",
+                "~/wxWidgets-3.1.4-GTK3/include"      
             ],            
             "defines": [
                 "WX_PRECOMP",

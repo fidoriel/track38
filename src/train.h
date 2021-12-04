@@ -13,6 +13,9 @@
 #include "wx/msgdlg.h"
 #include <wx/stattext.h>
 
+#include "ble/bleControlThread.h"
+#include "poweredup/PoweredUp.h"
+
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__)
 #include "serial/serial_unix.h"
 #endif
@@ -29,15 +32,22 @@ class train
     public:
         train( wxString wxName );
         ~train();
+
+        bleControlThread *blect = nullptr;
+        wxPanel* parent = nullptr;
+
         void setControl( wxString wxControl );
         void setPort( wxString wxControl );
         void setMaxSpeed( wxString wxSpeed );
-        void setHubAdress( wxString wxControl );
+        void setHubAdress( wxString wxHub );
+        void setHubName( wxString wxHub );
         void setUpChannel( wxString wxCh );
         void setTwoMotors( bool is );
         void setPfChannel( wxString wxCh );
         void setPfSubChannel( wxString wxSub );
         void setPfGPIO( wxString wxGPIO );
+        void SetButton( wxString file );
+        void SetCorrectPNG();
 
         wxString getName();
         void OnStop( wxCommandEvent& event );
@@ -49,7 +59,8 @@ class train
 
         void createControls( wxPanel* parent );
 
-        bool isConnected;
+        bool isConnected = false;
+        int speed = 0;
 
         bool isPf();
         bool isUp();
@@ -69,6 +80,7 @@ class train
 
         //UP
         string upHubAdress;
+        string upHubName;
         char upChannel;
         bool upTwoMotorsUsed;
 
@@ -83,6 +95,10 @@ class train
             ID_StopTrain,
             ID_ChangeSpeed
         };
+    private:
+        string stopPNG = "stop.png";
+        string connectPNG = "ble.png";
+        string disconectPNG = "bleCancel.png";
 };
 
 #endif
