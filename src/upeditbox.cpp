@@ -78,6 +78,7 @@ void upEditBox::OnBleMenue( wxCommandEvent& event )
     {
         //SimpleBLE::Peripheral peripheral = dlg.getSelectedPeripheral();
         //wxMessageBox( dlg.blesearch->peripherals[ dlg.selection ].identifier() );
+        //wxMessageBox("ok");
         if ( dlg->selection != -1 )
         {
             bleDevName->SetValue( dlg->getBleId( std::string( dlg->bleDeviceList->GetString( dlg->selection ).mb_str() ) ) );

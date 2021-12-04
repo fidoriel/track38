@@ -32,18 +32,18 @@ void bleControlThread::idle()
 {
     while ( 1 )
     {
-        std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-
         if ( this->cmdInPipe )
         {
-            //peripheral.write_request(uuids[1].first, uuids[1].second, )
+            hub->write_request(uuids[0].first, uuids[0].second, this->message );
             this->cmdInPipe = false;
-       }
+        }
 
         if ( TestDestroy() || this->threadTerminated )
         {
             break;
         }
+
+        std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
     }
 
     this->hub->disconnect();
@@ -52,9 +52,8 @@ void bleControlThread::idle()
 
 wxThread::ExitCode bleControlThread::Entry()
 {
-    if ( this->adapter )
+    if ( this->adapter && this->connectionAttempt() )
     {
-        this->connectionAttempt();
         this->idle();
     }
 
@@ -106,34 +105,40 @@ bool bleControlThread::connectionAttempt()
     for (int i = 0; i < results.size(); i++) {
         if ( ( results[ i ].address().compare( this->sadr ) == 0 ) || ( results[ i ].identifier().compare( this->sname ) == 0 ) )
             this->hub = &results[ i ];
-            this->idx = i;
     }
 
-    // notify the main thread
-    //wxCommandEvent event( wxEVT_COMMAND_BUTTON_CLICKED, FINISHED_BLE_ID );
-    //event.SetInt(n);  // pass some data along the event, a number in this case
-    //this->parent->GetEventHandler()->AddPendingEvent( event );
+    if ( this->hub )
+    {
+        this->hub->connect();
+        if ( this->hub->is_connected() )
+        {
+            this->onStatusChangeCallback(true);
 
-    for (auto service : this->hub->services()) {
-        for (auto characteristic : service.characteristics) {
-            uuids.push_back(std::make_pair(service.uuid, characteristic));
+            for (auto service : this->hub->services())
+            {
+                for (auto characteristic : service.characteristics)
+                {
+                    uuids.push_back(std::make_pair(service.uuid, characteristic));
+                }
+            }
+
+            return true;
         }
     }
-
-    this->hub->connect();
-
-    if ( this->hub->is_connected() )
+    else
     {
-        this->onStatusChangeCallback(true);
+        this->onStatusChangeCallback(false);
+        this->threadTerminated = true;
     }
 
-    return 0;
+    return false;
 }
 
 void bleControlThread::sendCommand( uint8_t ary[], int len )
 {
     wxCriticalSectionLocker lock(m_csCancelled);
-    //message = new string((const char*) ary, len);
+    this->message = string((const char*) ary, len);
+    this->cmdInPipe = true;
 }
 
 bleControlThread::~bleControlThread()

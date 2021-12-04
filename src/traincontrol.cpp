@@ -1,6 +1,10 @@
 #include "traincontrol.h"
 #include "track38App.h"
 
+BEGIN_EVENT_TABLE( trainControlPanel, wxPanel )
+    EVT_THREAD( ID_RefreshBmpButton, trainControlPanel::OnButtonRefresh )
+END_EVENT_TABLE()
+
 trainControlPanel::trainControlPanel( wxPanel* parent, int id ) : wxScrolledWindow( parent, id )
 {
     this->parent = parent;
@@ -22,7 +26,7 @@ void trainControlPanel::createControlBox()
         topSizer->Add( selTrain->stopBtn, 0, wxALL , 5 );
 
         selTrain->stopBtn->Bind( wxEVT_BUTTON, &train::OnStop, selTrain );
-        selTrain->speedSlider->Bind( wxEVT_SLIDER, &train::OnChangeSpeed, selTrain );
+        selTrain->speedSlider->Bind( wxEVT_SCROLL_THUMBRELEASE, &train::OnChangeSpeed, selTrain );
     }
 
     stopAllBtn = new wxButton( parent, ID_StopAll, "Stop All", wxDefaultPosition, wxDefaultSize );
@@ -35,6 +39,16 @@ void trainControlPanel::createControlBox()
     this->SetSizer(topSizer);
     this->FitInside();
     this->SetScrollRate(20, 20);
+
+    // Disable Buttons if port not found
+    for (train* & selTrain : trains)
+    {
+        if ( ( selTrain->isPf() || selTrain->isRc() ) && ( selTrain->con < 0 ) )
+        {
+            selTrain->stopBtn->Disable();
+            selTrain->isConnected = false;
+        }
+    }
 }
 
 void trainControlPanel::loadTrains( std::unordered_map< wxString, int > &cons )
@@ -144,8 +158,9 @@ void trainControlPanel::BLEDisconnectAll()
     }  
 }
 
-void trainControlPanel::IdleButtonRefresh()
+void trainControlPanel::OnButtonRefresh( wxThreadEvent& event )
 {
+    //wxMessageBox("refresh");
     for (train* & selTrain : this->trains)
     {
         selTrain->stopBtn->Refresh();

@@ -47,7 +47,6 @@ class train
         void setPfSubChannel( wxString wxSub );
         void setPfGPIO( wxString wxGPIO );
         void SetButton( wxString file );
-        bool connectBLE();
         void SetCorrectPNG();
 
         wxString getName();

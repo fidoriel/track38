@@ -10,7 +10,7 @@ void editBox::refreshSerial()
     #if defined( __linux__ ) || defined( __FreeBSD__ ) || defined( __APPLE__ )
         this->serialArray.Empty();
         int comportsElements;
-        char directory_name[  ] = "/dev/";
+        char directory_name[] = "/dev/";
         DIR *ptr;
         struct dirent *directory;
         ptr = opendir( directory_name );

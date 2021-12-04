@@ -13,6 +13,8 @@
 #include <thread>
 #include <vector>
 #include <string>
+#include <iostream>
+#include<sstream>
 #include <functional>
 
 using namespace std;
@@ -25,6 +27,7 @@ public:
     void connect();
     void RequestTermination();
     void idle();
+    void sendCommand( uint8_t ary[], int len );
     ~bleControlThread();
 
     wxCriticalSection m_csCancelled;
@@ -36,7 +39,7 @@ public:
 private:
     virtual ExitCode Entry() wxOVERRIDE;
 
-    int idx = -1;
+    int bleCharIDX = -1;
 
     bool cmdInPipe = false;
 
@@ -51,7 +54,6 @@ private:
     std::vector<std::pair<SimpleBLE::BluetoothUUID, SimpleBLE::BluetoothUUID>> uuids;
 
     bool connectionAttempt();
-    void sendCommand( uint8_t ary[], int len );
 };
 
 #endif

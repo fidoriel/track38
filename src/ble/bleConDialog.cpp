@@ -3,13 +3,16 @@
 BEGIN_EVENT_TABLE( bleConDialog, wxDialog )
     EVT_BUTTON( ID_REFRESHSCAN, bleConDialog::OnTriggerScan )
     EVT_BUTTON( ID_CANCEL, bleConDialog::OnClose )
+    EVT_BUTTON( wxID_OK, bleConDialog::OnOK )
     EVT_LISTBOX( ID_SELECTIONLISTBOX, bleConDialog::OnGetSelection )
     EVT_THREAD( FINISHED_BLE_ID, bleConDialog::OnScanFinished )
+    EVT_THREAD( ITEM_LIST_APPENDED_ID, bleConDialog::OnScanFound )
     //EVT_CLOSE( bleConDialog::OnClose )
 END_EVENT_TABLE()
 
 bleConDialog::bleConDialog( wxWindow *parent ) : wxDialog( parent, wxID_ANY, "Search for PoweredUP Hubs", wxDefaultPosition, wxSize(-1, -1), wxCAPTION )
 {
+    this->parent = parent;
     auto adapter_list = SimpleBLE::Adapter::get_adapters();
     if (adapter_list.size() == 0)
     {
@@ -53,6 +56,13 @@ void bleConDialog::OnClose( wxCommandEvent& event )
     this->Close();
 }
 
+void bleConDialog::OnOK( wxCommandEvent& event )
+{
+    blesearch->RequestTermination();
+    wxMilliSleep(100);
+    event.Skip();
+}
+
 void bleConDialog::OnTriggerScan( wxCommandEvent& event )
 {
     this->triggerScan();
@@ -81,6 +91,7 @@ std::string bleConDialog::getBleId( std::string tag )
     for (size_t i = 0; i < blesearch->results.size(); i++)
         if ( !tag.compare( blesearch->results[i].identifier() ) || !tag.compare( blesearch->results[i].address() ) )
             return blesearch->results[i].identifier();
+    return std::string("");
 }
 
 std::string bleConDialog::getBleAdr( std::string tag )
@@ -88,6 +99,7 @@ std::string bleConDialog::getBleAdr( std::string tag )
     for (size_t i = 0; i < blesearch->results.size(); i++)
         if ( !tag.compare( blesearch->results[i].identifier() ) || !tag.compare( blesearch->results[i].address() ) )
             return blesearch->results[i].address();
+    return std::string("");
 }
 
 void bleConDialog::OnGetSelection( wxCommandEvent& event )
@@ -99,12 +111,16 @@ void bleConDialog::OnGetSelection( wxCommandEvent& event )
         this->selection = -1;
 }
 
+void bleConDialog::OnScanFound( wxThreadEvent& event )
+{
+    this->bleDeviceList->Refresh();
+    if( this->bleDeviceList->GetCount() > 0)
+        this->selDevButton->Enable();
+}
+
 void bleConDialog::OnScanFinished( wxThreadEvent& event )
 {
     this->rescanButton->Enable();
-
-    if( this->bleDeviceList->GetCount() > 0)
-        this->selDevButton->Enable();
 }
 
 bleConDialog::~bleConDialog()

@@ -13,6 +13,12 @@
 #include <memory>
 #include <thread>
 
+enum
+{
+    FINISHED_BLE_ID,
+    ITEM_LIST_APPENDED_ID
+};
+
 class bleSearch : wxThread
 {
 public:
@@ -31,7 +37,6 @@ public:
 
     SimpleBLE::Adapter* adapter = nullptr;
     std::vector<SimpleBLE::Peripheral> results;
-    const int FINISHED_BLE_ID = 100000;
 
 private:
     virtual ExitCode Entry() wxOVERRIDE;

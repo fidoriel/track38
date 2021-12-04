@@ -80,9 +80,9 @@ void train::OnStop( wxCommandEvent& event )
 
                 wxMutexGuiLeave();
 
-                wxThreadEvent event( wxEVT_THREAD, 424242 );
+                wxThreadEvent event( wxEVT_THREAD, ID_RefreshBmpButton );
                 event.SetInt(-1); // that's all
-                wxQueueEvent( parent, event.Clone() );
+                wxQueueEvent( this->parent, event.Clone() );
             });
 
             blect->connect();
@@ -90,7 +90,8 @@ void train::OnStop( wxCommandEvent& event )
     }
     else if ( ( this->isUp() && this->isConnected ) && ( speedSlider->GetValue() == 0 ) )
     {
-        this->blect->RequestTermination();
+        if ( this->blect )
+            this->blect->RequestTermination();
     }
     else
     {
@@ -233,10 +234,13 @@ void train::ChangeSpeed( int newSpeed )
 
     else if ( this->isUp() )
     {
-        int len;
-        uint8_t *ary;
-        len = motor_speed( &ary, portA, -100);
-        
+        if ( this->blect )
+        {
+            int len;
+            uint8_t *ary;
+            len = motor_speed( &ary, portA, newSpeed * 10 );
+            this->blect->sendCommand( ary, len );
+        }
     }
 
     this->SetCorrectPNG();
@@ -328,13 +332,7 @@ void train::CloseCon()
         this->blect->RequestTermination();
 }
 
-bool train::connectBLE()
-{
-    return false;
-}
-
 train::~train()
 {
-    if ( this->isPf() )
-        this->CloseCon();
+    this->CloseCon();
 }

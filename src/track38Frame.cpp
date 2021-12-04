@@ -14,7 +14,6 @@ BEGIN_EVENT_TABLE( track38Frame, wxFrame )
     // EVT_MENU( ID_Import,  track38Frame:: )
     EVT_NOTEBOOK_PAGE_CHANGING( ID_NbChanged, track38Frame::OnNbChangeing )
     EVT_NOTEBOOK_PAGE_CHANGED( ID_NbChanged, track38Frame::OnNbChanged )
-    EVT_THREAD( 424242, bleConDialog::OnScanFinished )
     //EVT_IDLE( track38Frame::OnIdle )
     //EVT_CLOSE( track38Frame::~track38Frame )
 END_EVENT_TABLE()
@@ -218,11 +217,6 @@ void track38Frame::OnSettings( wxCommandEvent& event )
 void track38Frame::OnIdle( wxIdleEvent& event )
 {
     //m_controlPanel->m_trainControlBox->m_trainControlPanel->IdleButtonRefresh();
-}
-
-void track38Frame::OnRefreshUIControlPanel( wxThreadEvent& event )
-{
-    m_controlPanel->m_trainControlBox->m_trainControlPanel->IdleButtonRefresh();
 }
 
 track38Frame::~track38Frame()

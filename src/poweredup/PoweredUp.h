@@ -7,8 +7,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define serviceUUID = "00001623-1212-EFDE-1623-785FEABCD123"
-#define characteristicUUID = "00001624-1212-EFDE-1623-785FEABCD123"
+static const char serviceUUID[] = "00001623-1212-EFDE-1623-785FEABCD123";
+static const char characteristicUUID[] = "00001624-1212-EFDE-1623-785FEABCD123";
 
 enum readOperations
 {
