@@ -17,6 +17,7 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
     refreshSizer = new wxBoxSizer( wxHORIZONTAL );
     bleDevTxt = new wxStaticText( this, wxID_ANY, "Blutooth Device:" );
     bleDevName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 200, -1 ), 0L, wxDefaultValidator, "upPort" );
+    bleDevName->SetEditable(false);
 
     m_RefreshBtn = new wxButton( this, ID_SCANBLE, "Scan for Hubs", wxDefaultPosition, wxDefaultSize );
     refreshSizer->Add( bleDevName, 0, wxALL, 5 );
@@ -24,6 +25,7 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 
     hubAdressTxt = new wxStaticText( this, wxID_ANY, "Hub Adress:" );
     hubAdress = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 200, -1 ), 0L, wxDefaultValidator, "upHubAdress" );
+    hubAdress->SetEditable(false);
 
     channelTxt = new wxStaticText( this, wxID_ANY, "PoweredUP Hub Channel:" );
     channel.Add( "A" );
@@ -32,7 +34,7 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 
     hasTwoMotorsTxt = new wxStaticText( this, wxID_ANY, "Two Motors used:" );
     hasTwoMotors = new wxCheckBox( this, wxID_ANY, wxT( "" ), wxDefaultPosition, wxDefaultSize, 0L, wxDefaultValidator, "upAreTwoMotorsUsed" );
-
+    hasTwoMotors->Disable();
 
     maxSpeedTxt = new wxStaticText( this, wxID_ANY, "Train Max Speed" );
     maxSpeedPicker = new wxSpinCtrl( this, wxID_ANY, "7", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 7, "upSpeed" );

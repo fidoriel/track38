@@ -25,7 +25,7 @@ void track38Frame::OnAbout( wxCommandEvent& event )
 
     //Message window
     wxString msg;
-    msg.Printf( "track38 is a LEGO Train Layout Control Software developed by fidoriel. It is able to control LEGO PoweredUp, PowerFunctions and Track Switches via Arduino and esp8266.", wxVERSION_STRING );
+    msg.Printf( "track38 is a LEGO Train Layout Control Software developed by fidoriel. It is able to control LEGO PoweredUp, PowerFunctions and Track Switches via Arduino.", wxVERSION_STRING );
     wxString title;
     title.Printf( "About %s", wxGetApp().GetAppName() );
     wxMessageBox( msg, title, wxOK | wxICON_INFORMATION, this );
@@ -104,8 +104,8 @@ track38Frame::track38Frame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName()/
     helpMenu = new wxMenu;
     helpMenu->Append( wxID_ABOUT );
     helpMenu->Append( ID_VisitGithub, "GitHub Development Page", "" );
-    helpMenu->Append( wxID_PREFERENCES );
-    Bind( wxEVT_COMMAND_MENU_SELECTED, &track38Frame::OnSettings, this, wxID_PREFERENCES );
+    // helpMenu->Append( wxID_PREFERENCES );
+    // Bind( wxEVT_COMMAND_MENU_SELECTED, &track38Frame::OnSettings, this, wxID_PREFERENCES );
 
     fileMenu = new wxMenu;
     fileMenu->Append( ID_ImportT, "Import Trains" );

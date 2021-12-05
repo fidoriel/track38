@@ -88,7 +88,7 @@ class mapEditPanel : public wxPanel
         wxStaticText* labelGpio = nullptr;
         wxSpinCtrl* gpioPicker = nullptr;
         wxStaticText* labelDir = nullptr;
-        wxChoice* dirPicker = nullptr;
+        wxStaticText* dirPicker = nullptr;
         wxStaticText* labelManufacturer = nullptr;
         wxChoice* manufacturerPicker = nullptr;
 

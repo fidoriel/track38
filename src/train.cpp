@@ -236,10 +236,34 @@ void train::ChangeSpeed( int newSpeed )
     {
         if ( this->blect )
         {
+            int port = portA;
+            if ( ( this->upChannel == 'b' ) || ( this->upChannel == 'B' ) )
+                port = portB;
+            
+            // Different behaviour if two motors used; upChannel motor is first.
             int len;
             uint8_t *ary;
-            len = motor_speed( &ary, portA, newSpeed * 10 );
-            this->blect->sendCommand( ary, len );
+
+            if ( this->upTwoMotorsUsed )
+            {
+                int port2 = portB;
+                if ( port == portB )
+                    port2 = portA;
+
+                int len2;
+                uint8_t *ary2;
+
+                len = motor_speed( &ary, port, newSpeed * 10 );
+                len2 = motor_speed( &ary2, port2, newSpeed * ( -10 ) );
+
+                this->blect->sendCommand( ary, len );
+                this->blect->sendCommand( ary2, len2 );
+            }
+            else
+            {
+                len = motor_speed( &ary, port, newSpeed * 10 );
+                this->blect->sendCommand( ary, len );
+            }
         }
     }
 

@@ -58,13 +58,13 @@ mapEditPanel::mapEditPanel( wxNotebook* parent ) : wxPanel( parent )
     gpioPicker = new wxSpinCtrl( this, wxID_ANY, "2", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 2, "switchGpio" );
 
     labelDir = new wxStaticText( this, wxID_ANY, "Switch Direction" );
-    dirList.Add( "L" );
-    dirList.Add( "R" );
-    dirPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 60, -1 ), dirList, 0L, wxDefaultValidator, "switchDir" );
+    // dirList.Add( "L" );
+    // dirList.Add( "R" );
+    dirPicker = new wxStaticText( this, wxID_ANY, "" );
 
     labelManufacturer = new wxStaticText( this, wxID_ANY, "Manufacturer:" );
     manufacturerList.Add( "4D_Brixx" );
-    manufacturerList.Add( "Pursit PoweredUP Solution" );
+    //manufacturerList.Add( "Pursit PoweredUP Solution" );
     manufacturerPicker = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 200, -1 ), manufacturerList, 0L, wxDefaultValidator, "manufacturerPicker" );
 
     editSizer->Add( labelName, 0, wxALL | ( wxALL & ~wxLEFT ), 5 );
@@ -200,7 +200,7 @@ void mapEditPanel::DragSwitchToMap( int row, int col, char dir )
     m_switchPicker->Append( name + wxString::Format( wxT( "%i" ), i ) );
     m_switchPicker->Select( m_switchPicker->FindString( name + wxString::Format( wxT( "%i" ), i ) ) );
     this->SelectSwitch();
-    dirPicker->SetStringSelection( wxString(dir) );
+    dirPicker->SetLabel(dir);
 }
 
 void mapEditPanel::saveSwitch()
@@ -218,7 +218,7 @@ void mapEditPanel::saveSwitch( wxString name )
     track38ConfigMap->SetPath( "/Switch/" );
     track38ConfigMap->SetPath( name );
     track38ConfigMap->Write( "gpio", wxString::Format( wxT( "%i" ), gpioPicker->GetValue() ) );
-    track38ConfigMap->Write( "dir", dirPicker->GetStringSelection() );
+    track38ConfigMap->Write( "dir", dirPicker->GetLabel() );
     track38ConfigMap->Write( "port", portPicker->GetStringSelection() );
     track38ConfigMap->Write( "manufacturer", manufacturerPicker->GetStringSelection() );
     track38ConfigMap->Flush();
@@ -371,11 +371,7 @@ void mapEditPanel::SelectSwitch()
 
     gpioPicker->SetValue( track38ConfigMap->Read( "gpio", "2" ) );
 
-    for ( size_t idx = 0; idx < dirPicker->GetCount(); idx++ )
-    {
-        if ( track38ConfigMap->Read( "dir", "1" ).IsSameAs( dirPicker->GetString( idx ) ) )
-            dirPicker->SetSelection( idx );         
-    }
+    dirPicker->SetLabel( track38ConfigMap->Read( "dir", "L" ) );
 
     for ( size_t idx = 0; idx < manufacturerPicker->GetCount(); idx++ )
     {

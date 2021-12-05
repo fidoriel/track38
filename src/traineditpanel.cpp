@@ -60,7 +60,9 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
 
     if ( !wxGetApp().blutoothPermission )
         trainKindPicker->Enable( 1, false );
-    // trainKindPicker->Enable( 2, false );
+    
+    //Disable RC because not implemented
+    trainKindPicker->Enable( 2, false );
     // trainKindPicker->Enable( 3, false );
     // trainKindPicker->Enable( 4, false );
 
@@ -352,6 +354,8 @@ void trainEditPanel::OnRenameTrain( wxCommandEvent& event )
 {
     if ( m_trainPicker->GetCount() == 0 )
         return;
+
+    this->SaveTrain();
 
     this->initConf();
     track38ConfigTrain->SetPath( "/Train/" );
