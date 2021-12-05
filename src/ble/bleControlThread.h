@@ -18,7 +18,7 @@
 #include <sstream>
 #include <functional>
 
-#if defined( WWIN32 )
+#if defined( WIN32 )
 #define strcasecmp _stricmp
 #endif
 
