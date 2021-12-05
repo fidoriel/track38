@@ -13,8 +13,9 @@
 #include <thread>
 #include <vector>
 #include <string>
+#include <cstring>
 #include <iostream>
-#include<sstream>
+#include <sstream>
 #include <functional>
 
 using namespace std;

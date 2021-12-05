@@ -34,8 +34,9 @@ void bleControlThread::idle()
     {
         if ( this->cmdInPipe )
         {
-            hub->write_request(uuids[0].first, uuids[0].second, this->message );
+            this->hub->write_request(uuids[1].first, uuids[1].second, this->message );
             this->cmdInPipe = false;
+            std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
         }
 
         if ( TestDestroy() || this->threadTerminated )
@@ -120,6 +121,24 @@ bool bleControlThread::connectionAttempt()
                 {
                     uuids.push_back(std::make_pair(service.uuid, characteristic));
                 }
+            }
+
+            for (int i = 0; i < uuids.size(); i++) {
+                string sID(serviceUUID);
+                string cID(characteristicUUID);
+                if ( strcasecmp(uuids[ i ].first.c_str(), sID.c_str()) == 0)
+                    if ( strcasecmp(uuids[ i ].second.c_str(), cID.c_str()) == 0)
+                    {
+                        this->bleCharIDX = i;
+                        break;
+                    }
+            }
+
+            if ( this->bleCharIDX == -1 )
+            {
+                this->hub->disconnect();
+                this->onStatusChangeCallback(false);
+                this->threadTerminated = true;
             }
 
             return true;

@@ -35,17 +35,20 @@
 #
 #
 
+#Debug
+# cmake .. -DCMAKE_BUILD_TYPE=Debug
+
 #change to project directory and: mkdir build; cd build
 #cmake CMD.exe: cmake .. -G "MinGW Makefiles"
 #mingw32 Compile: mingw32-make -j4
 
 cmake_minimum_required( VERSION 3.0 )
-set( CMAKE_BIULD_TYPE Debug )
+set( CMAKE_BIULD_TYPE "Debug" )
 set( CMAKE_CXX_STANDARD 17 )
 
 project( track38 )
 
-set( WXWIDGETS_VERSION_IN_HOME_DIR "wxWidgets" )
+set( WXWIDGETS_VERSION_IN_HOME_DIR "wxWidgets-3.1.4" )
 set( RELEASE 1 )
 
 message( "CXX Compiler: ${CMAKE_CXX_COMPILER}" )
@@ -74,7 +77,8 @@ if( WIN32 )
 elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
     message( "Target: Linux" )
     #directory where wxwidget is located root folder
-    set( wxWidgets_ROOT_DIR "$ENV{HOME}/${WXWIDGETS_VERSION_IN_HOME_DIR}" )
+    set( wxWidgets_ROOT_DIR "$ENV{HOME}/${WXWIDGETS_VERSION_IN_HOME_DIR}/" )
+    set( wxWidgets_INCLUDE_DIRS "${wxWidgets_ROOT_DIR}/gtkbuild/lib/")
     set( wxWidgets_CONFIG_EXECUTABLE "${wxWidgets_ROOT_DIR}/gtkbuild/wx-config" )
 
     if( RELEASE )
