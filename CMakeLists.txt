@@ -48,7 +48,7 @@ set( CMAKE_CXX_STANDARD 17 )
 
 project( track38 )
 
-set( WXWIDGETS_VERSION_IN_HOME_DIR "wxWidgets-3.1.4" )
+set( WXWIDGETS_VERSION_IN_HOME_DIR "wxWidgets" )
 set( RELEASE 1 )
 
 message( "CXX Compiler: ${CMAKE_CXX_COMPILER}" )
@@ -88,7 +88,8 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
 elseif( APPLE )
     message( "Target: Apple" )
     #directory where wxwidget is located root folder
-	set( wxWidgets_ROOT_DIR "$ENV{HOME}/${WXWIDGETS_VERSION_IN_HOME_DIR}" )
+	set( wxWidgets_ROOT_DIR "$ENV{HOME}/${WXWIDGETS_VERSION_IN_HOME_DIR}/" )
+    set( wxWidgets_INCLUDE_DIRS "${wxWidgets_ROOT_DIR}/macbuild/lib/")
 	set( wxWidgets_CONFIG_EXECUTABLE "${wxWidgets_ROOT_DIR}/macbuild/wx-config" )
 endif()
 

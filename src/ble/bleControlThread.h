@@ -18,6 +18,10 @@
 #include <sstream>
 #include <functional>
 
+#if defined( WWIN32 )
+#define strcasecmp _stricmp
+#endif
+
 using namespace std;
 
 class bleControlThread : wxThread

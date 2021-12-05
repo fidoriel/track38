@@ -34,7 +34,7 @@ void bleControlThread::idle()
     {
         if ( this->cmdInPipe )
         {
-            this->hub->write_request(uuids[1].first, uuids[1].second, this->message );
+            this->hub->write_request(uuids[ this->bleCharIDX ].first, uuids[ this->bleCharIDX ].second, this->message );
             this->cmdInPipe = false;
             std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
         }
