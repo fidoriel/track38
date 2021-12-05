@@ -34,7 +34,12 @@ void bleControlThread::idle()
     {
         if ( this->cmdInPipe )
         {
+            // Bug in SimpleBLE? why command has different behaviour on win than on mac or linux?
+            #if defined( WIN32 )
+            this->hub->write_command(uuids[ this->bleCharIDX ].first, uuids[ this->bleCharIDX ].second, this->message );
+            #else
             this->hub->write_request(uuids[ this->bleCharIDX ].first, uuids[ this->bleCharIDX ].second, this->message );
+            #endif
             this->cmdInPipe = false;
             std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
         }

@@ -67,7 +67,7 @@ if( WIN32 )
         set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_NAME}/" )
     endif()
 
-    set( wxWidgets_ROOT_DIR "C:/Users/lucak/wxWidgets-3.1.4/" )
+    set( wxWidgets_ROOT_DIR "C:/Users/lucak/wxWidgets/" )
     set( wxWidgets_LIB_DIR "${wxWidgets_BASE_DIR_WIN}/lib/vc_x64_dll/" )
     set (wxWidgets_CONFIGURATION "${wxWidgets_BASE_DIR_WIN}/lib/vc_x64_dll/mswud/" )
 
