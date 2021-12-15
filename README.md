@@ -17,7 +17,7 @@ macOS note: Please allow Bluetooth Permission if track38 asks for. Otherwise it 
 
 PowerFunctions and track switches requirements.
 Upload the track38 Arduino Firmware to your board. This needs to be done only once.
-This can be a little bit tricky: Download and install the Arduino IDE on your machine. Plug in the Arduino. Open the Sketch and select port and device from the menue. Hit upload ans wait a few seconds.
+This can be a little bit tricky: Download and install PlatformIO for Visual Studio Code on your machine. Plug in the Arduino. Open the Project (https://github.com/fidoriel/track38-clients) and hit upload and wait a few seconds.
 
 Add Trains:
 Go to "Edit Trains" and click "New" on the left choose the controller and fill in the information. 
