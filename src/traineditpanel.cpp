@@ -58,8 +58,8 @@ trainEditPanel::trainEditPanel( wxNotebook* parent ) : wxPanel( parent )
     // options.Add( "SBrick" );
     trainKindPicker = new wxRadioBox( this, ID_ChangeControl, "Train Controller", wxDefaultPosition, wxDefaultSize, options, 3, wxRA_HORIZONTAL );
 
-    if ( !wxGetApp().blutoothPermission )
-        trainKindPicker->Enable( 1, false );
+    // if ( !bleIsAutorized() )
+    //     trainKindPicker->Enable( 1, false );
     
     //Disable RC because not implemented
     trainKindPicker->Enable( 2, false );

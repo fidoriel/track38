@@ -2,5 +2,6 @@
 #define blPermission_h 
 
 bool bleIsAutorized();
+void askForPermission();
 
 #endif

@@ -13,19 +13,16 @@ bool track38App::OnInit()
 {
     if ( !checkIfValid() )
     {
-        wxMessageBox( "This beta copy is not valid anymore. track38 will close now." );
         return false;
     }
 
     SetVendorName( vendorName );
     SetAppName( appName );
 
+    askForPermission();
     this->blutoothPermission = bleIsAutorized();
     if ( !this->blutoothPermission )
-    {
-        wxMessageBox( "track38 needs permissions for Blutooth acces to be able to connect to Powered UP hubs. This acces was not granted. Please go to the Settings and grant the permission. Otherwise track38 cannot be used. track38 will close now." );
-        return false;
-    }
+        wxMessageBox( "track38 needs permissions for Blutooth acces to be able to connect to Powered UP hubs. This acces was not granted. Please go to the Settings and grant the permission. Otherwise Bluetooth cannot be used." );
 
     m_frame = new track38Frame();
     m_frame->Show();

@@ -8,4 +8,8 @@ bool bleIsAutorized()
     return true;
 }
 
+void askForPermission()
+{
+}
+
 #endif

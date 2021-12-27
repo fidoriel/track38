@@ -58,6 +58,12 @@ void train::SetButton( wxString file )
 
 void train::OnStop( wxCommandEvent& event ) 
 {
+    if ( this->isUp() && !bleIsAutorized() )
+    {
+        wxMessageBox("Blutooth ist not authorized.");
+        return;
+    }
+
     if ( this->isUp() && blect && blect->threadTerminated )
     {
         delete blect;

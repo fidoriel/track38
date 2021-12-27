@@ -7,11 +7,18 @@
 
 bool bleIsAutorized()
 {
+
     // https://developer.apple.com/documentation/corebluetooth/cbmanagerauthorization/allowedalways
-    if (CBManager.authorization == CBManagerAuthorizationAllowedAlways){
+    if (CBManager.authorization == CBManagerAuthorizationAllowedAlways)
+    {
         return true;
     }
     return false;
+}
+
+void askForPermission()
+{
+    void* mgr = [[CBPeripheralManager alloc] init];
 }
 
 #endif

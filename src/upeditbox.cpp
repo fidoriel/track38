@@ -73,6 +73,13 @@ upEditBox::upEditBox( wxPanel* parent, int id, wxString title ) : editBox( paren
 
 void upEditBox::OnBleMenue( wxCommandEvent& event )
 {
+
+    if ( !bleIsAutorized() )
+    {
+        wxMessageBox("Blutooth ist not authorized.");
+        return;
+    }
+
     dlg = new bleConDialog( wxGetApp().m_frame );
     dlg->Create();
 
