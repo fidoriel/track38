@@ -58,7 +58,8 @@ include_directories(${SIMPLEBLE_INCLUDES})
 
 # wxWidgets
 set( wxWidgets_SRC_DIR "src/wxWidgets" )
-set( wxWidgets_BUILD_DIR "wxWidgets" )
+set(wxWidgets_BUILD_DIR "${CMAKE_BINARY_DIR}/wxWidgets")
+cmake_print_variables(wxWidgets_BUILD_DIR)
 
 # set system vars
 set( IS_WIN false )
@@ -95,20 +96,21 @@ if( IS_WIN )
 
 elseif( IS_MAC OR IS_LINUX )
     file(MAKE_DIRECTORY ${wxWidgets_BUILD_DIR})
-    set( wxWidgets_CONFIG_EXECUTABLE "${wxWidgets_BUILD_DIR}/wx-config" )
+    message(STATUS "Directory for wxWidgets created")
 
     if(NOT EXISTS ${wxWidgets_BUILD_DIR}/Makefile)
         message(STATUS "Configuring wxWidgets...")
         execute_process(
-            COMMAND  bash ../../src/wxWidgets/configure ${wxWidgets_CONFIG_ARGS}
+            COMMAND bash -c "bash ../../src/wxWidgets/configure ${wxWidgets_CONFIG_ARGS}"
             RESULT_VARIABLE wxWidgets_CONFIGURE_RESULT
             WORKING_DIRECTORY ${wxWidgets_BUILD_DIR}
         )
         if(NOT wxWidgets_CONFIGURE_RESULT EQUAL 0)
             message(FATAL_ERROR "Failed to configure wxWidgets")
         endif()
+        message(STATUS "Compiling wxWidgets...")
         execute_process(
-            COMMAND ${CMAKE_COMMAND} -E chdir ${wxWidgets_CONFIG_DIR} make -j4
+            COMMAND make -j4
             RESULT_VARIABLE wxWidgets_COMPILE_RESULT
             WORKING_DIRECTORY ${wxWidgets_BUILD_DIR}
         )
@@ -116,8 +118,9 @@ elseif( IS_MAC OR IS_LINUX )
             message(FATAL_ERROR "Failed to compile wxWidgets")
         endif()
     else()
-        message(STATUS "wxWidgets already configured")
+        message(STATUS "wxWidgets already configured/compiled")
     endif()
+    set( wxWidgets_CONFIG_EXECUTABLE "${wxWidgets_BUILD_DIR}/wx-config" )
 
 endif()
 
