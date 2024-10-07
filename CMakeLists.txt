@@ -10,12 +10,12 @@
 #build instrucions for wxWidgets Platform Linux und macOS: ../configure --disable-shared --disable-sys-libs
 #RasPiOS: Deps: sudo apt install libgtk-3-dev
 #RasPi: ../configure --disable-shared --disable-sys-libs --with-gtk=3
-#compile with: make -j4
+#compile with: make -j
 
 #change to project directory and: mkdir build; cd build
 #cmake corfigure with: cmake ..
 #if Linux AppImage should be created cmake .. -D RELEASE=1
-#compile with: make -j4
+#compile with: make -j
 
 #Windows gcc Deprecated
 #change build directory Win32: cd build\msw
@@ -29,11 +29,6 @@
 # nmake /f makefile.vc BUILD=debug SHARED=1 TARGET_CPU=X64
 # cmake -G "Visual Studio 16 2019" -A x64 -S .. -B . -Wno-dev
 # cmake --build . --config Debug -j 4
-#
-#
-#
-#
-#
 
 #Debug
 # cmake .. -DCMAKE_BUILD_TYPE=Debug
@@ -42,7 +37,9 @@
 #cmake CMD.exe: cmake .. -G "MinGW Makefiles"
 #mingw32 Compile: mingw32-make -j4
 
-cmake_minimum_required( VERSION 3.0 )
+include(CMakePrintHelpers)
+
+cmake_minimum_required( VERSION 3.18 )
 set( CMAKE_BIULD_TYPE "Debug" )
 set( CMAKE_CXX_STANDARD 17 )
 
@@ -55,46 +52,76 @@ message( "CXX Compiler: ${CMAKE_CXX_COMPILER}" )
 message( "CXX Compiler ID: ${CMAKE_CXX_COMPILER_ID}" )
 message( "CXX Compiler is GNU: ${CMAKE_COMPILER_IS_GNUCXX}" )
 
-#SimpleBLE
+# SimpleBLE
 add_subdirectory(src/SimpleBLE/ ${CMAKE_BINARY_DIR}/simpleble)
 include_directories(${SIMPLEBLE_INCLUDES})
 
+# wxWidgets
+set( wxWidgets_SRC_DIR "src/wxWidgets" )
+set( wxWidgets_BUILD_DIR "wxWidgets" )
+
+# set system vars
+set( IS_WIN false )
+set( IS_MAC false )
+set( IS_LINUX false )
 
 if( WIN32 )
     message( "Target: Windows32" )
+    set( IS_WIN true )
+elseif( APPLE )
+    message( "Target: Apple" )
+    set( IS_MAC true )
+    set( wxWidgets_CONFIG_ARGS "--disable-shared --disable-sys-libs")
+elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
+    message( "Target: Linux" )
+    set( IS_LINUX true )
+    set( wxWidgets_CONFIG_ARGS "--disable-shared --disable-sys-libs --with-gtk=3")
+endif()
 
+
+if( IS_WIN )
     if( RELEASE )
         set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_NAME}/" )
     endif()
 
-    set( wxWidgets_ROOT_DIR "C:/Users/lucak/wxWidgets/" )
-    set( wxWidgets_LIB_DIR "${wxWidgets_BASE_DIR_WIN}/lib/vc_x64_dll/" )
-    set (wxWidgets_CONFIGURATION "${wxWidgets_BASE_DIR_WIN}/lib/vc_x64_dll/mswud/" )
+    set( wxWidgets_CONFIG_DIR "${wxWidgets_SRC_DIR}/build/")
+    file(MAKE_DIRECTORY ${wxWidgets_CONFIG_DIR})
+
+    set( wxWidgets_LIB_DIR "${wxWidgets_SRC_DIR}/lib/vc_x64_dll/" )
+    set (wxWidgets_CONFIGURATION "${wxWidgets_SRC_DIR}/lib/vc_x64_dll/mswud/" )
 
     find_package(wxWidgets COMPONENTS core base REQUIRED )
     include( ${wxWidgets_USE_FILE})
-    
-elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
-    message( "Target: Linux" )
-    #directory where wxwidget is located root folder
-    set( wxWidgets_ROOT_DIR "$ENV{HOME}/${WXWIDGETS_VERSION_IN_HOME_DIR}/" )
-    set( wxWidgets_INCLUDE_DIRS "${wxWidgets_ROOT_DIR}/gtkbuild/lib/")
-    set( wxWidgets_CONFIG_EXECUTABLE "${wxWidgets_ROOT_DIR}/gtkbuild/wx-config" )
 
-    if( RELEASE )
-        set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "AppDir/usr/bin/" )
+elseif( IS_MAC OR IS_LINUX )
+    file(MAKE_DIRECTORY ${wxWidgets_BUILD_DIR})
+    set( wxWidgets_CONFIG_EXECUTABLE "${wxWidgets_BUILD_DIR}/wx-config" )
+
+    if(NOT EXISTS ${wxWidgets_BUILD_DIR}/Makefile)
+        message(STATUS "Configuring wxWidgets...")
+        execute_process(
+            COMMAND  bash ../../src/wxWidgets/configure ${wxWidgets_CONFIG_ARGS}
+            RESULT_VARIABLE wxWidgets_CONFIGURE_RESULT
+            WORKING_DIRECTORY ${wxWidgets_BUILD_DIR}
+        )
+        if(NOT wxWidgets_CONFIGURE_RESULT EQUAL 0)
+            message(FATAL_ERROR "Failed to configure wxWidgets")
+        endif()
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E chdir ${wxWidgets_CONFIG_DIR} make -j4
+            RESULT_VARIABLE wxWidgets_COMPILE_RESULT
+            WORKING_DIRECTORY ${wxWidgets_BUILD_DIR}
+        )
+        if(NOT wxWidgets_COMPILE_RESULT EQUAL 0)
+            message(FATAL_ERROR "Failed to configure wxWidgets")
+        endif()
+    else()
+        message(STATUS "wxWidgets already configured")
     endif()
 
-elseif( APPLE )
-    message( "Target: Apple" )
-    #directory where wxwidget is located root folder
-	set( wxWidgets_ROOT_DIR "$ENV{HOME}/${WXWIDGETS_VERSION_IN_HOME_DIR}/" )
-    set( wxWidgets_INCLUDE_DIRS "${wxWidgets_ROOT_DIR}/macbuild/lib/")
-	set( wxWidgets_CONFIG_EXECUTABLE "${wxWidgets_ROOT_DIR}/macbuild/wx-config" )
 endif()
 
-if( NOT WIN32 )
-    #find_package( wxWidgets COMPONENTS core base gl adv html xml xrc aui REQUIRED ) Modified Linux has not all??
+if( NOT IS_WIN )
     find_package( wxWidgets COMPONENTS core base adv html xml xrc aui REQUIRED )
 
     #if libs are static use --libs --static instead for standard libs.
@@ -106,12 +133,14 @@ if( NOT WIN32 )
     if( wxWidgets_FOUND )
 	    include( "${wxWidgets_USE_FILE}" )
 	    message( "wxWidgets was found" )
+        # cmake_print_variables(wxWidgets_USE_FILE wxWidgets_LIBRARIES)
     else( wxWidgets_FOUND )
 	    message( "wxWidgets was not found" )
     endif( wxWidgets_FOUND )
+
 endif()
 
-if( APPLE )
+if( IS_MAC )
 file( GLOB SRC_FILES
     src/*.h
     src/*.hpp
@@ -137,26 +166,25 @@ file( GLOB SRC_FILES
 )
 endif()
 
-if( WIN32 )
+if( IS_WIN )
     # Include a RC file for windows
     list( APPEND SRC_FILES icons/icon_win.rc )
 endif()
-if( APPLE )
+if( IS_MAC )
     # Add an icon for the apple .app file
     list( APPEND SRC_FILES icons/AppIcon.icns )
 endif()
 
-if( WIN32 )
+if( IS_WIN )
     #-mwindows suppresses CMD
     add_executable( ${PROJECT_NAME} WIN32 ${SRC_FILES} )
-    #target_link_libraries( ${PROJECT_NAME} ${WX_LIBS} ${CMAKE_CXX_FLAGS} )
     target_link_libraries(${PROJECT_NAME} simpleble)
     target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES})
-elseif( APPLE )
+elseif( IS_MAC )
     add_executable( ${PROJECT_NAME} MACOSX_BUNDLE ${SRC_FILES} )
     target_link_libraries( ${PROJECT_NAME} ${wxWidgets_LIBRARIES} )
     target_link_libraries(${PROJECT_NAME} simpleble-static)
-elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
+elseif( IS_LINUX )
     set( CMAKE_CXX_FLAGS "-no-pie" )
     add_executable( ${PROJECT_NAME} ${SRC_FILES} )
     target_link_libraries( ${PROJECT_NAME} ${wxWidgets_LIBRARIES} ${CMAKE_CXX_FLAGS} )
@@ -164,7 +192,7 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
 endif()
 
 #After compilation processing
-if( APPLE )
+if( IS_MAC )
     set_target_properties( ${PROJECT_NAME} PROPERTIES
         RESOURCE "icons/AppIcon.icns"
         MACOSX_BUNDLE_ICON_FILE AppIcon.icns
@@ -220,7 +248,6 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
         COMMAND ./${AppImageRelease} AppDir
 	    )
 elseif( WIN32 )
-    set( wxBaseDirBS "C:\\Users\\lucak\\wxWidgets-3.1.4\\")
     add_custom_command( TARGET ${PROJECT_NAME} POST_BUILD
 
         COMMAND if not exist "${PROJECT_NAME}\\Debug\\resources" mkdir "${PROJECT_NAME}\\Debug\\resources"
@@ -234,11 +261,11 @@ elseif( WIN32 )
             "${PROJECT_NAME}\\Debug\\"
 
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${wxWidgets_ROOT_DIR}lib/vc_x64_dll/wxmsw316ud_core_vc_custom.dll"
+            "${wxWidgets_BUILD_DIR}lib/vc_x64_dll/wxmsw316ud_core_vc_custom.dll"
             "${PROJECT_NAME}\\Debug\\"
 
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${wxWidgets_ROOT_DIR}lib/vc_x64_dll/wxbase316ud_vc_custom.dll"
+            "${wxWidgets_BUILD_DIR}lib/vc_x64_dll/wxbase316ud_vc_custom.dll"
             "${PROJECT_NAME}\\Debug\\"
     )
 endif()
