@@ -66,12 +66,12 @@ Your trains are shown on the "Train Control" Panel. If the stop button is greyed
 
 
 ```bash
-git clone git clone --recurse-submodules git@github.com:fidoriel/track38.git
+git clone --recurse-submodules git@github.com:fidoriel/track38.git
 cd track38
 mkdir build
 cd build
 cmake ..
-make
+make -j
 ```
 
 Update after init
