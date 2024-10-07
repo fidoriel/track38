@@ -113,7 +113,7 @@ elseif( IS_MAC OR IS_LINUX )
             WORKING_DIRECTORY ${wxWidgets_BUILD_DIR}
         )
         if(NOT wxWidgets_COMPILE_RESULT EQUAL 0)
-            message(FATAL_ERROR "Failed to configure wxWidgets")
+            message(FATAL_ERROR "Failed to compile wxWidgets")
         endif()
     else()
         message(STATUS "wxWidgets already configured")

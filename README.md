@@ -74,6 +74,12 @@ cmake ..
 make
 ```
 
+Update after init
+```bash
+git submodule update --init --recursive
+```
+
+
 Linux/macOS: Information can be found in the CMakeLists.txt. Please note right now, track38 needs a staticly build wxWidgets instalation in the home directory of the user. Build and clone commands can be found there as well. Cmake, make and gcc(Linux), clang(macOS) are required.
 
 Windows needs also a static instalation in the home directory. You need to change the wxWidgets_ROOT_DIR var in the cmake file to make it fit your system. For building you need the Developer PowerShell distributed with Visual Studio, you will also need cmake. Commands for Windows can be found in the cmake file. 
