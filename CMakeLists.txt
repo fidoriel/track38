@@ -40,8 +40,9 @@
 include(CMakePrintHelpers)
 
 cmake_minimum_required( VERSION 3.18 )
-set( CMAKE_BIULD_TYPE "Debug" )
-set( CMAKE_CXX_STANDARD 17 )
+# set( CMAKE_BIULD_TYPE "Debug" )
+set( CMAKE_CXX_STANDARD 20 )
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project( track38 )
 
@@ -188,9 +189,9 @@ elseif( IS_MAC )
     target_link_libraries( ${PROJECT_NAME} ${wxWidgets_LIBRARIES} )
     target_link_libraries(${PROJECT_NAME} simpleble-static)
 elseif( IS_LINUX )
-    set( CMAKE_CXX_FLAGS "-no-pie" )
+    set( ADDITIONAL_CXX_FLAGS "-no-pie" )
     add_executable( ${PROJECT_NAME} ${SRC_FILES} )
-    target_link_libraries( ${PROJECT_NAME} ${wxWidgets_LIBRARIES} ${CMAKE_CXX_FLAGS} )
+    target_link_libraries( ${PROJECT_NAME} ${wxWidgets_LIBRARIES} ${ADDITIONAL_CXX_FLAGS} )
     target_link_libraries(${PROJECT_NAME} simpleble-static)
 endif()
 
