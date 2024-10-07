@@ -110,7 +110,7 @@ elseif( IS_MAC OR IS_LINUX )
         endif()
         message(STATUS "Compiling wxWidgets...")
         execute_process(
-            COMMAND make -j
+            COMMAND make -j4
             RESULT_VARIABLE wxWidgets_COMPILE_RESULT
             WORKING_DIRECTORY ${wxWidgets_BUILD_DIR}
         )
