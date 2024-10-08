@@ -212,7 +212,7 @@ if( IS_MAC )
         COMMAND cp -r "../resources/tracks" "${PROJECT_NAME}.app/Contents/Resources"
         COMMAND cp -r "../resources/icons" "${PROJECT_NAME}.app/Contents/Resources"
         )
-elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
+elseif( IS_LINUX )
     EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
     message( STATUS "Architecture: ${ARCHITECTURE}" )
 
@@ -249,8 +249,10 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND RELEASE )
         COMMAND wget -N https://raw.githubusercontent.com/AppImage/AppImageKit/master/src/AppRun.c
         COMMAND gcc AppRun.c -o AppDir/AppRun
 
+        COMMAND mkdir -p "AppDir/usr/bin/"
+        COMMAND cp ${PROJECT_NAME} AppDir/usr/bin/track38
         COMMAND ./${AppImageRelease} AppDir
-	    )
+    )
 elseif( WIN32 )
     add_custom_command( TARGET ${PROJECT_NAME} POST_BUILD
 
