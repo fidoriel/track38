@@ -122,9 +122,9 @@ bool bleControlThread::connectionAttempt()
 
             for (auto service : this->hub->services())
             {
-                for (auto characteristic : service.characteristics)
+                for (auto characteristic : service.characteristics())
                 {
-                    uuids.push_back(std::make_pair(service.uuid, characteristic));
+                    uuids.push_back(std::make_pair(service.uuid(), characteristic.uuid()));
                 }
             }
 

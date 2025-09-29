@@ -42,7 +42,7 @@ public:
     #ifdef __APPLE__
     wxString ressourcePath = wxString( "track38.app/Contents/Resources/" );
     #elif defined(__linux__) || defined(__FreeBSD__)
-    wxString ressourcePath = "../usr/share/icons/";
+    wxString ressourcePath = stdp.GetDataDir() + "/";
     #elif defined(WIN32)
     wxString ressourcePath = "resources/";
     #endif
