@@ -1,6 +1,6 @@
 [submodule "src/SimpleBLE"]
 	path = src/SimpleBLE
-	url = https://github.com/OpenBluetoothToolbox/SimpleBLE
+	url = https://github.com/simpleble/simpleble
 [submodule "src/wxWidgets"]
 	path = src/wxWidgets
 	url = https://github.com/wxWidgets/wxWidgets.git

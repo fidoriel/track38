@@ -54,7 +54,10 @@ message( "CXX Compiler ID: ${CMAKE_CXX_COMPILER_ID}" )
 message( "CXX Compiler is GNU: ${CMAKE_COMPILER_IS_GNUCXX}" )
 
 # SimpleBLE
-add_subdirectory(src/SimpleBLE/ ${CMAKE_BINARY_DIR}/simpleble)
+add_subdirectory(src/SimpleBLE/simpleble ${CMAKE_BINARY_DIR}/simpleble)
+include_directories(src/SimpleBLE/simpleble/include)
+include_directories(src/SimpleBLE/dependencies/external)
+include_directories(${CMAKE_BINARY_DIR}/simpleble/export)
 include_directories(${SIMPLEBLE_INCLUDES})
 
 # wxWidgets
@@ -187,12 +190,12 @@ if( IS_WIN )
 elseif( IS_MAC )
     add_executable( ${PROJECT_NAME} MACOSX_BUNDLE ${SRC_FILES} )
     target_link_libraries( ${PROJECT_NAME} ${wxWidgets_LIBRARIES} )
-    target_link_libraries(${PROJECT_NAME} simpleble-static)
+    target_link_libraries(${PROJECT_NAME} simpleble)
 elseif( IS_LINUX )
     set( ADDITIONAL_CXX_FLAGS "-no-pie" )
     add_executable( ${PROJECT_NAME} ${SRC_FILES} )
     target_link_libraries( ${PROJECT_NAME} ${wxWidgets_LIBRARIES} ${ADDITIONAL_CXX_FLAGS} )
-    target_link_libraries(${PROJECT_NAME} simpleble-static)
+    target_link_libraries(${PROJECT_NAME} simpleble)
 endif()
 
 #After compilation processing
@@ -212,47 +215,6 @@ if( IS_MAC )
         COMMAND cp -r "../resources/tracks" "${PROJECT_NAME}.app/Contents/Resources"
         COMMAND cp -r "../resources/icons" "${PROJECT_NAME}.app/Contents/Resources"
         )
-elseif( IS_LINUX )
-    EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
-    message( STATUS "Architecture: ${ARCHITECTURE}" )
-
-    if( "${ARCHITECTURE}" STREQUAL "armv7l" OR "${ARCHITECTURE}" STREQUAL "armv7" )
-        set( AppImageRelease "appimagetool-armhf.AppImage" )
-    elseif( "${ARCHITECTURE}" STREQUAL "aarch64" OR "${ARCHITECTURE}" STREQUAL "armv8" )
-        set( AppImageRelease "appimagetool-aarch64.AppImage" )
-    elseif( "${ARCHITECTURE}" STREQUAL "i386" )
-        set( AppImageRelease "appimagetool-i686.AppImage" )
-    else()
-        set( AppImageRelease "appimagetool-x86_64.AppImage" )
-    endif()
-
-    add_custom_command(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        COMMAND mkdir -p "AppDir/usr/share/"
-        COMMAND mkdir -p "AppDir/usr/share/icons"
-        COMMAND cp -r "../resources/tracks/" "AppDir/usr/share/icons/"
-        COMMAND cp -r "../resources/icons/" "AppDir/usr/share/icons/"
-        COMMAND wget -N https://github.com/AppImage/AppImageKit/releases/download/continuous/${AppImageRelease}
-        COMMAND chmod a+x ${AppImageRelease}
-        COMMAND cp ../icons/AppIcon.png AppDir/AppIcon.png
-
-        COMMAND rm -f AppDir/${PROJECT_NAME}.desktop
-        COMMAND touch AppDir/${PROJECT_NAME}.desktop
-        COMMAND echo '[Desktop Entry]' >> AppDir/${PROJECT_NAME}.desktop
-        COMMAND echo 'Name=${PROJECT_NAME}' >> AppDir/${PROJECT_NAME}.desktop
-        COMMAND echo 'Exec=${PROJECT_NAME}' >> AppDir/${PROJECT_NAME}.desktop
-        COMMAND echo 'Icon=AppIcon' >> AppDir/${PROJECT_NAME}.desktop
-        COMMAND echo 'Type=Application' >> AppDir/${PROJECT_NAME}.desktop
-        COMMAND echo 'Categories=Utility\\;' >> AppDir/${PROJECT_NAME}.desktop
-
-        COMMAND wget -N https://raw.githubusercontent.com/AppImage/AppImageKit/master/src/AppRun.c
-        COMMAND gcc AppRun.c -o AppDir/AppRun
-
-        COMMAND mkdir -p "AppDir/usr/bin/"
-        COMMAND cp ${PROJECT_NAME} AppDir/usr/bin/track38
-        COMMAND ./${AppImageRelease} AppDir
-    )
 elseif( WIN32 )
     add_custom_command( TARGET ${PROJECT_NAME} POST_BUILD
 

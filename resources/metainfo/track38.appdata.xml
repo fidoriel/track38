@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>io.github.fidoriel.track38</id>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>GPL-3.0</project_license>
+	<name>track38</name>
+	<summary>Control your LEGO train layout</summary>
+	<content_rating type="oars-1.1" />
+	<description>
+		<p>track38 is a cross-platform LEGO model train control system. It does support the LEGO PoweredUp system via Bluetooth, LEGO PowerFunctions via an Arduino and IR. Support for 9V RC LEGO trains is planned. It can control track switches equipped with a 4DBrixx Servo track switch brick as well.</p>
+	</description>
+	<launchable type="desktop-id">io.github.fidoriel.track38.desktop</launchable>
+	<url type="homepage">https://github.com/fidoriel/track38</url>
+	<screenshots>
+		<screenshot type="default">
+			<caption>First of 3 tabs</caption>
+			<image>https://git.jdmweb2.ch/beat/track38/raw/branch/beat/main/resources/screenshots/tab1.png</image>
+		</screenshot>
+	</screenshots>
+	<provides>
+		<id>track38.desktop</id>
+	</provides>
+	<releases>
+		<release version="0.1.0-alpha" date="2015-12-15" />
+	</releases>
+	<developer id="io.github.fidoriel.track38">
+		<name>fidoriel</name>
+		<name>Beat</name>
+	</developer>
+</component>

@@ -2,6 +2,8 @@
 
 track38 is a cross-platform LEGO model train control system. It does support the LEGO PoweredUp system via Bluetooth, LEGO PowerFunctions via an Arduino and IR. Support for 9V RC LEGO trains is planned. It can control track switches equipped with a 4DBrixx Servo track switch brick as well.
 
+![Screenshot1]
+
 Supported Platforms (Blutooth 4.0 or higher is needed):
  - Windows 8 and newer Intel 64bit
  - macOS Intel and ARM 64bit
@@ -52,7 +54,7 @@ Your trains are shown on the "Train Control" Panel. If the stop button is greyed
 # TODO 
  - Make .ini file loading save
  - add 9V RC train
- - improove Serial conection method
+ - improve Serial conection method
  - add App wide settings
  - change all serial ports once
  - add PoweredUp track switches
@@ -60,26 +62,20 @@ Your trains are shown on the "Train Control" Panel. If the stop button is greyed
  - add reset App option
  - add update notifications
  - add more user warnings & exeptions
- - improove build environment
 
 # Build
 
-
 ```bash
-git clone --recurse-submodules git@github.com:fidoriel/track38.git
+git clone git@github.com:fidoriel/track38.git
 cd track38
-mkdir build
-cd build
-cmake ..
-make -j
+make build/track38-x86_64.AppImage
+
+# Run
+./build/track38-x86_64.AppImage
 ```
 
-Update after init
-```bash
-git submodule update --init --recursive
-```
-
-
-Linux/macOS: Information can be found in the CMakeLists.txt. Please note right now, track38 needs a staticly build wxWidgets instalation in the home directory of the user. Build and clone commands can be found there as well. Cmake, make and gcc(Linux), clang(macOS) are required.
+Linux/macOS: Information can be found in the CMakeLists.txt. Cmake, make and gcc(Linux), clang(macOS) are required.
 
 Windows needs also a static instalation in the home directory. You need to change the wxWidgets_ROOT_DIR var in the cmake file to make it fit your system. For building you need the Developer PowerShell distributed with Visual Studio, you will also need cmake. Commands for Windows can be found in the cmake file. 
+
+[Screenshot1]: resources/screenshots/tab1.png "Screenshot from the first tab"
